@@ -7,7 +7,7 @@ exports[`Input matches snapshot 1`] = `
       class="mt-1 relative rounded-md shadow-sm"
     >
       <input
-        class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+        class="shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md"
         type="text"
       />
     </div>
