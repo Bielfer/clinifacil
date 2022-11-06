@@ -1,0 +1,34 @@
+{
+  "ignorePatterns": ["tailwind.config.js"],
+  "extends": [
+    "airbnb",
+    "airbnb-typescript",
+    "airbnb/hooks",
+    "prettier",
+    "next"
+  ],
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.ts", "**/*.tsx"]
+    }
+  ],
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "import/extensions": "off",
+    "react/require-default-props": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/prop-types": "off",
+    "no-continue": "off",
+    "jsx-a11y/anchor-is-valid": "off",
+    "react/function-component-definition": [
+      2,
+      {
+        "namedComponents": "arrow-function",
+        "unnamedComponents": "arrow-function"
+      }
+    ]
+  }
+}

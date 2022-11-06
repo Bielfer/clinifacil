@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Input matches snapshot 1`] = `
+<DocumentFragment>
+  <div>
+    <div
+      class="mt-1 relative rounded-md shadow-sm"
+    >
+      <input
+        class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+        type="text"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;

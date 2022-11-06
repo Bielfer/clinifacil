@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormikInput matches snapshot 1`] = `
+<DocumentFragment>
+  <div>
+    <div
+      class="flex justify-between"
+    >
+      <label
+        class="flex items-center text-sm font-medium text-gray-700"
+      >
+        test
+      </label>
+    </div>
+    <div
+      class="mt-1 relative rounded-md shadow-sm"
+    >
+      <input
+        class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
+        type="text"
+        value=""
+        width="100%"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
