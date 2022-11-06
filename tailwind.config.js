@@ -22,7 +22,7 @@ module.exports = {
     },
     extend: {
       colors: {
-        primary: colors.blue,
+        primary: colors.teal,
       },
       borderRadius: {
         '4xl': '2rem',
