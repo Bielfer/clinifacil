@@ -29,7 +29,7 @@ interface Context {
   userAuth?: User | null;
   sendEmailLink: (email: string, url?: string) => Promise<void>;
   signInEmailLink: () => Promise<void>;
-  signInEmailAndPassword: (email: string, password: string) => Promise<void>;
+  signInEmailAndPassword: (email: string, password: string) => Promise<boolean>;
   signInAnonymous: (user: {
     displayName?: string;
     photoUrl?: string;
@@ -81,13 +81,10 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
         signInWithEmailAndPassword(auth, email, password)
       );
 
-      if (error)
-        addToast({
-          type: 'error',
-          content: 'Seu email ou senha estão errados!',
-        });
+      if (error) return false;
 
       setUserAuth(token?.user);
+      return true;
     },
 
     [addToast]

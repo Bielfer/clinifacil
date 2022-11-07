@@ -6,7 +6,6 @@ import FormikInput from '@/components/forms/FormikInput';
 import Button from '@/components/core/Button';
 import validations from '@/constants/validations';
 import { useAuth } from '@/contexts/auth';
-import tryCatch from '@/helpers/tryCatch';
 import { useRouter } from 'next/router';
 import paths from '@/constants/paths';
 import { useToast } from '../core/Toast';
@@ -33,10 +32,10 @@ const FormLogin = ({ title }: Props) => {
   });
 
   const handleSubmit = async ({ email, password }: typeof initialValues) => {
-    const [, error] = await tryCatch(signInEmailAndPassword(email, password));
+    const loggedInSuccessfully = await signInEmailAndPassword(email, password);
 
-    if (error) {
-      addToast({ type: 'error', content: error });
+    if (!loggedInSuccessfully) {
+      addToast({ type: 'error', content: 'Seu email ou senha estão errados!' });
       return;
     }
 
