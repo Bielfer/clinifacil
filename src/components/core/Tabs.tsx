@@ -1,3 +1,4 @@
+import { IconType } from '@/types/core';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
 import MyLink from './MyLink';
@@ -5,7 +6,7 @@ import MyLink from './MyLink';
 interface Tab {
   text: string;
   href: string;
-  icon?: React.ComponentType<React.ComponentProps<'svg'>>;
+  icon?: IconType;
 }
 
 interface Props {

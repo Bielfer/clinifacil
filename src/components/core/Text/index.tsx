@@ -1,6 +1,7 @@
 import React, { FC, HTMLAttributes } from 'react';
 import { VariantText } from '@/types/styles';
 import clsx from 'clsx';
+import { IconType } from '@/types/core';
 
 interface Props extends HTMLAttributes<any> {
   className?: string;
@@ -19,8 +20,8 @@ interface Props extends HTMLAttributes<any> {
   em?: boolean;
   blockquote?: boolean;
   label?: boolean;
-  iconLeft?: React.ComponentType<React.ComponentProps<'svg'>>;
-  iconRight?: React.ComponentType<React.ComponentProps<'svg'>>;
+  iconLeft?: IconType;
+  iconRight?: IconType;
   htmlFor?: string;
 }
 

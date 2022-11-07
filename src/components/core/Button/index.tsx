@@ -1,6 +1,7 @@
 import { ButtonHTMLAttributes } from 'react';
 import Spinner from '@/components/core/Spinner';
 import clsx from 'clsx';
+import { IconType } from '@/types/core';
 
 export type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
@@ -8,8 +9,8 @@ export type Variant = 'primary' | 'secondary' | 'white';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   type?: 'submit' | 'button';
-  iconLeft?: React.ComponentType<React.ComponentProps<'svg'>>;
-  iconRight?: React.ComponentType<React.ComponentProps<'svg'>>;
+  iconLeft?: IconType;
+  iconRight?: IconType;
   variant?: Variant;
   size?: Size;
   loading?: boolean;

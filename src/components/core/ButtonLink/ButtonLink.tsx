@@ -3,11 +3,12 @@ import Link from 'next/link';
 import { FC } from 'react';
 import { Size, sizes, variantStyles } from '@/components/core/Button';
 import { Props } from '@/components/core/MyLink';
+import { IconType } from '@/types/core';
 
 interface ButtonProps extends Props {
   size?: Size;
-  iconLeft?: React.ComponentType<React.ComponentProps<'svg'>>;
-  iconRight?: React.ComponentType<React.ComponentProps<'svg'>>;
+  iconLeft?: IconType;
+  iconRight?: IconType;
 }
 
 const ButtonLink: FC<ButtonProps> = ({

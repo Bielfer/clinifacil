@@ -1,12 +1,13 @@
 import React from 'react';
 import clsx from 'clsx';
 import Link from 'next/link';
+import { IconType } from '@/types/core';
 import ConditionalWrapper from './ConditionalWrapper';
 
 interface Button {
   text: string;
   onClick?: () => void;
-  icon?: React.ComponentType<React.ComponentProps<'svg'>>;
+  icon?: IconType;
   href?: string;
 }
 
