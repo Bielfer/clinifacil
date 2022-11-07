@@ -12,7 +12,7 @@ interface ExtendedAppProps extends AppProps {
 const MyApp = ({ Component, pageProps }: ExtendedAppProps) => (
   <ToastWrapper>
     <AuthProvider>
-      <Auth type={Component.auth}>
+      <Auth {...Component}>
         <Component {...pageProps} />
       </Auth>
     </AuthProvider>

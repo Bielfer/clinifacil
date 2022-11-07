@@ -7,9 +7,10 @@ import Spinner from './Spinner';
 interface Props {
   children: JSX.Element;
   type?: AuthType;
+  loggedInRedirect?: string;
 }
 
-const Auth = ({ children, type = 'allow' }: Props) => {
+const Auth = ({ children, type = 'allow', loggedInRedirect }: Props) => {
   const router = useRouter();
   const { loggedIn, loading } = useAuth();
 
@@ -20,6 +21,12 @@ const Auth = ({ children, type = 'allow' }: Props) => {
   if (!loggedIn && type === 'block') {
     if (loading) return <Spinner page size="xl" />;
     router.replace(paths.login);
+    return <Spinner page size="xl" />;
+  }
+
+  if (loggedIn && loggedInRedirect) {
+    router.replace(loggedInRedirect);
+
     return <Spinner page size="xl" />;
   }
 
