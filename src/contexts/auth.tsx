@@ -9,6 +9,7 @@ import {
   onAuthStateChanged,
   sendSignInLinkToEmail,
   signInAnonymously,
+  signInWithEmailAndPassword,
   signInWithEmailLink,
   signOut as signOutFirebase,
   updateProfile,
@@ -28,6 +29,7 @@ interface Context {
   userAuth?: User | null;
   sendEmailLink: (email: string, url?: string) => Promise<void>;
   signInEmailLink: () => Promise<void>;
+  signInEmailAndPassword: (email: string, password: string) => Promise<void>;
   signInAnonymous: (user: {
     displayName?: string;
     photoUrl?: string;
@@ -73,6 +75,24 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     [addToast]
   );
 
+  const signInEmailAndPassword = useCallback(
+    async (email: string, password: string) => {
+      const [token, error] = await tryCatch(
+        signInWithEmailAndPassword(auth, email, password)
+      );
+
+      if (error)
+        addToast({
+          type: 'error',
+          content: 'Seu email ou senha estão errados!',
+        });
+
+      setUserAuth(token?.user);
+    },
+
+    [addToast]
+  );
+
   const signInEmailLink = useCallback(async () => {
     if (!isSignInWithEmailLink(auth, window.location.href)) return;
 
@@ -114,7 +134,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
       setUserAuth(token.user);
     },
-    []
+    [addToast]
   );
 
   const linkAnonymousToEmailLink = useCallback(
@@ -155,6 +175,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       loggedIn: !!userAuth,
       loading: userAuth === undefined,
       signOut,
+      signInEmailAndPassword,
     }),
     [
       signInEmailLink,
@@ -162,6 +183,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       sendEmailLink,
       signInAnonymous,
       linkAnonymousToEmailLink,
+      signInEmailAndPassword,
     ]
   );
 
