@@ -87,7 +87,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
       return true;
     },
 
-    [addToast]
+    []
   );
 
   const signInEmailLink = useCallback(async () => {
