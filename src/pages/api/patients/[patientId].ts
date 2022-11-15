@@ -31,7 +31,7 @@ router
       res.status(400).json({ message: 'Failed to update patient', error });
     }
 
-    res.status(200).json({ message: 'Patient successfully created!', data });
+    res.status(200).json({ message: 'Patient successfully updated!', data });
   });
 
 export default router.handler({
