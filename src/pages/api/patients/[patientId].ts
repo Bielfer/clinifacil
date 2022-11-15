@@ -31,15 +31,6 @@ router
       res.status(400).json({ message: 'Failed to update patient', error });
     }
 
-    // const patientDoc = await data?.get();
-    // const patientData = patientDoc?.data();
-    // const patient = {
-    //   ...patientData,
-    //   id: patientDoc?.id,
-    //   updatedAt: patientData?.updatedAt.toDate(),
-    //   createdAt: patientDoc?.createTime?.toDate(),
-    // };
-
     res.status(200).json({ message: 'Patient successfully created!', data });
   });
 
