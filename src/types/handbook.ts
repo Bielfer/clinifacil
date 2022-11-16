@@ -13,14 +13,16 @@ const handbookFieldTypeSchema = z.enum([
   'date',
 ]);
 
-const handbookFieldSchema = z.object({
-  id: z.string(),
-  label: z.string(),
-  type: handbookFieldTypeSchema,
-  value: z.union([z.string(), z.boolean()]),
-  required: z.boolean().optional(),
-  options: handbookFieldOptionSchema.array().optional(),
-});
+const handbookFieldSchema = z
+  .object({
+    id: z.string(),
+    label: z.string(),
+    type: handbookFieldTypeSchema,
+    value: z.union([z.string(), z.boolean()]),
+    required: z.boolean().optional(),
+    options: handbookFieldOptionSchema.array().optional(),
+  })
+  .strict();
 
 export const handbookSchema = z
   .object({
