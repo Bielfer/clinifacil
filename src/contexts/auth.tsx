@@ -13,7 +13,6 @@ import {
   signInWithEmailLink,
   signOut as signOutFirebase,
   updateProfile,
-  User,
 } from 'firebase/auth';
 import {
   createContext,
@@ -24,9 +23,11 @@ import {
   useMemo,
   useState,
 } from 'react';
+import { UserAuth } from '@/types/user';
+import { Role } from '@/types/role';
 
 interface Context {
-  userAuth?: User | null;
+  userAuth?: UserAuth | null;
   sendEmailLink: (email: string, url?: string) => Promise<void>;
   signInEmailLink: () => Promise<void>;
   signInEmailAndPassword: (email: string, password: string) => Promise<boolean>;
@@ -44,11 +45,15 @@ const AuthContext = createContext({} as Context);
 
 const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { addToast } = useToast();
-  const [userAuth, setUserAuth] = useState<User | null>();
+  const [userAuth, setUserAuth] = useState<UserAuth | null>();
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUserAuth(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      const tokenResult = await currentUser?.getIdTokenResult();
+      const roles = (tokenResult?.claims?.roles as Role[]) ?? [];
+      const user = currentUser ? { ...currentUser, roles } : null;
+
+      setUserAuth(user as UserAuth);
     });
 
     return () => unsubscribe();
@@ -77,16 +82,19 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signInEmailAndPassword = useCallback(
     async (email: string, password: string) => {
-      const [token, error] = await tryCatch(
+      const [, error] = await tryCatch(
         signInWithEmailAndPassword(auth, email, password)
       );
 
       if (error) return false;
 
-      setUserAuth(token?.user);
+      const token = await auth.currentUser?.getIdTokenResult();
+      const roles = (token?.claims?.roles as Role[]) ?? [];
+      const user = auth.currentUser ? { ...auth.currentUser, roles } : null;
+
+      setUserAuth(user);
       return true;
     },
-
     []
   );
 
