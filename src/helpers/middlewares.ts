@@ -1,8 +1,11 @@
 /* eslint no-console:off */
+import { roles } from '@/constants/roles';
 import { adminAuth } from '@/services/firebase/admin';
 import { NextApiRequestExtended } from '@/types/api';
+import { Role } from '@/types/role';
 import { NextApiResponse } from 'next';
 import { NextHandler } from 'next-connect';
+import { isHigherInRoleHierarchy } from './roles';
 import tryCatch from './tryCatch';
 
 export const isAuthenticated = async (
@@ -53,6 +56,32 @@ export const validateBody =
       res.status(400).json({
         message: 'Invalid body',
         error: bodyValidation.error.format(),
+      });
+
+      return;
+    }
+
+    await next();
+  };
+
+export const authorizeHigherOrEqualRole =
+  (role: Role) =>
+  async (
+    req: NextApiRequestExtended,
+    res: NextApiResponse,
+    next: NextHandler
+  ) => {
+    const { token } = req;
+    const roleValues = Object.values(roles);
+    const highestRole =
+      roleValues.filter((roleValue) =>
+        token?.roles?.includes(roleValue)
+      )?.[0] ?? roleValues[roleValues.length - 1];
+
+    if (!isHigherInRoleHierarchy(highestRole, role)) {
+      res.status(400).json({
+        message: "You don't have permission to access this content!",
+        error: 'Invalid role',
       });
 
       return;
