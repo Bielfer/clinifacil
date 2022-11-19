@@ -27,12 +27,10 @@ router
     const [data, errorReceptionist] = await tryCatch(addReceptionist(body));
 
     if (errorReceptionist) {
-      res
-        .status(400)
-        .json({
-          message: 'Failed to create receptionist',
-          error: errorReceptionist,
-        });
+      res.status(400).json({
+        message: 'Failed to create receptionist',
+        error: errorReceptionist,
+      });
     }
 
     const receptionistDoc = await data?.get();
@@ -40,7 +38,7 @@ router
     const receptionist = {
       ...receptionistData,
       id: receptionistDoc?.id,
-      updatedAt: receptionistData?.updatedAt.toDate(),
+      updatedAt: receptionistDoc?.updateTime?.toDate(),
       createdAt: receptionistDoc?.createTime?.toDate(),
     };
 

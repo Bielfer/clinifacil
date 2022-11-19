@@ -32,7 +32,7 @@ router
     const patient = {
       ...patientData,
       id: patientDoc?.id,
-      updatedAt: patientData?.updatedAt.toDate(),
+      updatedAt: patientDoc?.updateTime?.toDate(),
       createdAt: patientDoc?.createTime?.toDate(),
     };
 

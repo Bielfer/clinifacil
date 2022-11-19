@@ -32,16 +32,14 @@ router
     const appointment = {
       ...appointmentData,
       id: appointmentDoc?.id,
-      updatedAt: appointmentData?.updatedAt.toDate(),
+      updatedAt: appointmentDoc?.updateTime?.toDate(),
       createdAt: appointmentDoc?.createTime?.toDate(),
     };
 
-    res
-      .status(200)
-      .json({
-        message: 'Appointment successfully created!',
-        data: appointment,
-      });
+    res.status(200).json({
+      message: 'Appointment successfully created!',
+      data: appointment,
+    });
   });
 
 export default router.handler({
