@@ -53,7 +53,7 @@ router.use(isAuthenticated).get(async (req, res) => {
       ...doctorData,
       id: snapshot.id,
       updatedAt: snapshot.updateTime.toDate(),
-      createdAt: snapshot.updateTime.toDate(),
+      createdAt: snapshot.createTime.toDate(),
     } as Doctor);
   });
 
