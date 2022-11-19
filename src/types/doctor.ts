@@ -8,6 +8,9 @@ export const doctorSchema = z
     crm: z.string(),
     email: z.string().optional(),
     cellphone: z.string().optional(),
+    receptionists: z.record(z.boolean()).optional(),
+    createdAt: z.date().optional(),
+    updatedAt: z.date().optional(),
   })
   .strict();
 
