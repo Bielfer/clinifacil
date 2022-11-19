@@ -7,7 +7,7 @@ const Logo = () => (
     className="flex items-center gap-x-2 text-2xl text-primary-600 font-medium font-['Nunito']"
   >
     <span className="sr-only">Home</span>
-    ezClin
+    CliniFácil
   </Link>
 );
 
