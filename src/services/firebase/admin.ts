@@ -18,4 +18,6 @@ const adminAuth = admin.auth();
 
 const getServerTimestamp = () => admin.firestore.FieldValue.serverTimestamp();
 
-export { adminAuth, adminFirestore, admin, getServerTimestamp };
+const getDocumentId = () => admin.firestore.FieldPath.documentId();
+
+export { adminAuth, adminFirestore, admin, getServerTimestamp, getDocumentId };
