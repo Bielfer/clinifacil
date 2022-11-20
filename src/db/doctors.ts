@@ -12,3 +12,22 @@ export const getDoctorsById = (doctorIds: string[]) =>
     .collection('doctors')
     .where(getDocumentId(), 'in', doctorIds)
     .get();
+
+export const addHandbookToDoctor = (doctorId: string, handbookId: string) =>
+  adminFirestore.runTransaction(async (transaction) => {
+    const handbookRef = adminFirestore.collection('handbooks').doc(handbookId);
+    const handbookDoc = await transaction.get(handbookRef);
+
+    if (!handbookDoc.exists) {
+      throw new Error("Document doesn't exist!");
+    }
+
+    const handbook = handbookDoc.data();
+    const doctorHandbooksRef = adminFirestore
+      .collection('doctors')
+      .doc(doctorId)
+      .collection('handbooks')
+      .doc();
+
+    return transaction.create(doctorHandbooksRef, handbook);
+  });
