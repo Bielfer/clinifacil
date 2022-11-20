@@ -5,7 +5,10 @@ import { NextApiRequestExtended } from '@/types/api';
 import { Role } from '@/types/role';
 import { NextApiResponse } from 'next';
 import { NextHandler } from 'next-connect';
-import { isHigherInRoleHierarchy } from './roles';
+import {
+  isHigherInRoleHierarchy,
+  isHigherOrEqualInRoleHierarchy,
+} from './roles';
 import tryCatch from './tryCatch';
 
 export const isAuthenticated = async (
@@ -84,6 +87,32 @@ export const authorizeHigherOrEqualRole =
         error: 'Invalid role',
       });
 
+      return;
+    }
+
+    await next();
+  };
+
+export const isAuthorized =
+  (queryKey: string, allowedRole?: Role) =>
+  async (
+    req: NextApiRequestExtended,
+    res: NextApiResponse,
+    next: NextHandler
+  ) => {
+    const { token, query } = req;
+    const idToCompare = query?.[queryKey];
+    const roleValues = Object.values(roles);
+    const highestRole =
+      roleValues.filter((roleValue) =>
+        token?.roles?.includes(roleValue)
+      )?.[0] ?? roleValues[roleValues.length - 1];
+
+    if (
+      idToCompare !== token?.uid &&
+      !isHigherOrEqualInRoleHierarchy(highestRole, allowedRole ?? roles.master)
+    ) {
+      res.status(403).json({ message: "You don't have permission!" });
       return;
     }
 
