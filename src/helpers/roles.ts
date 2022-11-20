@@ -12,4 +12,13 @@ export const isHigherInRoleHierarchy = (role: Role, toCompare: Role) => {
   return false;
 };
 
-export const temp = [];
+export const isHigherOrEqualInRoleHierarchy = (role: Role, toCompare: Role) => {
+  const roleIndex = Object.values(roles).findIndex((item) => item === role);
+  const toCompareIndex = Object.values(roles).findIndex(
+    (item) => item === toCompare
+  );
+
+  if (roleIndex <= toCompareIndex) return true;
+
+  return false;
+};
