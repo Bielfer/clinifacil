@@ -20,6 +20,8 @@ export const appointmentSchema = z
     patientId: z.string(),
     patientName: z.string(),
     handbook: handbookSchema,
+    createdAt: z.date().optional(),
+    updatedAt: z.date().optional(),
   })
   .strict();
 
