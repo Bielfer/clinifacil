@@ -3,6 +3,7 @@ export const getCompleteDocumentData = <T>(
     | FirebaseFirestore.QueryDocumentSnapshot<FirebaseFirestore.DocumentData>
     | FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>
     | undefined
+    | null
 ): T => ({
   ...(snapshot?.data() as T),
   id: snapshot?.id,
