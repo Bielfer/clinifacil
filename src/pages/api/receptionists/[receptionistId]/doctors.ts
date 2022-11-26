@@ -2,6 +2,8 @@
 import { roles } from '@/constants/roles';
 import { getDoctorsById } from '@/db/doctors';
 import { getReceptionistById } from '@/db/receptionist';
+import { onErrorHandler, onNoMatchHandler } from '@/helpers/api';
+import { getCompleteDocumentData } from '@/helpers/firebase';
 import { isAuthenticated, requestTimer } from '@/helpers/middlewares';
 import tryCatch from '@/helpers/tryCatch';
 import { NextApiRequestExtended } from '@/types/api';
@@ -34,7 +36,7 @@ router.use(isAuthenticated).get(async (req, res) => {
       error: errorReceptionist,
     });
 
-  const receptionist = receptionistDoc?.data() as unknown as Receptionist;
+  const receptionist = getCompleteDocumentData<Receptionist>(receptionistDoc);
   const doctorIds = Object.keys(receptionist.doctors);
 
   const [snapshots, errorDoctors] = await tryCatch(getDoctorsById(doctorIds));
@@ -47,14 +49,7 @@ router.use(isAuthenticated).get(async (req, res) => {
   const doctors: Doctor[] = [];
 
   snapshots?.forEach((snapshot) => {
-    const doctorData = snapshot.data();
-
-    doctors.push({
-      ...doctorData,
-      id: snapshot.id,
-      updatedAt: snapshot.updateTime.toDate(),
-      createdAt: snapshot.createTime.toDate(),
-    } as Doctor);
+    doctors.push(getCompleteDocumentData(snapshot));
   });
 
   res.status(200).json({
@@ -64,11 +59,6 @@ router.use(isAuthenticated).get(async (req, res) => {
 });
 
 export default router.handler({
-  onError: (err, req, res) => {
-    console.error(err);
-    res.status(500).end('Server error!');
-  },
-  onNoMatch: (req, res) => {
-    res.status(405).json({ message: 'Invalid Request Method' });
-  },
+  onError: onErrorHandler,
+  onNoMatch: onNoMatchHandler,
 });

@@ -1,5 +1,6 @@
 /* eslint no-console:off */
 import { addAppointment, getAppointments } from '@/db/appointments';
+import { onErrorHandler, onNoMatchHandler } from '@/helpers/api';
 import { getCompleteDocumentData } from '@/helpers/firebase';
 import {
   isAuthenticated,
@@ -48,14 +49,7 @@ router
       res.status(400).json({ message: 'Failed to create appointment', error });
     }
 
-    const appointmentDoc = await data?.get();
-    const appointmentData = appointmentDoc?.data();
-    const appointment = {
-      ...appointmentData,
-      id: appointmentDoc?.id,
-      updatedAt: appointmentDoc?.updateTime?.toDate(),
-      createdAt: appointmentDoc?.createTime?.toDate(),
-    };
+    const appointment = getCompleteDocumentData(await data?.get());
 
     res.status(200).json({
       message: 'Appointment successfully created!',
@@ -64,11 +58,6 @@ router
   });
 
 export default router.handler({
-  onError: (err, req, res) => {
-    console.error(err);
-    res.status(500).end('Server error!');
-  },
-  onNoMatch: (req, res) => {
-    res.status(405).json({ message: 'Invalid Request Method' });
-  },
+  onError: onErrorHandler,
+  onNoMatch: onNoMatchHandler,
 });

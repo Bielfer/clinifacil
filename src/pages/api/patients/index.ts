@@ -1,5 +1,7 @@
 /* eslint no-console:off */
 import { addPatient } from '@/db/patients';
+import { onErrorHandler, onNoMatchHandler } from '@/helpers/api';
+import { getCompleteDocumentData } from '@/helpers/firebase';
 import {
   isAuthenticated,
   requestTimer,
@@ -27,14 +29,7 @@ router
       res.status(400).json({ message: 'Failed to create patient', error });
     }
 
-    const patientDoc = await data?.get();
-    const patientData = patientDoc?.data();
-    const patient = {
-      ...patientData,
-      id: patientDoc?.id,
-      updatedAt: patientDoc?.updateTime?.toDate(),
-      createdAt: patientDoc?.createTime?.toDate(),
-    };
+    const patient = getCompleteDocumentData(await data?.get());
 
     res
       .status(200)
@@ -42,11 +37,6 @@ router
   });
 
 export default router.handler({
-  onError: (err, req, res) => {
-    console.error(err);
-    res.status(500).end('Server error!');
-  },
-  onNoMatch: (req, res) => {
-    res.status(405).json({ message: 'Invalid Request Method' });
-  },
+  onError: onErrorHandler,
+  onNoMatch: onNoMatchHandler,
 });

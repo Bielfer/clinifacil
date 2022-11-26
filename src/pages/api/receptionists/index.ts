@@ -1,6 +1,8 @@
 /* eslint no-console:off */
 import { roles } from '@/constants/roles';
 import { addReceptionist } from '@/db/receptionist';
+import { onErrorHandler, onNoMatchHandler } from '@/helpers/api';
+import { getCompleteDocumentData } from '@/helpers/firebase';
 import {
   authorizeHigherOrEqualRole,
   isAuthenticated,
@@ -33,14 +35,7 @@ router
       });
     }
 
-    const receptionistDoc = await data?.get();
-    const receptionistData = receptionistDoc?.data();
-    const receptionist = {
-      ...receptionistData,
-      id: receptionistDoc?.id,
-      updatedAt: receptionistDoc?.updateTime?.toDate(),
-      createdAt: receptionistDoc?.createTime?.toDate(),
-    };
+    const receptionist = getCompleteDocumentData(await data?.get());
 
     res.status(200).json({
       message: 'Receptionist successfully created!',
@@ -49,11 +44,6 @@ router
   });
 
 export default router.handler({
-  onError: (err, req, res) => {
-    console.error(err);
-    res.status(500).end('Server error!');
-  },
-  onNoMatch: (req, res) => {
-    res.status(405).json({ message: 'Invalid Request Method' });
-  },
+  onError: onErrorHandler,
+  onNoMatch: onNoMatchHandler,
 });
