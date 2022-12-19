@@ -26,7 +26,7 @@ const handbookFieldSchema = z
 
 export const handbookSchema = z
   .object({
-    id: z.string(),
+    id: z.string().optional(),
     name: z.string(),
     fields: handbookFieldSchema.array(),
   })
