@@ -1,5 +1,5 @@
 /* eslint no-console:off */
-import { setHandbook } from '@/db/handbooks';
+import { addHandbook } from '@/db/handbooks';
 import {
   isAuthenticated,
   requestTimer,
@@ -21,7 +21,7 @@ router
   .post(async (req, res) => {
     const { body } = req;
 
-    const [data, error] = await tryCatch(setHandbook(body));
+    const [data, error] = await tryCatch(addHandbook(body));
 
     if (error) {
       res.status(400).json({ message: 'Failed to create handbook', error });

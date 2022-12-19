@@ -4,10 +4,10 @@ import { Handbook } from '@/types/handbook';
 export const getHandbookById = (handbookId: string) =>
   adminFirestore.collection('handbooks').doc(handbookId).get();
 
-export const setHandbook = (data: Handbook) => {
+export const addHandbook = (data: Handbook) => {
   const { id, ...dataWithoutId } = data;
 
-  return adminFirestore.collection('handbooks').doc(id).set(dataWithoutId);
+  return adminFirestore.collection('handbooks').add(dataWithoutId);
 };
 
 export const deleteHandbook = (handbookId: string) =>
