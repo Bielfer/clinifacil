@@ -31,3 +31,10 @@ export const addHandbookToDoctor = (doctorId: string, handbookId: string) =>
 
     return transaction.create(doctorHandbooksRef, handbook);
   });
+
+export const getDoctorHandbooks = (doctorId: string) =>
+  adminFirestore
+    .collection('doctors')
+    .doc(doctorId)
+    .collection('handbooks')
+    .get();
