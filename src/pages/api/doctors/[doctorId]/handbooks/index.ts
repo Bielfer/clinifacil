@@ -1,7 +1,7 @@
 /* eslint no-console:off */
 import {
   isAuthenticated,
-  isDocumentOwner,
+  queryParamMatchesUid,
   requestTimer,
 } from '@/helpers/middlewares';
 import { onErrorHandler, onNoMatchHandler } from '@/helpers/api';
@@ -19,7 +19,7 @@ const router = createRouter<NextApiRequestExtended, NextApiResponse>().use(
 
 router
   .use(isAuthenticated)
-  .use(isDocumentOwner('doctorId'))
+  .use(queryParamMatchesUid('doctorId'))
   .get(async (req, res) => {
     const { doctorId } = req.query;
     const [snapshots, error] = await tryCatch(

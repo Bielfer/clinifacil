@@ -93,7 +93,7 @@ export const authorizeHigherOrEqualRole =
     await next();
   };
 
-export const isDocumentOwner =
+export const queryParamMatchesUid =
   (queryKey: string, allowedRole?: Role) =>
   async (
     req: NextApiRequestExtended,
