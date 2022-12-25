@@ -3,7 +3,7 @@ import { roles } from '@/constants/roles';
 import { addHandbookToDoctor } from '@/db/doctors';
 import {
   isAuthenticated,
-  isAuthorized,
+  isDocumentOwner,
   requestTimer,
 } from '@/helpers/middlewares';
 import tryCatch from '@/helpers/tryCatch';
@@ -17,7 +17,7 @@ const router = createRouter<NextApiRequestExtended, NextApiResponse>().use(
 
 router
   .use(isAuthenticated)
-  .use(isAuthorized('doctorId', roles.master))
+  .use(isDocumentOwner('doctorId', roles.master))
   .put(async (req, res) => {
     const { doctorId, handbookId } = req.query;
 
