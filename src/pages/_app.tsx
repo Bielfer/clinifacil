@@ -5,6 +5,7 @@ import AuthProvider from '@/contexts/auth';
 import { Page } from '@/types/auth';
 import Auth from '@/components/core/Auth';
 import { SessionProvider } from 'next-auth/react';
+import { trpc } from '@/services/trpc';
 
 interface ExtendedAppProps extends AppProps {
   Component: Page;
@@ -25,4 +26,4 @@ const MyApp = ({ Component, pageProps }: ExtendedAppProps) => (
   </SessionProvider>
 );
 
-export default MyApp;
+export default trpc.withTRPC(MyApp);
