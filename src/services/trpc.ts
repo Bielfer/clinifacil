@@ -1,6 +1,7 @@
 /* eslint import/prefer-default-export:off */
 import { httpBatchLink } from '@trpc/client';
 import { createTRPCNext } from '@trpc/next';
+import SuperJSON from 'superjson';
 import type { AppRouter } from '../server/routers/_app';
 
 function getBaseUrl() {
@@ -22,6 +23,7 @@ export const trpc = createTRPCNext<AppRouter>({
           url: `${getBaseUrl()}/api/trpc`,
         }),
       ],
+      transformer: SuperJSON,
     };
   },
 
