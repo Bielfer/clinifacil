@@ -1,11 +1,13 @@
 import { z } from 'zod';
 
-export const receptionistSchema = z
-  .object({
-    id: z.string().optional(),
-    name: z.string(),
-    doctors: z.record(z.boolean()),
-  })
-  .strict();
+const receptionistDoctor = z.object({ id: z.number(), name: z.string() });
+
+export const receptionistSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  doctors: receptionistDoctor.array(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
 
 export type Receptionist = z.infer<typeof receptionistSchema>;

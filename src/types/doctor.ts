@@ -1,17 +1,17 @@
 import { z } from 'zod';
 
-export const doctorSchema = z
-  .object({
-    id: z.string().optional(),
-    name: z.string(),
-    cpf: z.string(),
-    crm: z.string(),
-    email: z.string().optional(),
-    cellphone: z.string().optional(),
-    receptionists: z.record(z.boolean()).optional(),
-    createdAt: z.date().optional(),
-    updatedAt: z.date().optional(),
-  })
-  .strict();
+const doctorReceptionist = z.object({ id: z.number(), name: z.string() });
+
+export const doctorSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  cpf: z.string(),
+  crm: z.string(),
+  email: z.string().optional(),
+  cellphone: z.string().optional(),
+  receptionists: doctorReceptionist.array().optional(),
+  createdAt: z.date(),
+  updatedAt: z.date(),
+});
 
 export type Doctor = z.infer<typeof doctorSchema>;
