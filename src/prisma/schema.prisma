@@ -47,6 +47,28 @@ model User {
   accounts      Account[]
   sessions      Session[]
   role          Role?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @default(now()) @updatedAt
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Patient {
+  id        Int       @id @default(autoincrement())
+  name      String
+  birthDate DateTime?
+  sex       Sex?
+  cpf       String?
+  email     String?
+  cellphone String?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 enum Role {
@@ -56,10 +78,7 @@ enum Role {
   RECEPTIONIST
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
+enum Sex {
+  Masculino
+  Feminino
 }
