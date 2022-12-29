@@ -9,7 +9,7 @@ import { authorizeHigherOrEqualRole } from '../middlewares';
 export const patientRouter = router({
   create: privateProcedure
     .use(authorizeHigherOrEqualRole(roles.receptionist))
-    .input(patientSchema.omit({ id: true }))
+    .input(patientSchema.omit({ id: true, createdAt: true, updatedAt: true }))
     .mutation(async ({ input }) => {
       const [patient, error] = await tryCatch(
         prisma.patient.create({
@@ -23,7 +23,7 @@ export const patientRouter = router({
     }),
   editById: privateProcedure
     .use(authorizeHigherOrEqualRole(roles.receptionist))
-    .input(patientSchema)
+    .input(patientSchema.omit({ createdAt: true, updatedAt: true }))
     .mutation(async ({ input }) => {
       const { id, ...inputWithoutId } = input;
 
