@@ -21,6 +21,23 @@ export const patientRouter = router({
 
       return patient;
     }),
+  editById: privateProcedure
+    .use(authorizeHigherOrEqualRole(roles.receptionist))
+    .input(patientSchema)
+    .mutation(async ({ input }) => {
+      const { id, ...inputWithoutId } = input;
+
+      const [patient, error] = await tryCatch(
+        prisma.patient.update({
+          where: { id },
+          data: inputWithoutId,
+        })
+      );
+
+      if (error) throw new TRPCError({ code: 'BAD_REQUEST' });
+
+      return patient;
+    }),
 });
 
 export type PatientRouter = typeof patientRouter;
