@@ -7,7 +7,7 @@ const allowedCreationRolesValues = Object.values(
 
 export const roleSchema = z
   .object({
-    uid: z.string(),
+    id: z.string(),
     role: z.enum(allowedCreationRolesValues),
   })
   .strict();

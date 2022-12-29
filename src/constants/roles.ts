@@ -1,8 +1,8 @@
 export const roles = {
-  master: 'master',
-  admin: 'admin',
-  doctor: 'doctor',
-  receptionist: 'receptionist',
+  master: 'MASTER',
+  admin: 'ADMIN',
+  doctor: 'DOCTOR',
+  receptionist: 'RECEPTIONIST',
 } as const;
 
 const { master, ...allowedCreationRoles } = roles;
