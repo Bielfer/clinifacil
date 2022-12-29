@@ -1,5 +1,5 @@
 {
-  "ignorePatterns": ["tailwind.config.js"],
+  "ignorePatterns": ["tailwind.config.js", "prettier.config.js"],
   "extends": [
     "airbnb",
     "airbnb-typescript",
