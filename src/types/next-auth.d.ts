@@ -1,10 +1,18 @@
 import { Session as NextAuthSession } from 'next-auth';
-import { User as MyUser } from './user';
 
 declare module 'next-auth' {
   interface Session extends NextAuthSession {
-    user: MyUser;
+    user: User;
   }
 
-  interface User extends MyUser {}
+  interface User {
+    id: string;
+    role?: Role | null;
+    name?: string | null;
+    email?: string | null;
+    image?: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+    emailVerified: Date | null;
+  }
 }
