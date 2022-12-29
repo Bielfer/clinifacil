@@ -1,6 +1,6 @@
 import { type inferAsyncReturnType } from '@trpc/server';
 import { type CreateNextContextOptions } from '@trpc/server/adapters/next';
-import { prisma } from '@/db';
+import { prisma } from '@/services/prisma';
 import { getServerAuthSession } from '@/helpers/trpc';
 import { ExtendedSession } from '@/types/auth';
 

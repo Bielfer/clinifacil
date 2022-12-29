@@ -1,5 +1,5 @@
 import { roles } from '@/constants/roles';
-import { prisma } from '@/db';
+import { prisma } from '@/services/prisma';
 import tryCatch from '@/helpers/tryCatch';
 import { privateProcedure, router } from '@/server/trpc';
 import { roleSchema } from '@/types/role';
