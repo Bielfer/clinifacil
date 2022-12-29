@@ -48,7 +48,7 @@ model User {
   sessions      Session[]
   role          Role?
   createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @default(now()) @updatedAt
+  updatedAt     DateTime  @updatedAt
 }
 
 model VerificationToken {
@@ -69,6 +69,26 @@ model Patient {
   cellphone String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model Doctor {
+  id           Int            @id @default(autoincrement())
+  name         String
+  cpf          String
+  crm          String
+  email        String?
+  cellphone    String?
+  receptionist Receptionist[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt()
+}
+
+model Receptionist {
+  id        Int      @id @default(autoincrement())
+  name      String
+  doctor    Doctor[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
 }
 
 enum Role {
