@@ -1,9 +1,9 @@
-import { prisma } from '@/db';
-import { ExtendedSession, ExtendedUser } from '@/types/auth';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import NextAuth from 'next-auth';
+import NextAuth, { Session, User } from 'next-auth';
 import EmailProvider from 'next-auth/providers/email';
 import { createTransport } from 'nodemailer';
+import { prisma } from '@/services/prisma';
+import { AdapterUser } from 'next-auth/adapters';
 
 function html(params: { url: string; host: string }) {
   const { url, host } = params;
@@ -94,15 +94,14 @@ export const authOptions = {
       session,
       user,
     }: {
-      session: ExtendedSession;
-      user: ExtendedUser;
+      session: Session;
+      user: User | AdapterUser;
     }) => {
-      const sessionCopy: ExtendedSession = {
+      const sessionCopy: Session = {
         ...session,
       };
 
-      sessionCopy.id = user.id;
-      sessionCopy.role = user.role;
+      sessionCopy.user = user;
 
       return sessionCopy;
     },
