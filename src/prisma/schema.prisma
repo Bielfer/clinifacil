@@ -112,7 +112,7 @@ model HandbookField {
   handbookId Int?
   required   Boolean               @default(false)
   options    HandbookFieldOption[]
-  value      Json
+  value      Json?
 
   @@index([handbookId])
 }

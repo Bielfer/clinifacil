@@ -17,11 +17,14 @@ const handbookFieldTypeSchema = z.enum(fieldTypesArray);
 const handbookFieldSchema = z.object({
   label: z.string(),
   type: handbookFieldTypeSchema,
-  value: z.union([z.string(), z.boolean(), z.date()]).transform((val) => {
-    if (val instanceof Date) return val.toString();
+  value: z
+    .union([z.string(), z.boolean(), z.date()])
+    .transform((val) => {
+      if (val instanceof Date) return val.toString();
 
-    return val;
-  }),
+      return val;
+    })
+    .optional(),
   required: z.boolean().optional(),
   options: handbookFieldOptionSchema.array().nonempty().optional(),
 });
