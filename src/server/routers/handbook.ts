@@ -1,9 +1,11 @@
+import { roles } from '@/constants/roles';
 import { fieldTypesArray } from '@/constants/types';
 import tryCatch from '@/helpers/tryCatch';
 import { router, privateProcedure } from '@/server/trpc';
 import { prisma } from '@/services/prisma';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { authorizeHigherOrEqualRole, isAuthorized } from '../middlewares';
 
 const handbookFieldOptionSchema = z.object({
   text: z.string(),
@@ -27,40 +29,48 @@ const handbookFieldSchema = z.object({
 export const handbookSchema = z.object({
   title: z.string(),
   fields: handbookFieldSchema.array().nonempty(),
+  doctorId: z.number().optional(),
 });
 
 export const handbookRouter = router({
-  create: privateProcedure.input(handbookSchema).mutation(async ({ input }) => {
-    const { title, fields } = input;
+  create: privateProcedure
+    .use(authorizeHigherOrEqualRole(roles.doctor))
+    .use(isAuthorized({ inputKey: 'doctorId' }))
+    .input(handbookSchema)
+    .mutation(async ({ input }) => {
+      const { title, fields, doctorId } = input;
 
-    const formattedFields = fields.map((field) => ({
-      ...field,
-      value: field.value,
-      options: {
-        create: field.options,
-      },
-    }));
-
-    const [handbook, error] = await tryCatch(
-      prisma.handbook.create({
-        data: {
-          title,
-          fields: {
-            create: formattedFields,
-          },
+      const formattedFields = fields.map((field) => ({
+        ...field,
+        value: field.value,
+        options: {
+          create: field.options,
         },
-        include: {
-          fields: {
-            include: {
-              options: true,
+      }));
+
+      const [handbook, error] = await tryCatch(
+        prisma.handbook.create({
+          data: {
+            title,
+            fields: {
+              create: formattedFields,
+            },
+            doctors: {
+              connect: doctorId ? [{ id: doctorId }] : [],
             },
           },
-        },
-      })
-    );
+          include: {
+            fields: {
+              include: {
+                options: true,
+              },
+            },
+          },
+        })
+      );
 
-    if (error) throw new TRPCError({ code: 'BAD_REQUEST' });
-    console.log(handbook);
-    return handbook;
-  }),
+      if (error) throw new TRPCError({ code: 'BAD_REQUEST' });
+
+      return handbook;
+    }),
 });
