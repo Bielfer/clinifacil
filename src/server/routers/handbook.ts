@@ -1,5 +1,5 @@
 import { roles } from '@/constants/roles';
-import { fieldTypesArray } from '@/constants/types';
+import { fieldTypesArray } from '@/constants/field-types';
 import tryCatch from '@/helpers/tryCatch';
 import { router, privateProcedure } from '@/server/trpc';
 import { prisma } from '@/services/prisma';
