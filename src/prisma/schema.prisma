@@ -82,6 +82,7 @@ model Doctor {
   email         String?
   cellphone     String?
   receptionists Receptionist[]
+  handbooks     Handbook[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt()
 }
@@ -98,6 +99,7 @@ model Handbook {
   id        Int             @id @default(autoincrement())
   title     String
   fields    HandbookField[]
+  doctors   Doctor[]
   createdAt DateTime        @default(now())
   updatedAt DateTime        @updatedAt()
 }
