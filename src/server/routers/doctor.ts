@@ -55,6 +55,62 @@ export const doctorRouter = router({
 
       return doctor;
     }),
+  handbooks: privateProcedure
+    .use(isAuthorized({ inputKey: 'doctorId' }))
+    .input(
+      z.object({
+        doctorId: z.number(),
+      })
+    )
+    .query(async ({ input }) => {
+      const { doctorId } = input;
+
+      const [handbooks, error] = await tryCatch(
+        prisma.handbook.findMany({
+          where: {
+            doctors: {
+              some: {
+                id: doctorId,
+              },
+            },
+          },
+        })
+      );
+
+      if (error) throw new TRPCError({ code: 'BAD_REQUEST' });
+
+      return handbooks;
+    }),
+  putHandbook: privateProcedure
+    .use(isAuthorized({ inputKey: 'doctorId' }))
+    .input(
+      z.object({
+        doctorId: z.number(),
+        handbookId: z.number(),
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { doctorId, handbookId } = input;
+
+      const [doctor, error] = await tryCatch(
+        prisma.doctor.update({
+          where: {
+            id: doctorId,
+          },
+          data: {
+            handbooks: {
+              connect: {
+                id: handbookId,
+              },
+            },
+          },
+        })
+      );
+
+      if (error) throw new TRPCError({ code: 'BAD_REQUEST' });
+
+      return doctor;
+    }),
 });
 
 export type DoctorRouter = typeof doctorRouter;
