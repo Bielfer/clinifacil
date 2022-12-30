@@ -94,6 +94,37 @@ model Receptionist {
   updatedAt DateTime @updatedAt()
 }
 
+model Handbook {
+  id        Int             @id @default(autoincrement())
+  title     String
+  fields    HandbookField[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt()
+}
+
+model HandbookField {
+  id         Int                   @id @default(autoincrement())
+  label      String
+  type       HandbookFieldType
+  handbook   Handbook?             @relation(fields: [handbookId], references: [id])
+  handbookId Int?
+  required   Boolean               @default(false)
+  options    HandbookFieldOption[]
+  value      Json
+
+  @@index([handbookId])
+}
+
+model HandbookFieldOption {
+  id              Int            @id @default(autoincrement())
+  text            String
+  value           String
+  handbookField   HandbookField? @relation(fields: [handbookFieldId], references: [id])
+  handbookFieldId Int?
+
+  @@index([handbookFieldId])
+}
+
 enum Role {
   MASTER
   ADMIN
@@ -104,4 +135,12 @@ enum Role {
 enum Sex {
   Masculino
   Feminino
+}
+
+enum HandbookFieldType {
+  TEXT
+  AUTOCOMPLETE
+  CHECK
+  TEXTAREA
+  DATE
 }
