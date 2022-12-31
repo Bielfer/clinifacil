@@ -61,15 +61,16 @@ model VerificationToken {
 }
 
 model Patient {
-  id        Int       @id @default(autoincrement())
-  name      String
-  birthDate DateTime?
-  sex       Sex?
-  cpf       String?   @unique
-  email     String?
-  cellphone String?
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id           Int           @id @default(autoincrement())
+  name         String
+  birthDate    DateTime?
+  sex          Sex?
+  cpf          String?       @unique
+  email        String?
+  cellphone    String?
+  appointments Appointment[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 
   @@fulltext([name, cpf])
 }
@@ -83,6 +84,7 @@ model Doctor {
   cellphone     String?
   receptionists Receptionist[]
   handbooks     Handbook[]
+  appointments  Appointment[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt()
 }
@@ -96,12 +98,13 @@ model Receptionist {
 }
 
 model Handbook {
-  id        Int             @id @default(autoincrement())
-  title     String
-  fields    HandbookField[]
-  doctors   Doctor[]
-  createdAt DateTime        @default(now())
-  updatedAt DateTime        @updatedAt()
+  id          Int             @id @default(autoincrement())
+  title       String
+  fields      HandbookField[]
+  doctors     Doctor[]
+  appointment Appointment?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt()
 }
 
 model HandbookField {
@@ -127,6 +130,22 @@ model HandbookFieldOption {
   @@index([handbookFieldId])
 }
 
+model Appointment {
+  id         Int               @id @default(autoincrement())
+  status     AppointmentStatus @default(OPEN)
+  patient    Patient           @relation(fields: [patientId], references: [id])
+  patientId  Int
+  doctor     Doctor            @relation(fields: [doctorId], references: [id])
+  doctorId   Int
+  handbook   Handbook?         @relation(fields: [handbookId], references: [id])
+  handbookId Int?              @unique
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt()
+
+  @@index([patientId])
+  @@index([doctorId])
+}
+
 enum Role {
   MASTER
   ADMIN
@@ -145,4 +164,10 @@ enum HandbookFieldType {
   CHECK
   TEXTAREA
   DATE
+}
+
+enum AppointmentStatus {
+  OPEN
+  FINISHED
+  CLOSED
 }

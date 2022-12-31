@@ -14,22 +14,24 @@ const handbookFieldOptionSchema = z.object({
 
 const handbookFieldTypeSchema = z.enum(fieldTypesArray);
 
-const handbookFieldSchema = z.object({
+const fieldValue = z
+  .union([z.string(), z.boolean(), z.date()])
+  .transform((val) => {
+    if (val instanceof Date) return val.toString();
+
+    return val;
+  })
+  .optional();
+
+export const handbookFieldSchema = z.object({
   label: z.string(),
   type: handbookFieldTypeSchema,
-  value: z
-    .union([z.string(), z.boolean(), z.date()])
-    .transform((val) => {
-      if (val instanceof Date) return val.toString();
-
-      return val;
-    })
-    .optional(),
+  value: fieldValue,
   required: z.boolean().optional(),
   options: handbookFieldOptionSchema.array().nonempty().optional(),
 });
 
-export const handbookSchema = z.object({
+const handbookSchema = z.object({
   title: z.string(),
   fields: handbookFieldSchema.array().nonempty(),
   doctorId: z.number().optional(),
