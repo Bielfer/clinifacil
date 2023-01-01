@@ -1,6 +1,6 @@
-import { NextComponentType, NextPageContext } from 'next';
+import type { NextPage } from 'next';
 
-export type Page = NextComponentType<NextPageContext> & {
+export type Page<P = {}, IP = P> = NextPage<P, IP> & {
   auth?: AuthType;
   loggedInRedirect?: string;
 };
