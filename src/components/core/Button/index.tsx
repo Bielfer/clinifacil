@@ -3,16 +3,12 @@ import Spinner from '@/components/core/Spinner';
 import clsx from 'clsx';
 import { IconType } from '@/types/core';
 
-export type Size = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
-
-export type Variant = 'primary' | 'secondary' | 'white';
-
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   type?: 'submit' | 'button';
   iconLeft?: IconType;
   iconRight?: IconType;
-  variant?: Variant;
-  size?: Size;
+  variant?: keyof typeof variantStyles;
+  size?: keyof typeof buttonSizes;
   loading?: boolean;
 }
 
@@ -23,9 +19,13 @@ export const variantStyles = {
     'border border-transparent text-primary-700 bg-primary-100 hover:bg-primary-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500',
   white:
     'border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500',
+  'link-primary':
+    'rounded-lg py-1 px-2 text-primary-700 hover:bg-primary-100 hover:text-primary-900',
+  'link-secondary':
+    'rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900',
 };
 
-export const sizes = {
+export const buttonSizes = {
   xs: 'px-2.5 py-1.5 text-xs',
   sm: 'px-3 py-2 text-sm',
   md: 'px-4 py-2 text-sm',
@@ -43,31 +43,36 @@ const Button = ({
   size = 'md',
   loading,
   ...props
-}: ButtonProps) => (
-  <button
-    type={type === 'submit' ? 'submit' : 'button'}
-    className={clsx(
-      'inline-flex items-center font-medium rounded-lg shadow-sm',
-      variantStyles[variant],
-      sizes[size],
-      className
-    )}
-    {...props}
-  >
-    {loading ? (
-      <Spinner size="sm" color="white" />
-    ) : (
-      <>
-        {IconLeft && (
-          <IconLeft className="-ml-0.5 mr-2 h-5 w-5 flex-shrink-0" />
-        )}
-        {children}
-        {IconRight && (
-          <IconRight className="ml-2 -mr-0.5 h-5 w-5 flex-shrink-0" />
-        )}
-      </>
-    )}
-  </button>
-);
+}: ButtonProps) => {
+  const buttonStyles = !variant.includes('link') ? 'rounded-lg shadow-sm' : '';
+
+  return (
+    <button
+      type={type === 'submit' ? 'submit' : 'button'}
+      className={clsx(
+        'inline-flex items-center font-medium transition duration-200',
+        buttonStyles,
+        variantStyles[variant],
+        buttonSizes[size],
+        className
+      )}
+      {...props}
+    >
+      {loading ? (
+        <Spinner size="sm" color="white" />
+      ) : (
+        <>
+          {IconLeft && (
+            <IconLeft className="-ml-0.5 mr-2 h-5 w-5 flex-shrink-0" />
+          )}
+          {children}
+          {IconRight && (
+            <IconRight className="ml-2 -mr-0.5 h-5 w-5 flex-shrink-0" />
+          )}
+        </>
+      )}
+    </button>
+  );
+};
 
 export default Button;

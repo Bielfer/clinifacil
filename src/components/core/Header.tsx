@@ -2,10 +2,9 @@ import { Fragment } from 'react';
 import { Popover, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 import Logo from '@/components/core/Logo';
-import ButtonLink from '@/components/core/ButtonLink';
+import MyLink from '@/components/core/MyLink';
 import Container from '@/components/core/Container';
 import paths from '@/constants/paths';
-import MyLink from './MyLink';
 
 const links = [
   {
@@ -103,7 +102,7 @@ const Header = () => (
             <Logo />
           </li>
           {links.map((link) => (
-            <li key={link.route} className="first:ml-12 ml-6 hidden md:block">
+            <li key={link.route} className="ml-6 hidden first:ml-12 md:block">
               <MyLink href={link.route} variant="secondary">
                 {link.text}
               </MyLink>
@@ -111,9 +110,9 @@ const Header = () => (
           ))}
 
           <li className="ml-auto hidden md:block">
-            <ButtonLink href={paths.login} variant="secondary">
+            <MyLink href={paths.login} variant="button-secondary">
               Fazer Login
-            </ButtonLink>
+            </MyLink>
           </li>
           <li className="ml-auto -mr-1 md:hidden">
             <MobileNavigation />

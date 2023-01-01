@@ -1,11 +1,11 @@
-import ButtonLink from '@/components/core/ButtonLink';
+import MyLink from '@/components/core/MyLink';
 import Container from '@/components/core/Container';
 import paths from '@/constants/paths';
 import { GiftIcon } from '@heroicons/react/24/solid';
 
 const Hero = () => (
   <Container className="pt-20 pb-16 text-center lg:pt-32">
-    <h1 className="mx-auto max-w-4xl font-display text-5xl font-medium tracking-tight text-slate-900 sm:text-7xl">
+    <h1 className="font-display mx-auto max-w-4xl text-5xl font-medium tracking-tight text-slate-900 sm:text-7xl">
       Presentear seus amigos nunca foi{' '}
       <span className="relative whitespace-nowrap text-primary-600">
         <svg
@@ -24,11 +24,11 @@ const Hero = () => (
       você consegue lembrar seus amigos de todas as suas memórias juntos.
     </p>
     <div className="mt-10 flex justify-center space-x-6">
-      <ButtonLink href={paths.home} variant="primary" iconLeft={GiftIcon}>
+      <MyLink href={paths.home} variant="button-primary" iconLeft={GiftIcon}>
         Crie o seu Presentin
-      </ButtonLink>
+      </MyLink>
     </div>
-    <p className="mx-auto mt-6 max-w-2xl tracking-tight text-sm text-slate-900">
+    <p className="mx-auto mt-6 max-w-2xl text-sm tracking-tight text-slate-900">
       Você paga apenas na hora de enviar o seu Presentin
     </p>
   </Container>
