@@ -5,41 +5,40 @@ import Text from '@/components/core/Text';
 import FormikInput from '@/components/forms/FormikInput';
 import Button from '@/components/core/Button';
 import validations from '@/constants/validations';
-import { useAuth } from '@/contexts/auth';
-import { useRouter } from 'next/router';
-import paths from '@/constants/paths';
+import axios from 'axios';
+import { useState } from 'react';
 import { useToast } from '../core/Toast';
 
 interface Props {
   title?: string;
+  csrfToken?: string;
 }
 
-const FormLogin = ({ title }: Props) => {
-  const router = useRouter();
+const FormLogin = ({ title, csrfToken }: Props) => {
   const { addToast } = useToast();
-  const { signInEmailAndPassword } = useAuth();
+  const [emailSent, setEmailSent] = useState(false);
 
   const initialValues = {
     email: '',
-    password: '',
+    csrfToken,
   };
 
   const validationSchema = Yup.object({
     email: Yup.string().email(validations.email).required(validations.required),
-    password: Yup.string()
-      .min(6, validations.minCharacters(6))
-      .required(validations.required),
   });
 
-  const handleSubmit = async ({ email, password }: typeof initialValues) => {
-    const loggedInSuccessfully = await signInEmailAndPassword(email, password);
+  const handleSubmit = async (values: typeof initialValues) => {
+    const res = await axios.post('/api/auth/signin/email', values);
 
-    if (!loggedInSuccessfully) {
-      addToast({ type: 'error', content: 'Seu email ou senha estão errados!' });
+    if (res.status !== 200) {
+      addToast({
+        type: 'error',
+        content: 'Verifique se o seu email está correto!',
+      });
       return;
     }
 
-    router.push(paths.records);
+    setEmailSent(true);
   };
 
   return (
@@ -49,27 +48,39 @@ const FormLogin = ({ title }: Props) => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        <Form>
-          <Text h3 className="mb-4">
-            {title || 'Faça seu Login'}
-          </Text>
-          <FormikInput
-            name="email"
-            label="Email"
-            placeholder="Ex: meuemail@provedor.com"
-          />
-          <FormikInput
-            name="password"
-            label="Senha"
-            placeholder="Ex: minhasenha123"
-            password
-          />
-          <div className="flex justify-end mt-4">
-            <Button type="submit" variant="primary">
-              Entrar
-            </Button>
-          </div>
-        </Form>
+        {({ values, isSubmitting }) =>
+          !emailSent ? (
+            <Form>
+              <Text h3 className="mb-4">
+                {title || 'Faça seu Login'}
+              </Text>
+              <FormikInput
+                name="email"
+                label="Email"
+                placeholder="Ex: meuemail@provedor.com"
+              />
+              <div className="mt-4 flex justify-end">
+                <Button type="submit" variant="primary" loading={isSubmitting}>
+                  Entrar
+                </Button>
+              </div>
+            </Form>
+          ) : (
+            <>
+              <Text h4 className="mb-4">
+                Acabamos de enviar um link para seu email!
+              </Text>
+              <div className="flex justify-center">
+                <Button
+                  variant="link-primary"
+                  onClick={() => handleSubmit(values)}
+                >
+                  Clique aqui para enviar outro link!
+                </Button>
+              </div>
+            </>
+          )
+        }
       </Formik>
     </Card>
   );

@@ -1,5 +1,4 @@
-import { sidebarPaths } from '@/constants/paths';
-import { useAuth } from '@/contexts/auth';
+import paths, { sidebarPaths } from '@/constants/paths';
 import { Dialog, Transition } from '@headlessui/react';
 import {
   ArrowLeftOnRectangleIcon,
@@ -7,6 +6,7 @@ import {
   XMarkIcon,
 } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
+import { signOut } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { Fragment, ReactNode, useState } from 'react';
 import Logo from '../Logo';
@@ -21,7 +21,6 @@ interface Props {
 
 const Sidebar = ({ children, className }: Props) => {
   const router = useRouter();
-  const { signOut } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -93,7 +92,10 @@ const Sidebar = ({ children, className }: Props) => {
                   </nav>
                 </div>
                 <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
-                  <MyLink href="/" onClick={() => signOut()}>
+                  <MyLink
+                    href={paths.login}
+                    onClick={() => signOut({ callbackUrl: paths.login })}
+                  >
                     <Text iconLeft={ArrowLeftOnRectangleIcon}>Sair</Text>
                   </MyLink>
                 </div>
@@ -121,14 +123,17 @@ const Sidebar = ({ children, className }: Props) => {
             </nav>
           </div>
           <div className="flex flex-shrink-0 border-t border-gray-200 p-4">
-            <MyLink href="/" onClick={() => signOut()}>
+            <MyLink
+              href={paths.login}
+              onClick={() => signOut({ callbackUrl: paths.login })}
+            >
               <Text iconLeft={ArrowLeftOnRectangleIcon}>Sair</Text>
             </MyLink>
           </div>
         </div>
       </div>
-      <div className="flex flex-grow flex-col md:pl-64 h-full">
-        <div className="sticky top-0 z-10 bg-white pl-1 pt-1 sm:pl-3 sm:pt-3 md:hidden shadow">
+      <div className="flex h-full flex-grow flex-col md:pl-64">
+        <div className="sticky top-0 z-10 bg-white pl-1 pt-1 shadow sm:pl-3 sm:pt-3 md:hidden">
           <button
             type="button"
             className="-ml-0.5 -mt-0.5 inline-flex h-12 w-12 items-center justify-center rounded-md text-gray-500 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"

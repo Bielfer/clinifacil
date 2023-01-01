@@ -106,6 +106,9 @@ export const authOptions = {
       return sessionCopy;
     },
   },
+  pages: {
+    signIn: '/login',
+  },
 };
 
 export default NextAuth(authOptions);
