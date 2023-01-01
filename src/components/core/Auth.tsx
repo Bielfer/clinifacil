@@ -1,6 +1,6 @@
 import paths from '@/constants/paths';
-import { useAuth } from '@/contexts/auth';
 import { AuthType } from '@/types/auth';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import Spinner from './Spinner';
 
@@ -12,19 +12,21 @@ interface Props {
 
 const Auth = ({ children, type = 'allow', loggedInRedirect }: Props) => {
   const router = useRouter();
-  const { loggedIn, loading } = useAuth();
+  const { status } = useSession();
+  const isLoading = status === 'loading';
+  const isLoggedIn = status === 'authenticated';
 
-  if (loading && type === 'wait') {
+  if (isLoading && type === 'wait') {
     return <Spinner page size="xl" />;
   }
 
-  if (!loggedIn && type === 'block') {
-    if (loading) return <Spinner page size="xl" />;
+  if (!isLoggedIn && type === 'block') {
+    if (isLoading) return <Spinner page size="xl" />;
     router.replace(paths.login);
     return <Spinner page size="xl" />;
   }
 
-  if (loggedIn && loggedInRedirect) {
+  if (isLoggedIn && loggedInRedirect) {
     router.replace(loggedInRedirect);
 
     return <Spinner page size="xl" />;
