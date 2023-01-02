@@ -6,9 +6,7 @@ import { prisma } from '@/services/prisma';
 import { AdapterUser } from 'next-auth/adapters';
 
 function html(params: { url: string; host: string }) {
-  const { url, host } = params;
-
-  const escapedHost = host.replace(/\./g, '&#8203;.');
+  const { url } = params;
 
   const brandColor = '#0d9488';
   const color = {
@@ -27,7 +25,7 @@ function html(params: { url: string; host: string }) {
     <tr>
       <td align="center"
         style="padding: 10px 0px; font-size: 22px; font-family: Helvetica, Arial, sans-serif; color: ${color.text};">
-        Faça seu login em: <strong>${escapedHost}</strong>
+        Para fazer seu login basta clicar no botão abaixo
       </td>
     </tr>
     <tr>
@@ -52,10 +50,6 @@ function html(params: { url: string; host: string }) {
 `;
 }
 
-function text({ url, host }: { url: string; host: string }) {
-  return `Faça seu login em ${host}\n${url}\n\n`;
-}
-
 async function sendVerificationRequest({
   identifier,
   url,
@@ -70,8 +64,8 @@ async function sendVerificationRequest({
   const result = await transport.sendMail({
     to: identifier,
     from: provider.from,
-    subject: `Faça seu login em: ${host}`,
-    text: text({ url, host }),
+    subject: 'CliniFácil | Faça seu login',
+    text: 'CliniFácil | Faça seu login',
     html: html({ url, host }),
   });
   const failed = result.rejected.concat(result.pending).filter(Boolean);
