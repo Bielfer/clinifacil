@@ -5,6 +5,7 @@ import TableData from './TableData';
 import TableHead from './TableHead';
 import TableHeader from './TableHeader';
 import TableRow from './TableRow';
+import TableSkeleton from './TableSkeleton';
 
 interface TableType {
   Head: typeof TableHead;
@@ -12,6 +13,7 @@ interface TableType {
   Body: typeof TableBody;
   Row: typeof TableRow;
   Data: typeof TableData;
+  Skeleton: typeof TableSkeleton;
 }
 
 interface Props {
@@ -38,5 +40,6 @@ Table.Header = TableHeader;
 Table.Body = TableBody;
 Table.Row = TableRow;
 Table.Data = TableData;
+Table.Skeleton = TableSkeleton;
 
 export default Table;
