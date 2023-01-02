@@ -1,12 +1,14 @@
 import { Menu, Transition } from '@headlessui/react';
-import { Dispatch, Fragment, SetStateAction } from 'react';
+import { Fragment } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
 
+type ValueType = string | number;
+
 interface Props {
-  value: string;
-  setValue: Dispatch<SetStateAction<string>>;
-  data: Array<{ value: string; text: string }>;
+  value: ValueType;
+  setValue: (value: any) => void;
+  data: Array<{ value: ValueType; text: string }>;
   className?: string;
   classNameItemsContainer?: string;
 }
@@ -21,7 +23,7 @@ const Dropdown = ({
   <div className={className}>
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="inline-flex w-full justify-center rounded-md border border-slate-300 shadow-sm bg-opacity-20 px-4 py-2 text-sm font-medium hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus:ring-primary-600 focus:border-primary-600">
+        <Menu.Button className="inline-flex w-full justify-center rounded-md border border-slate-300 bg-opacity-20 px-4 py-2 text-sm font-medium shadow-sm hover:bg-opacity-30 focus:border-primary-600 focus:outline-none focus:ring-primary-600 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
           {data.find((item) => item.value === value)?.text ?? 'Selecione'}
           <ChevronDownIcon
             className="ml-2 -mr-1 h-5 w-5 text-violet-200 hover:text-violet-100"
