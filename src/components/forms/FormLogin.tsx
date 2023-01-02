@@ -1,5 +1,4 @@
 import { Formik, Form } from 'formik';
-import * as Yup from 'yup';
 import Card from '@/components/core/Card';
 import Text from '@/components/core/Text';
 import FormikInput from '@/components/forms/FormikInput';
@@ -7,6 +6,8 @@ import Button from '@/components/core/Button';
 import validations from '@/constants/validations';
 import axios from 'axios';
 import { useState } from 'react';
+import { z } from 'zod';
+import zodValidator from '@/helpers/zod-validator';
 import { useToast } from '../core/Toast';
 
 interface Props {
@@ -23,9 +24,13 @@ const FormLogin = ({ title, csrfToken }: Props) => {
     csrfToken,
   };
 
-  const validationSchema = Yup.object({
-    email: Yup.string().email(validations.email).required(validations.required),
-  });
+  const validate = zodValidator(
+    z.object({
+      email: z
+        .string({ required_error: validations.required })
+        .email({ message: validations.email }),
+    })
+  );
 
   const handleSubmit = async (values: typeof initialValues) => {
     const res = await axios.post('/api/auth/signin/email', values);
@@ -45,7 +50,7 @@ const FormLogin = ({ title, csrfToken }: Props) => {
     <Card shadow className="w-5/6 max-w-sm p-6">
       <Formik
         initialValues={initialValues}
-        validationSchema={validationSchema}
+        validate={validate}
         onSubmit={handleSubmit}
       >
         {({ values, isSubmitting }) =>
