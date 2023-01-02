@@ -1,20 +1,23 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import { Form, Formik } from 'formik';
-import * as Yup from 'yup';
 import userEvent from '@testing-library/user-event';
+import { z } from 'zod';
+import zodValidator from '@/helpers/zod-validator';
 import FormikInput from '.';
 
 describe('FormikInput', () => {
   const handleSubmit = jest.fn();
 
-  const validationSchema = Yup.object({
-    test: Yup.string().required('required'),
-  });
+  const validate = zodValidator(
+    z.object({
+      test: z.string({ required_error: 'required' }),
+    })
+  );
 
   const Input = (
     <Formik
       initialValues={{ test: '' }}
-      validationSchema={validationSchema}
+      validate={validate}
       onSubmit={handleSubmit}
     >
       <FormikInput label="test" name="test" />
@@ -25,7 +28,7 @@ describe('FormikInput', () => {
     <Formik
       onSubmit={handleSubmit}
       initialValues={{ test: '' }}
-      validationSchema={validationSchema}
+      validate={validate}
     >
       {({ submitForm }) => (
         <Form>
@@ -46,7 +49,7 @@ describe('FormikInput', () => {
   const InputWithFormatter = (
     <Formik
       initialValues={{ test: '' }}
-      validationSchema={validationSchema}
+      validate={validate}
       onSubmit={handleSubmit}
     >
       <FormikInput label="test" name="test" formatter="___.___.___-__" />

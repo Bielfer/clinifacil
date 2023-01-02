@@ -3,7 +3,7 @@
 exports[`Link matches snapshot 1`] = `
 <DocumentFragment>
   <a
-    class="cursor-pointer"
+    class="inline-flex items-center font-medium transition duration-200 px-4 py-2 text-sm"
     href="/"
   >
     Test
