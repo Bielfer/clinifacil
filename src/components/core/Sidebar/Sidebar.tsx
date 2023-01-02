@@ -1,4 +1,5 @@
-import paths, { sidebarPaths } from '@/constants/paths';
+import paths from '@/constants/paths';
+import { IconType } from '@/types/core';
 import { Dialog, Transition } from '@headlessui/react';
 import {
   ArrowLeftOnRectangleIcon,
@@ -17,9 +18,10 @@ import SidebarItem from './SidebarItem';
 interface Props {
   children: ReactNode;
   className?: string;
+  items: readonly { text: string; href: string; icon: IconType }[];
 }
 
-const Sidebar = ({ children, className }: Props) => {
+const Sidebar = ({ children, className, items }: Props) => {
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -82,7 +84,7 @@ const Sidebar = ({ children, className }: Props) => {
                     <Logo />
                   </div>
                   <nav className="mt-5 space-y-1 px-2">
-                    {sidebarPaths.map((item) => (
+                    {items.map((item) => (
                       <SidebarItem
                         key={item.text}
                         item={item}
@@ -113,7 +115,7 @@ const Sidebar = ({ children, className }: Props) => {
               <Logo />
             </div>
             <nav className="mt-5 flex-1 space-y-1 bg-white px-2">
-              {sidebarPaths.map((item) => (
+              {items.map((item) => (
                 <SidebarItem
                   key={item.text}
                   item={item}
@@ -143,7 +145,7 @@ const Sidebar = ({ children, className }: Props) => {
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-        <main className={clsx('flex-1 bg-gray-100', className)}>
+        <main className={clsx('flex-1 bg-gray-100 p-4 md:p-6', className)}>
           {children}
         </main>
       </div>
