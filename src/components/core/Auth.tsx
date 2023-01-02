@@ -15,13 +15,13 @@ const Auth = ({ children, type = 'allow', loggedInRedirect }: Props) => {
   const { status } = useSession();
   const isLoading = status === 'loading';
   const isLoggedIn = status === 'authenticated';
+  const isUnauthenticated = status === 'unauthenticated';
 
-  if (isLoading && type === 'wait') {
+  if (isLoading && (type === 'wait' || type === 'block')) {
     return <Spinner page size="xl" />;
   }
 
-  if (!isLoggedIn && type === 'block') {
-    if (isLoading) return <Spinner page size="xl" />;
+  if (isUnauthenticated && type === 'block') {
     router.replace(paths.login);
     return <Spinner page size="xl" />;
   }
