@@ -4,24 +4,22 @@ import Text from '@/components/core/Text';
 import FormikInput from '@/components/forms/FormikInput';
 import Button from '@/components/core/Button';
 import validations from '@/constants/validations';
-import axios from 'axios';
 import { useState } from 'react';
 import { z } from 'zod';
 import zodValidator from '@/helpers/zod-validator';
+import { signIn } from 'next-auth/react';
 import { useToast } from '../core/Toast';
 
 interface Props {
   title?: string;
-  csrfToken?: string;
 }
 
-const FormLogin = ({ title, csrfToken }: Props) => {
+const FormLogin = ({ title }: Props) => {
   const { addToast } = useToast();
   const [emailSent, setEmailSent] = useState(false);
 
   const initialValues = {
     email: '',
-    csrfToken,
   };
 
   const validate = zodValidator(
@@ -32,10 +30,13 @@ const FormLogin = ({ title, csrfToken }: Props) => {
     })
   );
 
-  const handleSubmit = async (values: typeof initialValues) => {
-    const res = await axios.post('/api/auth/signin/email', values);
+  const handleSubmit = async ({ email }: typeof initialValues) => {
+    const res = await signIn('email', {
+      redirect: false,
+      email,
+    });
 
-    if (res.status !== 200) {
+    if (res?.error) {
       addToast({
         type: 'error',
         content: 'Verifique se o seu email está correto!',
