@@ -112,7 +112,7 @@ const Queue: Page = () => {
                           href={paths.patientsById(
                             appointment.patient.id.toString()
                           )}
-                          variant="button-secondary"
+                          variant="primary"
                         >
                           Consultar Paciente
                         </MyLink>
