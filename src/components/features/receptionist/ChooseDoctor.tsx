@@ -24,7 +24,7 @@ const ChooseDoctor = () => {
           value: doctor.id,
         })) ?? []
       }
-      setValue={setSelectedDoctorId}
+      setValue={(value) => setSelectedDoctorId(value)}
       value={selectedDoctorId ?? 0}
       defaultText="Médicos"
     />
