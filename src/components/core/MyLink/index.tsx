@@ -43,7 +43,7 @@ const MyLink: FC<Props> = ({
       href={href || ''}
       passHref
       className={clsx(
-        'inline-flex items-center font-medium transition duration-200',
+        'inline-flex items-center whitespace-nowrap font-medium transition duration-200',
         linkStyles,
         variants[variant],
         buttonSizes[size],
