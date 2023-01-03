@@ -7,6 +7,22 @@ import { z } from 'zod';
 import { authorizeHigherOrEqualRole, isAuthorized } from '../middlewares';
 
 export const doctorRouter = router({
+  get: privateProcedure
+    .use(isAuthorized({ inputKey: 'userId' }))
+    .input(
+      z.object({ id: z.number().optional(), userId: z.string().optional() })
+    )
+    .query(async ({ input }) => {
+      const [doctor, error] = await tryCatch(
+        prisma.doctor.findUnique({
+          where: input,
+        })
+      );
+
+      if (error) throw new TRPCError({ code: 'BAD_REQUEST', message: error });
+
+      return doctor;
+    }),
   create: privateProcedure
     .use(authorizeHigherOrEqualRole(roles.admin))
     .input(
