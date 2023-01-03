@@ -11,7 +11,7 @@ import {
 import { differenceInYears } from 'date-fns';
 import MyLink from '@/components/core/MyLink';
 import paths, { sidebarPaths } from '@/constants/paths';
-import { PlusIcon } from '@heroicons/react/24/outline';
+import { CursorArrowRaysIcon, PlusIcon } from '@heroicons/react/24/outline';
 import RoleController from '@/components/core/RoleController';
 import { roles } from '@/constants/roles';
 import ChooseDoctor from '@/components/features/receptionist/ChooseDoctor';
@@ -66,7 +66,7 @@ const Queue: Page = () => {
           </div>
         </div>
         <Tabs
-          className="pb-4"
+          className="pb-6"
           tabs={[
             { text: 'Aguardando', value: appointmentStatus.open },
             { text: 'Atendidos', value: appointmentStatus.finished },
@@ -75,8 +75,14 @@ const Queue: Page = () => {
           setValue={setTabsStatus}
         />
         {isReceptionist && !selectedDoctorId ? (
-          <div className="flex items-center justify-center">
-            <Text h4>Selecione um médico para ver a fila</Text>
+          <div className="text-center">
+            <CursorArrowRaysIcon className="mx-auto h-12 w-12 text-gray-400" />
+            <h3 className="mt-2 text-sm font-medium text-gray-900">
+              Nenhum médico selecionado
+            </h3>
+            <p className="mt-1 text-sm text-gray-500">
+              Para selecionar um médico basta clicar no seletor acima
+            </p>
           </div>
         ) : (
           <Table>
