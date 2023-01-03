@@ -50,9 +50,9 @@ const Queue: Page = () => {
         <title>CliniFácil | Fila de Pacientes</title>
       </Head>
       <Sidebar items={sidebarPaths}>
-        <div className="flex items-center justify-between pb-2">
+        <div className="flex justify-between pb-2 sm:items-center">
           <Text h2>Fila de Pacientes</Text>
-          <div className="flex items-center gap-5">
+          <div className="flex flex-col-reverse items-end gap-2 sm:flex-row sm:items-center sm:gap-5">
             <RoleController role={roles.receptionist}>
               <ChooseDoctor />
             </RoleController>
