@@ -3,7 +3,11 @@ import { trpc } from '@/services/trpc';
 import useReceptionistStore from '@/store/receptionist';
 import { useSession } from 'next-auth/react';
 
-const ChooseDoctor = () => {
+type Props = {
+  className?: string;
+};
+
+const ChooseDoctor = ({ className }: Props) => {
   const { data: session } = useSession();
   const userId = session?.user.id;
   const { data: receptionist } = trpc.receptionist.get.useQuery(
@@ -18,6 +22,7 @@ const ChooseDoctor = () => {
 
   return (
     <Dropdown
+      className={className}
       data={
         receptionist?.doctors.map((doctor) => ({
           text: doctor.name,
