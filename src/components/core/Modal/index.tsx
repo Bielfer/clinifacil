@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, ReactNode } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 
@@ -6,7 +6,7 @@ interface Props {
   className?: string;
   isOpen: boolean;
   onClose: () => void;
-  children: any;
+  children: ReactNode;
 }
 
 const Modal = ({ isOpen, onClose, className, children }: Props) => (
@@ -37,7 +37,7 @@ const Modal = ({ isOpen, onClose, className, children }: Props) => (
           >
             <Dialog.Panel
               className={clsx(
-                'max-w-md transform overflow-hidden rounded-2xl p-6 text-left align-middle shadow-xl transition-all bg-white',
+                'max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all',
                 className
               )}
             >

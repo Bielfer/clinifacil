@@ -1,15 +1,12 @@
-import { FC, ReactNode } from 'react';
+import { ReactNode } from 'react';
 
 interface Props {
   condition: boolean;
   renderWrapper: (children: ReactNode) => ReactNode;
-  children: any;
+  children: ReactNode;
 }
 
-const ConditionalWrapper: FC<Props> = ({
-  children,
-  condition,
-  renderWrapper,
-}) => (condition ? renderWrapper(children) : children);
+const ConditionalWrapper = ({ children, condition, renderWrapper }: Props) =>
+  condition ? renderWrapper(children) : children;
 
 export default ConditionalWrapper;
