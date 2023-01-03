@@ -7,13 +7,15 @@ import { z } from 'zod';
 import { authorizeHigherOrEqualRole, isAuthorized } from '../middlewares';
 
 export const receptionistRouter = router({
-  getById: privateProcedure
-    .use(isAuthorized({ inputKey: 'id' }))
-    .input(z.object({ id: z.number() }))
+  get: privateProcedure
+    .use(isAuthorized({ inputKey: 'userId' }))
+    .input(
+      z.object({ id: z.number().optional(), userId: z.string().optional() })
+    )
     .query(async ({ input }) => {
       const [receptionist, error] = await tryCatch(
         prisma.receptionist.findUnique({
-          where: { id: input.id },
+          where: input,
           include: {
             doctors: {
               select: {
