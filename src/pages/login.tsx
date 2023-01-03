@@ -15,6 +15,6 @@ const Login: Page = () => (
 );
 
 Login.auth = 'wait';
-Login.loggedInRedirect = paths.records;
+Login.loggedInRedirect = paths.queue;
 
 export default Login;
