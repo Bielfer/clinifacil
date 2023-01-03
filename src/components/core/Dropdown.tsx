@@ -11,6 +11,7 @@ interface Props {
   data: Array<{ value: ValueType; text: string }>;
   className?: string;
   classNameItemsContainer?: string;
+  defaultText?: string;
 }
 
 const Dropdown = ({
@@ -19,12 +20,15 @@ const Dropdown = ({
   data,
   className,
   classNameItemsContainer,
+  defaultText,
 }: Props) => (
   <div className={className}>
     <Menu as="div" className="relative inline-block text-left">
       <div>
         <Menu.Button className="inline-flex w-full justify-center rounded-md border border-slate-300 bg-opacity-20 px-4 py-2 text-sm font-medium shadow-sm hover:bg-opacity-30 focus:border-primary-600 focus:outline-none focus:ring-primary-600 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
-          {data.find((item) => item.value === value)?.text ?? 'Selecione'}
+          {data.find((item) => item.value === value)?.text ??
+            defaultText ??
+            'Selecione'}
           <ChevronDownIcon
             className="ml-2 -mr-1 h-5 w-5 text-violet-200 hover:text-violet-100"
             aria-hidden="true"
