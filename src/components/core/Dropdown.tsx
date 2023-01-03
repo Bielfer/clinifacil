@@ -23,7 +23,7 @@ const Dropdown = <T,>({
   <div className={className}>
     <Menu as="div" className="relative inline-block text-left">
       <div>
-        <Menu.Button className="inline-flex w-full justify-center rounded-md border border-slate-300 bg-opacity-20 px-4 py-2 text-sm font-medium shadow-sm hover:bg-opacity-30 focus:border-primary-600 focus:outline-none focus:ring-primary-600 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
+        <Menu.Button className="inline-flex w-full justify-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium shadow-sm hover:bg-gray-50 hover:bg-opacity-30 focus:border-primary-600 focus:outline-none focus:ring-primary-600 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75">
           {data.find((item) => item.value === value)?.text ??
             defaultText ??
             'Selecione'}
