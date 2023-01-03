@@ -3,25 +3,23 @@ import { Fragment } from 'react';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
 import clsx from 'clsx';
 
-type ValueType = string | number;
-
-interface Props {
+interface Props<ValueType> {
   value: ValueType;
-  setValue: (value: any) => void;
+  setValue: (value: ValueType) => void;
   data: Array<{ value: ValueType; text: string }>;
   className?: string;
   classNameItemsContainer?: string;
   defaultText?: string;
 }
 
-const Dropdown = ({
+const Dropdown = <T,>({
   value,
   setValue,
   data,
   className,
   classNameItemsContainer,
   defaultText,
-}: Props) => (
+}: Props<T>) => (
   <div className={className}>
     <Menu as="div" className="relative inline-block text-left">
       <div>
@@ -52,7 +50,7 @@ const Dropdown = ({
         >
           <div className="px-1 py-1 ">
             {data.map((item) => (
-              <Menu.Item key={item.value}>
+              <Menu.Item key={item.text + item.value}>
                 {({ active }) => (
                   <button
                     type="button"
