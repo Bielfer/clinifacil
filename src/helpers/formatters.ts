@@ -4,4 +4,5 @@ export const formatCurrency = (value: number) =>
     currency: 'BRL',
   }).format(value);
 
-export const temp = {};
+export const formatCPF = (cpf: string) =>
+  cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
