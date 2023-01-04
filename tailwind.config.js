@@ -28,7 +28,8 @@ module.exports = {
         '4xl': '2rem',
       },
       fontFamily: {
-        sans: ['Inter', ...defaultTheme.fontFamily.sans],
+        sans: ['var(--inter-font)', ...defaultTheme.fontFamily.sans],
+        nunito: ['var(--nunito-font)'],
       },
       maxWidth: {
         '2xl': '40rem',
