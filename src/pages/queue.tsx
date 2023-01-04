@@ -14,7 +14,7 @@ import paths, { sidebarPaths } from '@/constants/paths';
 import { CursorArrowRaysIcon, PlusIcon } from '@heroicons/react/24/outline';
 import RoleController from '@/components/core/RoleController';
 import { roles } from '@/constants/roles';
-import ChooseDoctor from '@/components/features/receptionist/ChooseDoctor';
+import SelectDoctor from '@/components/features/receptionist/SelectDoctor';
 import { useSession } from 'next-auth/react';
 import useReceptionistStore from '@/store/receptionist';
 import { useState } from 'react';
@@ -54,7 +54,7 @@ const Queue: Page = () => {
           <Text h2>Fila de Pacientes</Text>
           <div className="flex flex-col-reverse items-end gap-2 sm:flex-row sm:items-center sm:gap-5">
             <RoleController role={roles.receptionist}>
-              <ChooseDoctor />
+              <SelectDoctor />
             </RoleController>
             <MyLink
               href={paths.newPatient}

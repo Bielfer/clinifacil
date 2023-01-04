@@ -7,7 +7,7 @@ type Props = {
   className?: string;
 };
 
-const ChooseDoctor = ({ className }: Props) => {
+const SelectDoctor = ({ className }: Props) => {
   const { data: session } = useSession();
   const userId = session?.user.id;
   const { data: receptionist } = trpc.receptionist.get.useQuery(
@@ -36,4 +36,4 @@ const ChooseDoctor = ({ className }: Props) => {
   );
 };
 
-export default ChooseDoctor;
+export default SelectDoctor;
