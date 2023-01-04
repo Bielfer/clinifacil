@@ -11,17 +11,22 @@ export const patientRouter = router({
     .use(authorizeHigherOrEqualRole(roles.receptionist))
     .input(
       z.object({
-        search: z.string(),
+        search: z.string().trim(),
       })
     )
     .query(async ({ input }) => {
+      const search = input.search
+        .split(' ')
+        .map((searchPart) => `+*${searchPart}*`)
+        .join(' ');
+
       const [patients, error] = await tryCatch(
         prisma.patient.findMany({
           where: {
             cpf: {
-              search: input.search,
+              search,
             },
-            name: { search: input.search },
+            name: { search },
           },
           take: 5,
         })
