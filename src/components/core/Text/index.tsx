@@ -1,9 +1,9 @@
-import React, { FC, HTMLAttributes } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { VariantText } from '@/types/styles';
 import clsx from 'clsx';
 import { IconType } from '@/types/core';
 
-interface Props extends HTMLAttributes<any> {
+interface Props {
   className?: string;
   h1?: boolean;
   h2?: boolean;
@@ -23,6 +23,7 @@ interface Props extends HTMLAttributes<any> {
   iconLeft?: IconType;
   iconRight?: IconType;
   htmlFor?: string;
+  children?: ReactNode;
 }
 
 const elementStyles = {
