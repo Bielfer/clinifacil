@@ -14,13 +14,13 @@ const Card = ({ children, hoverable, shadow, className }: Props) => {
   return (
     <div
       className={clsx(
-        'border rounded-lg transition duration-300',
+        'rounded-lg border bg-white transition duration-300',
         hoverableStyles,
         shadowStyles,
         className
       )}
     >
-      {children}
+      <div className="px-4 py-5 sm:p-6">{children}</div>
     </div>
   );
 };
