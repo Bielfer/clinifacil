@@ -30,4 +30,7 @@ const PatientsById: Page = () => {
   );
 };
 
+PatientsById.auth = 'block';
+PatientsById.allowHigherOrEqualRole = 'RECEPTIONIST';
+
 export default PatientsById;

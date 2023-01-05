@@ -59,5 +59,6 @@ const Patients: Page = () => {
 };
 
 Patients.auth = 'block';
+Patients.allowHigherOrEqualRole = 'RECEPTIONIST';
 
 export default Patients;

@@ -8,7 +8,7 @@ import { Page } from '@/types/auth';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-const PatientsById: Page = () => {
+const PatientsByIdEdit: Page = () => {
   const router = useRouter();
   const patientId = router.query.patientId as string;
   const { data: patient, isLoading } = trpc.patient.getById.useQuery(
@@ -33,4 +33,7 @@ const PatientsById: Page = () => {
   );
 };
 
-export default PatientsById;
+PatientsByIdEdit.auth = 'block';
+PatientsByIdEdit.allowHigherOrEqualRole = 'RECEPTIONIST';
+
+export default PatientsByIdEdit;

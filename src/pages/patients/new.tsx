@@ -18,5 +18,6 @@ const PatientsNew: Page = () => (
 );
 
 PatientsNew.auth = 'block';
+PatientsNew.allowHigherOrEqualRole = 'RECEPTIONIST';
 
 export default PatientsNew;

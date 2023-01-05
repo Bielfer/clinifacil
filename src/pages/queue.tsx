@@ -121,5 +121,6 @@ const Queue: Page = () => {
 };
 
 Queue.auth = 'block';
+Queue.allowHigherOrEqualRole = 'RECEPTIONIST';
 
 export default Queue;
