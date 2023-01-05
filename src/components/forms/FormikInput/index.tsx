@@ -1,8 +1,8 @@
-/* eslint react-hooks/exhaustive-deps:off */
 import {
   ChangeEvent,
   FC,
   InputHTMLAttributes,
+  useCallback,
   useEffect,
   useState,
 } from 'react';
@@ -29,32 +29,35 @@ const FormikInput: FC<Props> = ({
   const [{ value }, { error }, { setValue }] = useField(name);
   const [formattedValue, setFormattedValue] = useState('');
 
-  const formatValue = (valueParameter: string) => {
-    if (!formatter) return valueParameter;
+  const formatValue = useCallback(
+    (valueParameter: string) => {
+      if (!formatter) return valueParameter;
 
-    const fieldValue = valueParameter.split('');
-    const notUnderscoreIndexes = [];
+      const fieldValue = valueParameter.split('');
+      const notUnderscoreIndexes = [];
 
-    for (let i = 0; i < formatter.length; i += 1) {
-      if (formatter[i] === '_') continue;
+      for (let i = 0; i < formatter.length; i += 1) {
+        if (formatter[i] === '_') continue;
 
-      notUnderscoreIndexes.push(i);
-    }
+        notUnderscoreIndexes.push(i);
+      }
 
-    for (let i = 0; i < notUnderscoreIndexes.length; i += 1) {
-      const toInsertCharacterIndex = notUnderscoreIndexes[i];
+      for (let i = 0; i < notUnderscoreIndexes.length; i += 1) {
+        const toInsertCharacterIndex = notUnderscoreIndexes[i];
 
-      if (toInsertCharacterIndex > fieldValue.length - 1) break;
+        if (toInsertCharacterIndex > fieldValue.length - 1) break;
 
-      fieldValue.splice(
-        toInsertCharacterIndex,
-        0,
-        formatter[toInsertCharacterIndex]
-      );
-    }
+        fieldValue.splice(
+          toInsertCharacterIndex,
+          0,
+          formatter[toInsertCharacterIndex]
+        );
+      }
 
-    return fieldValue.join('');
-  };
+      return fieldValue.join('');
+    },
+    [formatter]
+  );
 
   const removeFormatterCharacters = (valueParameter: string) => {
     if (!formatter) return valueParameter;
@@ -93,7 +96,7 @@ const FormikInput: FC<Props> = ({
     if (!formatter) return;
 
     setFormattedValue(formatValue(value));
-  }, []);
+  }, [formatValue, formatter, value]);
 
   return (
     <Input
