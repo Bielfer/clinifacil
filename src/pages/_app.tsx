@@ -25,6 +25,7 @@ const MyApp = ({ Component, pageProps }: ExtendedAppProps) => (
       <ToastWrapper>
         <Auth
           type={Component.auth}
+          allowHigherOrEqualRole={Component.allowHigherOrEqualRole}
           loggedInRedirect={Component.loggedInRedirect}
         >
           <Component {...pageProps} />
