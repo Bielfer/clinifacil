@@ -145,7 +145,12 @@ const Sidebar = ({ children, className, items }: Props) => {
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
         </div>
-        <main className={clsx('flex-1 bg-gray-100 p-4 md:p-6', className)}>
+        <main
+          className={clsx(
+            'flex-1 overflow-hidden bg-gray-100 p-4 md:p-6',
+            className
+          )}
+        >
           {children}
         </main>
       </div>
