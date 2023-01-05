@@ -20,7 +20,7 @@ import FormikSelect from './FormikSelect';
 
 type Props = {
   className?: string;
-  patient?: Patient;
+  patient?: Patient | null;
 };
 
 const FormPatient = ({ className, patient }: Props) => {
