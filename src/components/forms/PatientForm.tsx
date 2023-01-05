@@ -66,7 +66,7 @@ const PatientForm = ({ className, patient }: Props) => {
     const valuesCopy = {
       ...values,
       birthDate: parse(values.birthDate, 'ddMMyyyy', new Date()),
-      sex: values.sex || undefined,
+      sex: (values.sex || undefined) as 'Masculino' | 'Feminino' | undefined,
     };
 
     const [createdPatient] = await tryCatch(createPatient(valuesCopy));
