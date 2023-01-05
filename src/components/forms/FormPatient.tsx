@@ -30,6 +30,8 @@ const FormPatient = ({ className, patient }: Props) => {
   const { addToast } = useToast();
   const { mutateAsync: createPatient, isError: errorCreatingPatient } =
     trpc.patient.create.useMutation();
+  const { mutateAsync: editPatient, isError: errorEditingPatient } =
+    trpc.patient.editById.useMutation();
   const { mutateAsync: createAppointment, isError: errorCreatingAppointment } =
     trpc.appointment.create.useMutation();
   const selectedDoctorId = useReceptionistStore(
@@ -69,6 +71,23 @@ const FormPatient = ({ className, patient }: Props) => {
       sex: (values.sex || undefined) as 'Masculino' | 'Feminino' | undefined,
     };
 
+    if (patient) {
+      const [updatedPatient] = await tryCatch(
+        editPatient({ ...valuesCopy, id: patient.id })
+      );
+
+      if (errorEditingPatient || !updatedPatient) {
+        addToast({
+          type: 'error',
+          content: 'Falha ao atualizar o paciente, tente novamente!',
+        });
+        return;
+      }
+
+      router.push(paths.patientsById(patient.id));
+      return;
+    }
+
     const [createdPatient] = await tryCatch(createPatient(valuesCopy));
 
     if (errorCreatingPatient || !createdPatient) {
@@ -106,12 +125,14 @@ const FormPatient = ({ className, patient }: Props) => {
               placeholder="Ex: 123.456.789-10"
               formatter="___.___.___-__"
               hint={hints.required}
+              disabled={!!patient}
             />
             <FormikInput
               label="Nome"
               name="name"
               hint={hints.required}
               placeholder="Ex: João da Silva"
+              disabled={!!patient}
             />
             <FormikInput
               label="Data de Nascimento"
@@ -119,6 +140,7 @@ const FormPatient = ({ className, patient }: Props) => {
               placeholder="Ex: 13/06/1997"
               formatter="__/__/____"
               hint={hints.required}
+              disabled={!!patient}
             />
             <FormikSelect
               label="Sexo"
@@ -128,6 +150,7 @@ const FormPatient = ({ className, patient }: Props) => {
                 { text: 'Feminino', value: 'Feminino' },
               ]}
               hint={hints.required}
+              disabled={!!patient}
             />
             <FormikInput
               label="Email"
@@ -143,7 +166,7 @@ const FormPatient = ({ className, patient }: Props) => {
 
             <div className="mt-2 flex justify-end">
               <Button variant="primary" type="submit" loading={isSubmitting}>
-                Criar
+                {patient ? 'Atualizar' : 'Criar'}
               </Button>
             </div>
           </Form>
