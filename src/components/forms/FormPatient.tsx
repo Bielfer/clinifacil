@@ -43,7 +43,7 @@ const FormPatient = ({ className, patient }: Props) => {
   const initialValues = {
     cpf: patient?.cpf ?? '',
     name: patient?.name ?? '',
-    birthDate: format(patient?.birthDate, 'ddMMyyyy') ?? '',
+    birthDate: format(patient?.birthDate ?? new Date(), 'ddMMyyyy') ?? '',
     sex: patient?.sex ?? '',
     email: patient?.email ?? '',
     cellphone: patient?.cellphone ?? '',
