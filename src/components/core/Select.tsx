@@ -1,6 +1,7 @@
 import InputLayout from '@/components/core/InputLayout';
 import { Listbox, Transition } from '@headlessui/react';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/24/solid';
+import clsx from 'clsx';
 import { Fragment } from 'react';
 
 interface Props {
@@ -36,7 +37,14 @@ const Select = ({
   >
     <Listbox value={selected} onChange={setSelected}>
       <div className="relative mt-1">
-        <Listbox.Button className="relative w-full cursor-default rounded-lg border border-gray-300 py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-primary-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
+        <Listbox.Button
+          className={clsx(
+            'relative w-full cursor-default rounded-lg border py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-primary-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm',
+            !error
+              ? 'border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500'
+              : 'border-red-300 pr-10 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500'
+          )}
+        >
           <span className="block truncate">
             {options.find((item) => item.value === selected)?.text ??
               placeholder ??
