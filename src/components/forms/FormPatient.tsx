@@ -7,7 +7,7 @@ import { useRoles } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import useReceptionistStore from '@/store/receptionist';
 import { Patient } from '@prisma/client';
-import { parse } from 'date-fns';
+import { format, parse } from 'date-fns';
 import { Form, Formik } from 'formik';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -43,7 +43,7 @@ const FormPatient = ({ className, patient }: Props) => {
   const initialValues = {
     cpf: patient?.cpf ?? '',
     name: patient?.name ?? '',
-    birthDate: patient?.birthDate ?? '',
+    birthDate: format(patient?.birthDate, 'ddMMyyyy') ?? '',
     sex: patient?.sex ?? '',
     email: patient?.email ?? '',
     cellphone: patient?.cellphone ?? '',
