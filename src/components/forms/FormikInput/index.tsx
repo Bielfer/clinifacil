@@ -26,7 +26,7 @@ const FormikInput: FC<Props> = ({
   hint,
   ...props
 }) => {
-  const [{ value }, { error }, { setValue }] = useField(name);
+  const [{ value }, { error, touched }, { setValue }] = useField(name);
   const [formattedValue, setFormattedValue] = useState('');
 
   const formatValue = useCallback(
@@ -106,7 +106,7 @@ const FormikInput: FC<Props> = ({
       password={password}
       label={label}
       className={className}
-      error={error}
+      error={touched && error ? error : ''}
       hint={hint}
       {...props}
     />
