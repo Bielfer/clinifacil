@@ -12,15 +12,15 @@ const SidebarItem = ({ item, current }: Props) => (
     href={item.href}
     className={clsx(
       current
-        ? 'bg-gray-100 text-gray-900'
+        ? 'bg-white text-gray-900'
         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-      'group flex items-center rounded-md px-2 py-2 text-sm font-medium'
+      'group flex items-center rounded-md px-2 py-2 text-sm font-medium transition'
     )}
   >
     <item.icon
       className={clsx(
         current ? 'text-gray-500' : 'text-gray-400 group-hover:text-gray-500',
-        'mr-3 h-6 w-6 flex-shrink-0'
+        'mr-3 h-6 w-6 flex-shrink-0 transition'
       )}
       aria-hidden="true"
     />
