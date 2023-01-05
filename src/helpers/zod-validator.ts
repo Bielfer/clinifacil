@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const zodValidator =
   <T extends z.ZodTypeAny>(schema: T) =>
-  (values: any) => {
+  (values: Record<string, any>) => {
     const valuesCopy = { ...values };
 
     Object.entries(valuesCopy).forEach(([key, value]) => {
