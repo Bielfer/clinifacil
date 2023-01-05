@@ -1,3 +1,4 @@
+import clsx from 'clsx';
 import { FC, InputHTMLAttributes } from 'react';
 import InputLayout from '../InputLayout';
 
@@ -28,11 +29,12 @@ const Input: FC<Props> = ({
     shadow
   >
     <input
-      className={
+      className={clsx(
+        'block w-full rounded-lg border',
         !error
-          ? 'shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md'
-          : 'block w-full pr-10 border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md'
-      }
+          ? 'border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm'
+          : 'border-red-300 pr-10 text-red-900 placeholder-red-300 focus:border-red-500 focus:outline-none focus:ring-red-500 sm:text-sm'
+      )}
       placeholder={placeholder}
       type={password ? 'password' : type ?? 'text'}
       id={name}
