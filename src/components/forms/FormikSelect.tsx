@@ -7,9 +7,17 @@ interface Props {
   options: Array<{ text: string; value: string }>;
   label?: string;
   hint?: string;
+  disabled?: boolean;
 }
 
-const FormikSelect = ({ name, type, options, label, hint }: Props) => {
+const FormikSelect = ({
+  name,
+  type,
+  options,
+  label,
+  hint,
+  disabled,
+}: Props) => {
   const [{ value }, { error, touched }, { setValue }] = useField(name);
 
   return (
@@ -28,6 +36,7 @@ const FormikSelect = ({ name, type, options, label, hint }: Props) => {
       options={options}
       error={touched && error ? error : ''}
       hint={hint}
+      disabled={disabled}
     />
   );
 };
