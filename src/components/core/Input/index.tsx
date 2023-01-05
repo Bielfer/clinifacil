@@ -18,6 +18,7 @@ const Input: FC<Props> = ({
   error,
   name,
   hint,
+  disabled,
   ...props
 }) => (
   <InputLayout
@@ -31,6 +32,7 @@ const Input: FC<Props> = ({
     <input
       className={clsx(
         'block w-full rounded-lg border',
+        disabled && 'bg-gray-200',
         !error
           ? 'border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 sm:text-sm'
           : 'border-red-300 pr-10 text-red-900 placeholder-red-300 focus:border-red-500 focus:outline-none focus:ring-red-500 sm:text-sm'
@@ -38,6 +40,7 @@ const Input: FC<Props> = ({
       placeholder={placeholder}
       type={password ? 'password' : type ?? 'text'}
       id={name}
+      disabled={disabled}
       {...props}
     />
   </InputLayout>
