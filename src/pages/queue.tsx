@@ -102,9 +102,7 @@ const Queue: Page = () => {
                     <Table.Data className="flex items-center justify-end">
                       <RoleController role={roles.doctor}>
                         <MyLink
-                          href={paths.patientsById(
-                            appointment.patient.id.toString()
-                          )}
+                          href={paths.patientsById(appointment.patient.id)}
                           variant="primary"
                         >
                           Consultar Paciente
