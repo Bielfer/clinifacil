@@ -23,7 +23,7 @@ type Props = {
   patient?: Patient;
 };
 
-const PatientForm = ({ className, patient }: Props) => {
+const FormPatient = ({ className, patient }: Props) => {
   const router = useRouter();
   const { isDoctor } = useRoles();
   const { data: session } = useSession();
@@ -152,4 +152,4 @@ const PatientForm = ({ className, patient }: Props) => {
     </Card>
   );
 };
-export default PatientForm;
+export default FormPatient;
