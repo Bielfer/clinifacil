@@ -3,7 +3,13 @@ import { z } from 'zod';
 const zodValidator =
   <T extends z.ZodTypeAny>(schema: T) =>
   (values: any) => {
-    const parse = schema.safeParse(values);
+    const valuesCopy = { ...values };
+
+    Object.entries(valuesCopy).forEach(([key, value]) => {
+      if (value === '') valuesCopy[key] = undefined;
+    });
+
+    const parse = schema.safeParse(valuesCopy);
 
     if (parse.success) return {};
 
