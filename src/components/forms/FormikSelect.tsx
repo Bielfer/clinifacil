@@ -10,7 +10,7 @@ interface Props {
 }
 
 const FormikSelect = ({ name, type, options, label, hint }: Props) => {
-  const [{ value }, { error }, { setValue }] = useField(name);
+  const [{ value }, { error, touched }, { setValue }] = useField(name);
 
   return (
     <Select
@@ -26,7 +26,7 @@ const FormikSelect = ({ name, type, options, label, hint }: Props) => {
       }}
       name={name}
       options={options}
-      error={error}
+      error={touched && error ? error : ''}
       hint={hint}
     />
   );
