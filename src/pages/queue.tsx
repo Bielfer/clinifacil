@@ -11,7 +11,7 @@ import {
 import { differenceInYears } from 'date-fns';
 import MyLink from '@/components/core/MyLink';
 import paths, { sidebarPaths } from '@/constants/paths';
-import { CursorArrowRaysIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { PlusIcon } from '@heroicons/react/24/outline';
 import RoleController from '@/components/core/RoleController';
 import { roles } from '@/constants/roles';
 import SelectDoctor from '@/components/features/receptionist/SelectDoctor';
@@ -19,6 +19,7 @@ import { useSession } from 'next-auth/react';
 import useReceptionistStore from '@/store/receptionist';
 import { useState } from 'react';
 import Tabs from '@/components/core/Tabs';
+import NoDoctorSelectedMessage from '@/components/features/receptionist/NoDoctorSelectedMessage';
 
 const Queue: Page = () => {
   const [tabsStatus, setTabsStatus] = useState<AppointmentStatus>(
@@ -75,15 +76,7 @@ const Queue: Page = () => {
           setValue={setTabsStatus}
         />
         {isReceptionist && !selectedDoctorId ? (
-          <div className="text-center">
-            <CursorArrowRaysIcon className="mx-auto h-12 w-12 text-gray-400" />
-            <h3 className="mt-2 text-sm font-medium text-gray-900">
-              Nenhum médico selecionado
-            </h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Para selecionar um médico basta clicar no seletor acima
-            </p>
-          </div>
+          <NoDoctorSelectedMessage />
         ) : (
           <Table>
             <Table.Head>
@@ -101,8 +94,8 @@ const Queue: Page = () => {
                     <Table.Data>
                       {appointment.patient.birthDate
                         ? differenceInYears(
-                            appointment.patient.birthDate,
-                            new Date()
+                            new Date(),
+                            appointment.patient.birthDate
                           )
                         : 'Idade não informada'}
                     </Table.Data>
@@ -128,5 +121,7 @@ const Queue: Page = () => {
     </>
   );
 };
+
+Queue.auth = 'block';
 
 export default Queue;
