@@ -7,9 +7,12 @@ import Auth from '@/components/core/Auth';
 import { SessionProvider } from 'next-auth/react';
 import { trpc } from '@/services/trpc';
 
-const inter = Inter();
+const inter = Inter({
+  subsets: ['latin'],
+});
 const nunito = Nunito({
   weight: ['500'],
+  subsets: ['latin'],
 });
 
 interface ExtendedAppProps extends AppProps {
