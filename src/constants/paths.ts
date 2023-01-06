@@ -8,7 +8,14 @@ const paths = {
   queue: '/queue',
   patients: '/patients',
   newPatient: '/patients/new',
-  patientsById: (id: string | number) => `/patients/${id}`,
+  patientsById: (patientId: string | number) => `/patients/${patientId}`,
+  editPatient: (patientId: string | number) => `/patients/${patientId}/edit`,
+  newPatientHandbook: (patientId: string | number) =>
+    `/patients/${patientId}/handbook`,
+  specificPatientAppointments: (patientId: string | number) =>
+    `/patients/${patientId}/appointments`,
+  allPatientAppointments: (patientId: string | number) =>
+    `/patients/${patientId}/all-appointments`,
 } as const;
 
 export const sidebarPaths = [
