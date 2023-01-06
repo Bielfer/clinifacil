@@ -77,7 +77,7 @@ const PatientSearch = ({ className }: Props) => {
         <div className={clsx('relative', className)} ref={inputRef}>
           <div
             className={clsx(
-              `rounded-t-lg border border-gray-100 bg-white`,
+              `rounded-t-lg border border-gray-300 bg-white`,
               input === '' && 'rounded-b-lg'
             )}
           >
