@@ -11,8 +11,12 @@ const PatientsNew: Page = () => (
       <title>CliniFácil | Nova Consulta</title>
     </Head>
     <Sidebar items={sidebarPaths}>
-      <Text h2>Crie um novo paciente</Text>
-      <FormPatient />
+      <div className="mx-auto max-w-2xl">
+        <Text h2 className="py-6">
+          Crie um novo paciente
+        </Text>
+        <FormPatient />
+      </div>
     </Sidebar>
   </>
 );

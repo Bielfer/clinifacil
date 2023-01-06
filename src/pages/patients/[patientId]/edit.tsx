@@ -24,10 +24,12 @@ const PatientsByIdEdit: Page = () => {
         <title>CliniFácil | Altere o Paciente</title>
       </Head>
       <Sidebar items={sidebarPaths}>
-        <Text h2>Altere o Paciente</Text>
-        <LoadingWrapper loading={isLoading}>
-          <FormPatient className="mt-6" patient={patient} />
-        </LoadingWrapper>
+        <div className="mx-auto max-w-2xl">
+          <Text h2>Altere o Paciente</Text>
+          <LoadingWrapper loading={isLoading}>
+            <FormPatient className="mt-6" patient={patient} />
+          </LoadingWrapper>
+        </div>
       </Sidebar>
     </>
   );

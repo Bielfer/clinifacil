@@ -7,13 +7,13 @@ import { useRoles } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import useReceptionistStore from '@/store/receptionist';
 import { Patient } from '@prisma/client';
+import clsx from 'clsx';
 import { format, parse } from 'date-fns';
 import { Form, Formik } from 'formik';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { z } from 'zod';
 import Button from '../core/Button';
-import Card from '../core/Card';
 import { useToast } from '../core/Toast';
 import FormikInput from './FormikInput';
 import FormikSelect from './FormikSelect';
@@ -111,68 +111,66 @@ const FormPatient = ({ className, patient }: Props) => {
   };
 
   return (
-    <Card className={className}>
-      <Formik
-        initialValues={initialValues}
-        validate={zodValidator(validationSchema)}
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting }) => (
-          <Form className="flex flex-col gap-y-3">
-            <FormikInput
-              label="CPF"
-              name="cpf"
-              placeholder="Ex: 123.456.789-10"
-              formatter="___.___.___-__"
-              hint={hints.required}
-              disabled={!!patient}
-            />
-            <FormikInput
-              label="Nome"
-              name="name"
-              hint={hints.required}
-              placeholder="Ex: João da Silva"
-              disabled={!!patient}
-            />
-            <FormikInput
-              label="Data de Nascimento"
-              name="birthDate"
-              placeholder="Ex: 13/06/1997"
-              formatter="__/__/____"
-              hint={hints.required}
-              disabled={!!patient}
-            />
-            <FormikSelect
-              label="Sexo"
-              name="sex"
-              options={[
-                { text: 'Masculino', value: 'Masculino' },
-                { text: 'Feminino', value: 'Feminino' },
-              ]}
-              hint={hints.required}
-              disabled={!!patient}
-            />
-            <FormikInput
-              label="Email"
-              name="email"
-              placeholder="Ex: joaodasilva@gmail.com"
-            />
-            <FormikInput
-              label="Celular"
-              name="cellphone"
-              placeholder="Ex: (11) 91234 - 5678"
-              formatter="(__) _____ - ____"
-            />
+    <Formik
+      initialValues={initialValues}
+      validate={zodValidator(validationSchema)}
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting }) => (
+        <Form className={clsx('flex flex-col gap-y-3', className)}>
+          <FormikInput
+            label="CPF"
+            name="cpf"
+            placeholder="Ex: 123.456.789-10"
+            formatter="___.___.___-__"
+            hint={hints.required}
+            disabled={!!patient}
+          />
+          <FormikInput
+            label="Nome"
+            name="name"
+            hint={hints.required}
+            placeholder="Ex: João da Silva"
+            disabled={!!patient}
+          />
+          <FormikInput
+            label="Data de Nascimento"
+            name="birthDate"
+            placeholder="Ex: 13/06/1997"
+            formatter="__/__/____"
+            hint={hints.required}
+            disabled={!!patient}
+          />
+          <FormikSelect
+            label="Sexo"
+            name="sex"
+            options={[
+              { text: 'Masculino', value: 'Masculino' },
+              { text: 'Feminino', value: 'Feminino' },
+            ]}
+            hint={hints.required}
+            disabled={!!patient}
+          />
+          <FormikInput
+            label="Email"
+            name="email"
+            placeholder="Ex: joaodasilva@gmail.com"
+          />
+          <FormikInput
+            label="Celular"
+            name="cellphone"
+            placeholder="Ex: (11) 91234 - 5678"
+            formatter="(__) _____ - ____"
+          />
 
-            <div className="mt-2 flex justify-end">
-              <Button variant="primary" type="submit" loading={isSubmitting}>
-                {patient ? 'Atualizar' : 'Criar'}
-              </Button>
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </Card>
+          <div className="mt-2 flex justify-end">
+            <Button variant="primary" type="submit" loading={isSubmitting}>
+              {patient ? 'Atualizar' : 'Criar'}
+            </Button>
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
 };
 export default FormPatient;
