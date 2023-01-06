@@ -50,7 +50,7 @@ const Button = ({
     <button
       type={type === 'submit' ? 'submit' : 'button'}
       className={clsx(
-        'inline-flex items-center font-medium transition duration-200',
+        'inline-flex items-center whitespace-nowrap font-medium transition duration-200',
         buttonStyles,
         variantStyles[variant],
         buttonSizes[size],
