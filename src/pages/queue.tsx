@@ -58,7 +58,7 @@ const Queue: Page = () => {
               <SelectDoctor />
             </RoleController>
             <MyLink
-              href={paths.newPatient}
+              href={paths.patients}
               variant="button-primary"
               iconLeft={PlusIcon}
             >
