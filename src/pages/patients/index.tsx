@@ -1,4 +1,3 @@
-import Card from '@/components/core/Card';
 import Sidebar from '@/components/core/Sidebar';
 import Text from '@/components/core/Text';
 import PatientSearch from '@/components/features/patient/PatientSearch';
@@ -22,36 +21,37 @@ const Patients: Page = () => {
         <title>CliniFácil | Pacientes</title>
       </Head>
       <Sidebar items={sidebarPaths}>
-        <div className="flex items-center justify-between">
-          <Text h2>Pacientes</Text>
-          {isReceptionist && <SelectDoctor />}
-        </div>
-        <div className="flex justify-center pt-12">
-          {isReceptionist && !selectedDoctorId ? (
-            <NoDoctorSelectedMessage />
-          ) : (
-            <Card className="w-full max-w-3xl">
-              <Text h3 className="mb-6">
-                Procure o Paciente
-              </Text>
-              <PatientSearch />
-              <Text className="mt-2 mb-4 text-gray-500" p>
-                Você pode procurar o paciente por nome ou CPF.
-              </Text>
-              <div className="flex flex-col gap-y-3">
-                <Text b>Exemplos:</Text>
-                <Text className="gap-x-1">
-                  <Text b>Nome: </Text>João Silva
+        <div className="mx-auto max-w-2xl">
+          <div className="flex items-center justify-between">
+            <Text h2 className="my-6">
+              Procure o Paciente
+            </Text>
+            {isReceptionist && <SelectDoctor />}
+          </div>
+          <div className="flex justify-center pt-6">
+            {isReceptionist && !selectedDoctorId ? (
+              <NoDoctorSelectedMessage />
+            ) : (
+              <div className="w-full">
+                <PatientSearch />
+                <Text className="mt-2 mb-4 text-gray-500" p>
+                  Você pode procurar o paciente por nome ou CPF.
                 </Text>
-                <Text className="gap-x-1">
-                  <Text b>CPF: </Text>12345678910
-                </Text>
-                <Text className="gap-x-1">
-                  <Text b>Nome e CPF: </Text>João Silva 12345678910
-                </Text>
+                <div className="flex flex-col gap-y-3">
+                  <Text b>Exemplos:</Text>
+                  <Text className="gap-x-1">
+                    <Text b>Nome: </Text>João Silva
+                  </Text>
+                  <Text className="gap-x-1">
+                    <Text b>CPF: </Text>12345678910
+                  </Text>
+                  <Text className="gap-x-1">
+                    <Text b>Nome e CPF: </Text>João Silva 12345678910
+                  </Text>
+                </div>
               </div>
-            </Card>
-          )}
+            )}
+          </div>
         </div>
       </Sidebar>
     </>
