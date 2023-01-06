@@ -7,7 +7,7 @@ import { Fragment } from 'react';
 interface Props {
   selected: string;
   setSelected: (value: string) => void;
-  options: Array<{ text: string; value: string }>;
+  options: Array<{ text: string; value: string | number }>;
   className?: string;
   placeholder?: string;
   label?: string;

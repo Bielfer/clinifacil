@@ -4,7 +4,7 @@ import Select from '../core/Select';
 interface Props {
   name: string;
   type?: 'string' | 'integer' | 'float';
-  options: Array<{ text: string; value: string }>;
+  options: Array<{ text: string; value: string | number }>;
   label?: string;
   hint?: string;
   disabled?: boolean;
