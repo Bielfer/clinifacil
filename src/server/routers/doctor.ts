@@ -72,10 +72,11 @@ export const doctorRouter = router({
       return doctor;
     }),
   handbooks: privateProcedure
-    .use(isAuthorized({ inputKey: 'doctorId' }))
+    .use(isAuthorized({ inputKey: 'userId' }))
     .input(
       z.object({
-        doctorId: z.number(),
+        doctorId: z.number().optional(),
+        userId: z.string().optional(),
       })
     )
     .query(async ({ input }) => {
@@ -88,6 +89,11 @@ export const doctorRouter = router({
               some: {
                 id: doctorId,
               },
+            },
+          },
+          include: {
+            fields: {
+              include: { options: true },
             },
           },
         })
