@@ -4,10 +4,7 @@ import Head from 'next/head';
 import Text from '@/components/core/Text';
 import Table from '@/components/core/Table';
 import { trpc } from '@/services/trpc';
-import {
-  AppointmentStatus,
-  appointmentStatus,
-} from '@/constants/appointment-status';
+import { appointmentStatus } from '@/constants/appointment-status';
 import { differenceInYears } from 'date-fns';
 import MyLink from '@/components/core/MyLink';
 import paths, { sidebarPaths } from '@/constants/paths';
@@ -20,6 +17,7 @@ import useReceptionistStore from '@/store/receptionist';
 import { useState } from 'react';
 import Tabs from '@/components/core/Tabs';
 import NoDoctorSelectedMessage from '@/components/features/receptionist/NoDoctorSelectedMessage';
+import { AppointmentStatus } from '@prisma/client';
 
 const Queue: Page = () => {
   const [tabsStatus, setTabsStatus] = useState<AppointmentStatus>(

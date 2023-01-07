@@ -1,3 +1,5 @@
+import { AppointmentStatus } from '@prisma/client';
+
 export const appointmentStatus = {
   open: 'OPEN',
   finished: 'FINISHED',
@@ -7,6 +9,3 @@ export const appointmentStatus = {
 export const appointmentStatusValues = Object.values(
   appointmentStatus
 ) as unknown as readonly [AppointmentStatus, ...AppointmentStatus[]];
-
-export type AppointmentStatus =
-  typeof appointmentStatus[keyof typeof appointmentStatus];
