@@ -1,3 +1,4 @@
+import FormikAutocomplete from '@/components/forms/FormikAutocomplete';
 import FormikInput from '@/components/forms/FormikInput';
 import FormikSwitch from '@/components/forms/FormikSwitch';
 import FormikTextarea from '@/components/forms/FormikTextarea';
@@ -21,17 +22,26 @@ export const toRenderField = ({
   name,
   label,
   key,
+  options,
 }: {
   key?: Key | null;
   field: HandbookFieldType;
   name: string;
   label: string;
+  options?: { text: string; value: string }[];
 }) => {
   const fieldMatcher: Record<HandbookFieldType, JSX.Element> = {
     TEXT: <FormikInput name={name} label={label} key={key} />,
     TEXTAREA: <FormikTextarea name={name} label={label} key={key} />,
     CHECK: <FormikSwitch name={name} label={label} key={key} />,
-    AUTOCOMPLETE: <FormikInput name={name} label={label} key={key} />,
+    AUTOCOMPLETE: (
+      <FormikAutocomplete
+        name={name}
+        label={label}
+        key={key}
+        options={options ?? []}
+      />
+    ),
     DATE: <FormikInput name={name} label={label} key={key} />,
   };
 
