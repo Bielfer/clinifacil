@@ -15,7 +15,7 @@ const handbookFieldOptionSchema = z.object({
 const handbookFieldTypeSchema = z.enum(fieldTypesArray);
 
 const fieldValue = z
-  .union([z.string(), z.boolean(), z.date()])
+  .union([z.string(), z.boolean(), z.date(), z.number()])
   .transform((val) => {
     if (val instanceof Date) return val.toString();
 
@@ -28,7 +28,7 @@ export const handbookFieldSchema = z.object({
   type: handbookFieldTypeSchema,
   value: fieldValue,
   required: z.boolean().optional(),
-  options: handbookFieldOptionSchema.array().nonempty().optional(),
+  options: handbookFieldOptionSchema.array().optional(),
 });
 
 const handbookSchema = z.object({
