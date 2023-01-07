@@ -58,14 +58,23 @@ export const appointmentRouter = router({
       z.object({
         doctorId: z.number().optional(),
         patientId: z.number().optional(),
-        status: z.enum(appointmentStatusValues).optional(),
+        status: z
+          .enum(appointmentStatusValues)
+          .or(z.enum(appointmentStatusValues).array())
+          .optional(),
       })
     )
     .query(async ({ input }) => {
+      const { status: inputStatus, ...inputWithoutStatus } = input;
+      const statusOrList = Array.isArray(input.status)
+        ? input.status?.map((status) => ({ status: { equals: status } }))
+        : [{ status: { equals: input.status } }];
+
       const [appointments, error] = await tryCatch(
         prisma.appointment.findMany({
           where: {
-            ...input,
+            ...inputWithoutStatus,
+            OR: statusOrList,
           },
           include: appointmentReturnFormat,
         })
@@ -110,9 +119,10 @@ export const appointmentRouter = router({
       return appointment;
     }),
   update: privateProcedure
-    .use(isAuthorized({ inputKey: 'doctorId' }))
+    .use(isAuthorized({ inputKey: 'userId' }))
     .input(
       z.object({
+        userId: z.string(),
         id: z.number(),
         status: z.enum(appointmentStatusValues).optional(),
         handbook: z.object({
@@ -121,8 +131,7 @@ export const appointmentRouter = router({
             .extend({
               id: z.number().optional(),
             })
-            .array()
-            .nonempty(),
+            .array(),
         }),
       })
     )
