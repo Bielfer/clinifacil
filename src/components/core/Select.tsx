@@ -41,12 +41,13 @@ const Select = ({
       <div className="relative mt-1">
         <Listbox.Button
           className={clsx(
-            'relative w-full cursor-default rounded-lg border py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-primary-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm',
+            'relative w-full cursor-pointer rounded-lg border py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-primary-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm',
             disabled && 'bg-gray-200',
             !error
               ? 'border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500'
               : 'border-red-300 pr-10 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500'
           )}
+          disabled={disabled}
         >
           <span className="block truncate">
             {options.find((item) => item.value === selected)?.text ??
@@ -71,7 +72,7 @@ const Select = ({
               <Listbox.Option
                 key={`${item.value} ${item.text}`}
                 className={({ active }) =>
-                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                  `relative cursor-pointer select-none py-2 pl-10 pr-4 ${
                     active ? 'bg-primary-100 text-primary-900' : 'text-gray-900'
                   }`
                 }
