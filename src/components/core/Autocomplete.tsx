@@ -62,6 +62,7 @@ const Autocomplete: FC<Props> = ({
               ? 'border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500'
               : 'border-red-300 pr-10 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500'
           )}
+          autoComplete="off"
         />
         <Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
           <ChevronUpDownIcon
