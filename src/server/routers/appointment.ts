@@ -9,7 +9,6 @@ import { prisma } from '@/services/prisma';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 import { authorizeHigherOrEqualRole, isAuthorized } from '../middlewares';
-import { handbookFieldSchema } from './handbook';
 
 const appointmentReturnFormat = {
   doctor: {
@@ -125,18 +124,10 @@ export const appointmentRouter = router({
         userId: z.string(),
         id: z.number(),
         status: z.enum(appointmentStatusValues).optional(),
-        handbook: z.object({
-          title: z.string(),
-          fields: handbookFieldSchema
-            .extend({
-              id: z.number().optional(),
-            })
-            .array(),
-        }),
       })
     )
     .mutation(async ({ input }) => {
-      const { id, status, handbook } = input;
+      const { id, userId, ...filteredInput } = input;
 
       const [appointmentData, error] = await tryCatch(
         prisma.$transaction(async (transaction) => {
@@ -146,7 +137,6 @@ export const appointmentRouter = router({
             },
             select: {
               status: true,
-              handbook: true,
             },
           });
 
@@ -155,48 +145,9 @@ export const appointmentRouter = router({
           if (appointment.status === 'CLOSED')
             throw new Error('Appointment already closed');
 
-          if (!appointment.handbook) {
-            const createdHandbook = await transaction.appointment.update({
-              where: { id },
-              data: {
-                status,
-                handbook: {
-                  create: {
-                    ...handbook,
-                    fields: {
-                      create: handbook.fields.map((field) => ({
-                        ...field,
-                        options: { create: field.options },
-                      })),
-                    },
-                  },
-                },
-              },
-              include: appointmentReturnFormat,
-            });
-
-            return createdHandbook;
-          }
-
           const updatedHandbook = await transaction.appointment.update({
             where: { id },
-            data: {
-              status,
-              handbook: {
-                update: {
-                  fields: {
-                    update: handbook.fields.map((field) => ({
-                      where: {
-                        id: field.id,
-                      },
-                      data: {
-                        value: field.value,
-                      },
-                    })),
-                  },
-                },
-              },
-            },
+            data: filteredInput,
             include: appointmentReturnFormat,
           });
 
