@@ -106,13 +106,16 @@ model Receptionist {
 }
 
 model Handbook {
-  id          Int             @id @default(autoincrement())
-  title       String
-  fields      HandbookField[]
-  doctors     Doctor[]
-  appointment Appointment?
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt()
+  id            Int             @id @default(autoincrement())
+  title         String
+  fields        HandbookField[]
+  doctors       Doctor[]
+  appointment   Appointment?    @relation(fields: [appointmentId], references: [id])
+  appointmentId Int?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt()
+
+  @@index([appointmentId])
 }
 
 model HandbookField {
@@ -139,16 +142,15 @@ model HandbookFieldOption {
 }
 
 model Appointment {
-  id         Int               @id @default(autoincrement())
-  status     AppointmentStatus @default(OPEN)
-  patient    Patient           @relation(fields: [patientId], references: [id])
-  patientId  Int
-  doctor     Doctor            @relation(fields: [doctorId], references: [id])
-  doctorId   Int
-  handbook   Handbook?         @relation(fields: [handbookId], references: [id])
-  handbookId Int?              @unique
-  createdAt  DateTime          @default(now())
-  updatedAt  DateTime          @updatedAt()
+  id        Int               @id @default(autoincrement())
+  status    AppointmentStatus @default(OPEN)
+  patient   Patient           @relation(fields: [patientId], references: [id])
+  patientId Int
+  doctor    Doctor            @relation(fields: [doctorId], references: [id])
+  doctorId  Int
+  handbook  Handbook[]
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt()
 
   @@index([patientId])
   @@index([doctorId])
