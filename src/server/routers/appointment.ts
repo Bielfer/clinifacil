@@ -73,7 +73,7 @@ export const appointmentRouter = router({
         prisma.appointment.findMany({
           where: {
             ...inputWithoutStatus,
-            OR: statusOrList,
+            ...(inputStatus && { OR: statusOrList }),
           },
           include: appointmentReturnFormat,
         })
