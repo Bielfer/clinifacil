@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { authorizeHigherOrEqualRole, isAuthorized } from '../middlewares';
 
 const handbookFieldOptionSchema = z.object({
+  id: z.number().optional(),
   text: z.string(),
   value: z.string(),
 });
@@ -24,6 +25,7 @@ const fieldValue = z
   .optional();
 
 export const handbookFieldSchema = z.object({
+  id: z.number().optional(),
   label: z.string(),
   type: handbookFieldTypeSchema,
   value: fieldValue,
@@ -32,9 +34,11 @@ export const handbookFieldSchema = z.object({
 });
 
 const handbookSchema = z.object({
+  id: z.number().optional(),
   title: z.string(),
-  fields: handbookFieldSchema.array().nonempty(),
+  fields: handbookFieldSchema.array(),
   doctorId: z.number().optional(),
+  appointmentId: z.number().optional(),
 });
 
 export const handbookRouter = router({
@@ -43,7 +47,7 @@ export const handbookRouter = router({
     .use(isAuthorized({ inputKey: 'doctorId' }))
     .input(handbookSchema)
     .mutation(async ({ input }) => {
-      const { title, fields, doctorId } = input;
+      const { fields, appointmentId, doctorId, id, ...filteredInput } = input;
 
       const formattedFields = fields.map((field) => ({
         ...field,
@@ -56,13 +60,20 @@ export const handbookRouter = router({
       const [handbook, error] = await tryCatch(
         prisma.handbook.create({
           data: {
-            title,
+            ...filteredInput,
             fields: {
               create: formattedFields,
             },
-            doctors: {
-              connect: doctorId ? [{ id: doctorId }] : [],
-            },
+            ...(doctorId && {
+              doctors: {
+                connect: [{ id: doctorId }],
+              },
+            }),
+            ...(appointmentId && {
+              appointment: {
+                connect: { id: appointmentId },
+              },
+            }),
           },
           include: {
             fields: {
@@ -75,6 +86,65 @@ export const handbookRouter = router({
       );
 
       if (error) throw new TRPCError({ code: 'BAD_REQUEST' });
+
+      return handbook;
+    }),
+  update: privateProcedure
+    .use(isAuthorized({ inputKey: 'userId' }))
+    .input(
+      handbookSchema.omit({
+        doctorId: true,
+        appointmentId: true,
+      })
+    )
+    .mutation(async ({ input }) => {
+      const { fields, ...filteredInput } = input;
+
+      const [handbook, error] = await tryCatch(
+        prisma.handbook.update({
+          where: {
+            id: filteredInput.id,
+          },
+          data: {
+            ...filteredInput,
+            fields: {
+              update: fields.map((field) => {
+                const { id, ...fieldWithoutId } = field;
+
+                return {
+                  where: {
+                    id,
+                  },
+                  data: {
+                    ...fieldWithoutId,
+                    options: {
+                      update: fieldWithoutId.options?.map((option) => {
+                        const { id: optionId, ...optionWithoutId } = option;
+
+                        return {
+                          where: {
+                            id: optionId,
+                          },
+                          data: optionWithoutId,
+                        };
+                      }),
+                    },
+                  },
+                };
+              }),
+            },
+          },
+          include: {
+            fields: {
+              include: {
+                options: true,
+              },
+            },
+          },
+        })
+      );
+
+      if (error) throw new TRPCError({ code: 'BAD_REQUEST', message: error });
 
       return handbook;
     }),
