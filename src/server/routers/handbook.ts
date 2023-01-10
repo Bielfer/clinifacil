@@ -44,7 +44,6 @@ const handbookSchema = z.object({
 export const handbookRouter = router({
   create: privateProcedure
     .use(authorizeHigherOrEqualRole(roles.doctor))
-    .use(isAuthorized({ inputKey: 'doctorId' }))
     .input(handbookSchema)
     .mutation(async ({ input }) => {
       const { fields, appointmentId, doctorId, id, ...filteredInput } = input;
@@ -85,7 +84,7 @@ export const handbookRouter = router({
         })
       );
 
-      if (error) throw new TRPCError({ code: 'BAD_REQUEST' });
+      if (error) throw new TRPCError({ code: 'BAD_REQUEST', message: error });
 
       return handbook;
     }),
