@@ -10,8 +10,17 @@ const paths = {
   newPatient: '/patients/new',
   patientsById: (patientId: string | number) => `/patients/${patientId}`,
   editPatient: (patientId: string | number) => `/patients/${patientId}/edit`,
+  patientHandbooks: (patientId: string | number) =>
+    `/patients/${patientId}/handbooks`,
   newPatientHandbook: (patientId: string | number) =>
-    `/patients/${patientId}/handbook`,
+    `/patients/${patientId}/handbooks/new`,
+  patientHandbookById: ({
+    patientId,
+    handbookId,
+  }: {
+    patientId: string | number;
+    handbookId: string | number;
+  }) => `/patients/${patientId}/handbooks/${handbookId}`,
   specificPatientAppointments: (patientId: string | number) =>
     `/patients/${patientId}/appointments`,
   allPatientAppointments: (patientId: string | number) =>
