@@ -8,7 +8,6 @@ interface Props {
   label?: string;
   hint?: string;
   disabled?: boolean;
-  defaultOption?: { text: string; value: string };
 }
 
 const FormikAutocomplete: FC<Props> = ({
@@ -17,18 +16,19 @@ const FormikAutocomplete: FC<Props> = ({
   label,
   hint,
   disabled,
-  defaultOption,
 }) => {
-  const { touched, errors, setFieldValue } = useFormikContext<{
-    [name: string]: boolean;
+  const { touched, errors, setFieldValue, values } = useFormikContext<{
+    [name: string]: any;
   }>();
-  const [selectedOption, setSelectedOption] = useState<
-    | {
-        text: string;
-        value: string;
-      }
-    | undefined
-  >(defaultOption);
+  const [selectedOption, setSelectedOption] = useState<{
+    text: string;
+    value: string;
+  }>(
+    options.find((option) => option.value === values[name]) ?? {
+      text: '',
+      value: '',
+    }
+  );
 
   useEffect(() => {
     setFieldValue(name, selectedOption?.value);
@@ -37,11 +37,11 @@ const FormikAutocomplete: FC<Props> = ({
   return (
     <Autocomplete
       label={label}
-      selected={selectedOption ?? { text: '', value: '' }}
+      selected={selectedOption}
       setSelected={(e) => setSelectedOption(e)}
       name={name}
       options={options}
-      error={touched[name] && errors[name] ? errors[name] : ''}
+      error={(touched[name] && errors[name] ? errors[name] : '') as string}
       hint={hint}
       disabled={disabled}
     />
