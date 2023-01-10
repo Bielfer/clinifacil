@@ -3,6 +3,7 @@ import MyLink from '@/components/core/MyLink';
 import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
 import Text from '@/components/core/Text';
+import { appointmentStatus } from '@/constants/appointment-status';
 import paths, { sidebarPaths } from '@/constants/paths';
 import { useRoles } from '@/hooks';
 import { trpc } from '@/services/trpc';
@@ -22,6 +23,17 @@ const PatientsById: Page = () => {
     },
     { enabled: !!patientId }
   );
+  const { data: appointments } = trpc.appointment.getMany.useQuery(
+    {
+      patientId: parseInt(patientId, 10),
+      status: appointmentStatus.open,
+    },
+    { enabled: !!patientId }
+  );
+
+  const activeAppointmentHandbooks = appointments?.[0].handbooks;
+  const appointmentHasHandbook =
+    activeAppointmentHandbooks && activeAppointmentHandbooks.length > 0;
 
   return (
     <>
@@ -33,7 +45,11 @@ const PatientsById: Page = () => {
           <Text h2>Detalhes do Paciente</Text>
           {isDoctor && (
             <MyLink
-              href={paths.newPatientHandbook(patientId)}
+              href={
+                appointmentHasHandbook
+                  ? paths.patientHandbooks(patientId)
+                  : paths.newPatientHandbook(patientId)
+              }
               variant="button-primary"
               iconLeft={PlusIcon}
             >
