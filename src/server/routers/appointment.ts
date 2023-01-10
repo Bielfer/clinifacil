@@ -18,7 +18,7 @@ const appointmentReturnFormat = {
     },
   },
   patient: true,
-  handbook: {
+  handbooks: {
     include: {
       fields: {
         include: {
@@ -145,13 +145,13 @@ export const appointmentRouter = router({
           if (appointment.status === 'CLOSED')
             throw new Error('Appointment already closed');
 
-          const updatedHandbook = await transaction.appointment.update({
+          const updatedAppointment = await transaction.appointment.update({
             where: { id },
             data: filteredInput,
             include: appointmentReturnFormat,
           });
 
-          return updatedHandbook;
+          return updatedAppointment;
         })
       );
 
