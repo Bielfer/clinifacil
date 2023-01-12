@@ -4,7 +4,12 @@ import { useToast } from '@/components/core/Toast';
 import paths from '@/constants/paths';
 import tryCatch from '@/helpers/tryCatch';
 import { trpc } from '@/services/trpc';
-import type { HandbookField } from '@prisma/client';
+import { FieldValue } from '@/types/handbook';
+import type {
+  Handbook,
+  HandbookField,
+  HandbookFieldOption,
+} from '@prisma/client';
 import { Form, Formik } from 'formik';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -12,18 +17,12 @@ import { FC } from 'react';
 import FormikSelect from '../FormikSelect';
 import HandbookFields from './HandbookFields';
 
-type FormHandbookType = {
-  id: number;
-  title: string;
-  fields: (HandbookField & {
-    value: string | number | Date | undefined;
-    options: {
-      id?: number;
-      value: string;
-      text: string;
-    }[];
-  })[];
-};
+type FormHandbookType =
+  | Handbook & {
+      fields: (HandbookField & {
+        options: HandbookFieldOption[];
+      })[];
+    };
 
 type Props = {
   handbook?: FormHandbookType;
@@ -57,6 +56,7 @@ const FormHandbook: FC<Props> = ({ handbook }) => {
   const initialValues = {
     selectedHandbookId: 0,
     handbook: (handbook ?? {
+      id: 0,
       title: '',
       fields: [],
     }) as FormHandbookType,
@@ -68,20 +68,21 @@ const FormHandbook: FC<Props> = ({ handbook }) => {
       ...filteredHandbook,
       ...(activeAppointment && { appointmentId: activeAppointment.id }),
       ...(handbook && { id }),
-      fields: values.handbook.fields.map((field) => {
-        const { handbookId, id: fieldId, ...rest } = field;
-        return {
-          ...rest,
-          ...(!!handbook && { id: handbook.id }),
-          value: field.value ?? undefined,
-          options: field.options.map((option) => {
-            const { id: optionId, ...optionWithoutId } = option;
-            return {
-              ...optionWithoutId,
-            };
-          }),
-        };
-      }),
+      fields:
+        values.handbook?.fields.map((field) => {
+          const { handbookId, id: fieldId, ...rest } = field;
+          return {
+            ...rest,
+            ...(!!handbook && { id: handbook.id }),
+            value: (field.value as FieldValue) ?? undefined,
+            options: field.options.map((option) => {
+              const { id: optionId, ...optionWithoutId } = option;
+              return {
+                ...optionWithoutId,
+              };
+            }),
+          };
+        }) ?? [],
     };
 
     let error: any;
