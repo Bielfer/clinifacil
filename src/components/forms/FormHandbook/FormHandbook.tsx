@@ -66,7 +66,7 @@ const FormHandbook: FC<Props> = ({ handbook, appointmentId }) => {
           const { handbookId, id: fieldId, ...rest } = field;
           return {
             ...rest,
-            ...(!!handbook && { id: handbook.id }),
+            ...(!!handbook && { id: fieldId }),
             value: (field.value as FieldValue) ?? undefined,
             options: field.options.map((option) => {
               const { id: optionId, ...optionWithoutId } = option;
