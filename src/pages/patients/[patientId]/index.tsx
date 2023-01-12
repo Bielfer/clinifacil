@@ -55,7 +55,9 @@ const PatientsById: Page = () => {
                 appointmentHasHandbook ? ArrowRightCircleIcon : PlusIcon
               }
             >
-              {appointmentHasHandbook ? 'Continuar Consulta' : 'Nova Consulta'}
+              {appointmentHasHandbook
+                ? 'Continuar Atendimento'
+                : 'Nova Consulta'}
             </MyLink>
           )}
         </div>
