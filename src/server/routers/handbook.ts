@@ -5,7 +5,7 @@ import { router, privateProcedure } from '@/server/trpc';
 import { prisma } from '@/services/prisma';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { authorizeHigherOrEqualRole, isAuthorized } from '../middlewares';
+import { authorizeHigherOrEqualRole } from '../middlewares';
 
 const handbookFieldOptionSchema = z.object({
   id: z.number().optional(),
@@ -15,13 +15,8 @@ const handbookFieldOptionSchema = z.object({
 
 const handbookFieldTypeSchema = z.enum(fieldTypesArray);
 
-const fieldValue = z
-  .union([z.string(), z.boolean(), z.date(), z.number()])
-  .transform((val) => {
-    if (val instanceof Date) return val.toString();
-
-    return val;
-  })
+export const fieldValue = z
+  .union([z.string(), z.boolean(), z.number()])
   .optional();
 
 export const handbookFieldSchema = z.object({
@@ -38,10 +33,35 @@ const handbookSchema = z.object({
   title: z.string(),
   fields: handbookFieldSchema.array(),
   doctorId: z.number().optional(),
-  appointmentId: z.number().optional(),
+  appointmentId: z.number().nullish(),
 });
 
 export const handbookRouter = router({
+  get: privateProcedure
+    .use(authorizeHigherOrEqualRole(roles.doctor))
+    .input(z.object({ id: z.number() }))
+    .query(async ({ input }) => {
+      const { id } = input;
+
+      const [handbook, error] = await tryCatch(
+        prisma.handbook.findUnique({
+          where: {
+            id,
+          },
+          include: {
+            fields: {
+              include: {
+                options: true,
+              },
+            },
+          },
+        })
+      );
+
+      if (error) throw new TRPCError({ code: 'BAD_REQUEST', message: error });
+
+      return handbook;
+    }),
   create: privateProcedure
     .use(authorizeHigherOrEqualRole(roles.doctor))
     .input(handbookSchema)
@@ -89,7 +109,6 @@ export const handbookRouter = router({
       return handbook;
     }),
   update: privateProcedure
-    .use(isAuthorized({ inputKey: 'userId' }))
     .input(
       handbookSchema.omit({
         doctorId: true,
@@ -97,38 +116,24 @@ export const handbookRouter = router({
       })
     )
     .mutation(async ({ input }) => {
-      const { fields, ...filteredInput } = input;
+      const { fields, id, ...filteredInput } = input;
 
       const [handbook, error] = await tryCatch(
         prisma.handbook.update({
           where: {
-            id: filteredInput.id,
+            id,
           },
           data: {
             ...filteredInput,
             fields: {
               update: fields.map((field) => {
-                const { id, ...fieldWithoutId } = field;
+                const { id: fieldId, options, ...filteredField } = field;
 
                 return {
                   where: {
-                    id,
+                    id: fieldId,
                   },
-                  data: {
-                    ...fieldWithoutId,
-                    options: {
-                      update: fieldWithoutId.options?.map((option) => {
-                        const { id: optionId, ...optionWithoutId } = option;
-
-                        return {
-                          where: {
-                            id: optionId,
-                          },
-                          data: optionWithoutId,
-                        };
-                      }),
-                    },
-                  },
+                  data: filteredField,
                 };
               }),
             },
