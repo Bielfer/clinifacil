@@ -8,7 +8,7 @@ import paths, { sidebarPaths } from '@/constants/paths';
 import { useRoles } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
-import { PlusIcon } from '@heroicons/react/24/outline';
+import { ArrowRightCircleIcon, PlusIcon } from '@heroicons/react/20/solid';
 import { differenceInYears, format } from 'date-fns';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -51,9 +51,11 @@ const PatientsById: Page = () => {
                   : paths.newPatientHandbook(patientId)
               }
               variant="button-primary"
-              iconLeft={PlusIcon}
+              iconLeft={
+                appointmentHasHandbook ? ArrowRightCircleIcon : PlusIcon
+              }
             >
-              Nova Consulta
+              {appointmentHasHandbook ? 'Continuar Consulta' : 'Nova Consulta'}
             </MyLink>
           )}
         </div>
