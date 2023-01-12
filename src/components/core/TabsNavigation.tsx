@@ -1,6 +1,7 @@
 import { IconType } from '@/types/core';
 import clsx from 'clsx';
 import { useRouter } from 'next/router';
+import { FC } from 'react';
 import MyLink from './MyLink';
 
 interface Tab {
@@ -14,13 +15,13 @@ interface Props {
   className?: string;
 }
 
-const Tabs = ({ tabs, className }: Props) => {
+const TabsNavigation: FC<Props> = ({ tabs, className }) => {
   const router = useRouter();
 
   return (
     <nav
       className={clsx(
-        '-mb-px flex gap-x-8 max-w-full overflow-x-auto',
+        '-mb-px flex max-w-full gap-x-8 overflow-x-auto',
         className
       )}
       aria-label="Tabs"
@@ -35,8 +36,8 @@ const Tabs = ({ tabs, className }: Props) => {
             className={clsx(
               isCurrentTab
                 ? 'border-primary-500 text-primary-600'
-                : 'border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300',
-              'group inline-flex items-center py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap'
+                : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700',
+              'group inline-flex items-center whitespace-nowrap border-b-2 py-4 px-1 text-sm font-medium'
             )}
           >
             {tab.icon && (
@@ -59,4 +60,4 @@ const Tabs = ({ tabs, className }: Props) => {
   );
 };
 
-export default Tabs;
+export default TabsNavigation;
