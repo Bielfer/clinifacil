@@ -1,5 +1,5 @@
-import { useFormikContext } from 'formik';
-import { FC, useEffect, useState } from 'react';
+import { useField } from 'formik';
+import { FC } from 'react';
 import Autocomplete from '../core/Autocomplete';
 
 interface Props {
@@ -17,31 +17,16 @@ const FormikAutocomplete: FC<Props> = ({
   hint,
   disabled,
 }) => {
-  const { touched, errors, setFieldValue, values } = useFormikContext<{
-    [name: string]: any;
-  }>();
-  const [selectedOption, setSelectedOption] = useState<{
-    text: string;
-    value: string;
-  }>(
-    options.find((option) => option.value === values[name]) ?? {
-      text: '',
-      value: '',
-    }
-  );
-
-  useEffect(() => {
-    setFieldValue(name, selectedOption?.value);
-  }, [selectedOption?.value, setFieldValue, name]);
+  const [{ value }, { touched, error }, { setValue }] = useField(name);
 
   return (
     <Autocomplete
       label={label}
-      selected={selectedOption}
-      setSelected={(e) => setSelectedOption(e)}
+      selected={value}
+      setSelected={(e) => setValue(e)}
       name={name}
       options={options}
-      error={(touched[name] && errors[name] ? errors[name] : '') as string}
+      error={(touched && error ? error : '') as string}
       hint={hint}
       disabled={disabled}
     />

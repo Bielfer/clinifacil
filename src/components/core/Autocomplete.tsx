@@ -6,8 +6,8 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import InputLayout from './InputLayout';
 
 interface Props {
-  selected: { text: string; value: string };
-  setSelected: (value: { text: string; value: string }) => void;
+  selected: string;
+  setSelected: (value: string) => void;
   options: { text: string; value: string }[];
   className?: string;
   placeholder?: string;
@@ -51,9 +51,12 @@ const Autocomplete: FC<Props> = ({
       <Combobox value={selected} onChange={setSelected}>
         <Combobox.Input
           onChange={(event) => setInput(event.target.value)}
-          displayValue={(option: { text: string; value: string }) =>
-            option.text
-          }
+          displayValue={(value: string) => {
+            const t =
+              options.find((option) => option.value === value)?.text ?? '';
+
+            return t;
+          }}
           placeholder={placeholder}
           className={clsx(
             'relative w-full cursor-text rounded-lg border py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-primary-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm',
@@ -74,7 +77,7 @@ const Autocomplete: FC<Props> = ({
           {filteredOptions.map((option) => (
             <Combobox.Option
               key={option.value}
-              value={option}
+              value={option.value}
               className={({ active }) =>
                 clsx(
                   'relative cursor-pointer select-none py-2 pl-8 pr-4',
@@ -97,7 +100,7 @@ const Autocomplete: FC<Props> = ({
                     <span
                       className={clsx(
                         'absolute inset-y-0 left-0 flex items-center pl-1.5',
-                        active ? 'text-white' : 'text-indigo-600'
+                        active ? 'text-white' : 'text-primary-600'
                       )}
                     >
                       <CheckIcon className="h-5 w-5" aria-hidden="true" />
