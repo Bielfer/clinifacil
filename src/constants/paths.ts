@@ -32,4 +32,14 @@ export const sidebarPaths = [
   { text: 'Pacientes', href: paths.patients, icon: UsersIcon },
 ] as const;
 
+export const patientAppointmentPaths = ({
+  patientId,
+}: {
+  patientId: string;
+}) => [
+  { text: 'Prontuário', href: paths.patientHandbooks(patientId) },
+  { text: 'Receitas', href: paths.patientsById(patientId) },
+  { text: 'Atestados', href: paths.patientsById(patientId) },
+];
+
 export default paths;
