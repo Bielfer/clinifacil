@@ -12,7 +12,9 @@ const PatientNewHandbook: Page = () => (
     </Head>
     <Sidebar items={sidebarPaths}>
       <div className="mx-auto max-w-2xl">
-        <Text h2>Prontuário do Paciente</Text>
+        <Text h2 className="pb-6">
+          Consulta do Paciente
+        </Text>
         <FormHandbook />
       </div>
     </Sidebar>
