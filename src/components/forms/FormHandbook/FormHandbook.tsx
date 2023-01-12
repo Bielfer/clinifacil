@@ -1,5 +1,4 @@
 import Button from '@/components/core/Button';
-import LoadingWrapper from '@/components/core/LoadingWrapper';
 import { useToast } from '@/components/core/Toast';
 import paths from '@/constants/paths';
 import tryCatch from '@/helpers/tryCatch';
@@ -25,10 +24,11 @@ type FormHandbookType =
     };
 
 type Props = {
-  handbook?: FormHandbookType;
+  handbook?: FormHandbookType | null;
+  appointmentId?: number;
 };
 
-const FormHandbook: FC<Props> = ({ handbook }) => {
+const FormHandbook: FC<Props> = ({ handbook, appointmentId }) => {
   const router = useRouter();
   const { addToast } = useToast();
   const patientId = router.query.patientId as string;
@@ -43,15 +43,8 @@ const FormHandbook: FC<Props> = ({ handbook }) => {
     },
     { enabled: !!doctor }
   );
-  const { data: appointments, isLoading: loadingAppointments } =
-    trpc.appointment.getMany.useQuery(
-      { patientId: parseInt(patientId, 10), doctorId: doctor?.id },
-      { enabled: !handbook && !!doctor }
-    );
   const { mutateAsync: createHandbook } = trpc.handbook.create.useMutation();
   const { mutateAsync: updateHandbook } = trpc.handbook.update.useMutation();
-
-  const activeAppointment = appointments?.[0];
 
   const initialValues = {
     selectedHandbookId: 0,
@@ -66,7 +59,7 @@ const FormHandbook: FC<Props> = ({ handbook }) => {
     const { id, ...filteredHandbook } = values.handbook;
     const valuesCopy = {
       ...filteredHandbook,
-      ...(activeAppointment && { appointmentId: activeAppointment.id }),
+      ...(appointmentId && { appointmentId }),
       ...(handbook && { id }),
       fields:
         values.handbook?.fields.map((field) => {
@@ -106,32 +99,30 @@ const FormHandbook: FC<Props> = ({ handbook }) => {
   };
 
   return (
-    <LoadingWrapper loading={loadingAppointments}>
-      <Formik initialValues={initialValues} onSubmit={handleSubmit}>
-        {({ isSubmitting }) => (
-          <Form className="flex flex-col gap-y-6">
-            {!handbook && (
-              <FormikSelect
-                name="selectedHandbookId"
-                label="Tipo de Consulta"
-                options={
-                  handbooks?.map((doctorHandbook) => ({
-                    text: doctorHandbook.title,
-                    value: doctorHandbook.id,
-                  })) ?? []
-                }
-              />
-            )}
-            <HandbookFields handbooks={handbooks ?? []} />
-            <div className="flex justify-end">
-              <Button type="submit" loading={isSubmitting} variant="primary">
-                Salvar Consulta
-              </Button>
-            </div>
-          </Form>
-        )}
-      </Formik>
-    </LoadingWrapper>
+    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+      {({ isSubmitting }) => (
+        <Form className="flex flex-col gap-y-6">
+          {!handbook && (
+            <FormikSelect
+              name="selectedHandbookId"
+              label="Tipo de Consulta"
+              options={
+                handbooks?.map((doctorHandbook) => ({
+                  text: doctorHandbook.title,
+                  value: doctorHandbook.id,
+                })) ?? []
+              }
+            />
+          )}
+          <HandbookFields handbooks={handbooks ?? []} />
+          <div className="flex justify-end">
+            <Button type="submit" loading={isSubmitting} variant="primary">
+              Salvar Consulta
+            </Button>
+          </div>
+        </Form>
+      )}
+    </Formik>
   );
 };
 
