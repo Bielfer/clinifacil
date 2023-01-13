@@ -6,8 +6,9 @@ import { useRoles } from '@/hooks';
 import useReceptionistStore from '@/store/receptionist';
 import { Page } from '@/types/auth';
 import Head from 'next/head';
-import NoDoctorSelectedMessage from '@/components/features/receptionist/NoDoctorSelectedMessage';
 import SelectDoctor from '@/components/features/receptionist/SelectDoctor';
+import { CursorArrowRaysIcon } from '@heroicons/react/24/outline';
+import EmptyState from '@/components/core/EmptyState';
 
 const Patients: Page = () => {
   const { isReceptionist } = useRoles();
@@ -22,15 +23,17 @@ const Patients: Page = () => {
       </Head>
       <Sidebar items={sidebarPaths}>
         <div className="mx-auto max-w-2xl">
-          <div className="flex items-center justify-between">
-            <Text h2 className="my-6">
-              Procure o Paciente
-            </Text>
+          <div className="mb-6 flex items-center justify-between">
+            <Text h2>Procure o Paciente</Text>
             {isReceptionist && <SelectDoctor />}
           </div>
           <div className="flex justify-center pt-6">
             {isReceptionist && !selectedDoctorId ? (
-              <NoDoctorSelectedMessage />
+              <EmptyState
+                icon={CursorArrowRaysIcon}
+                title="Nenhum médico selecionado"
+                subtitle="Para selecionar um médico basta clicar no seletor acima"
+              />
             ) : (
               <div className="w-full">
                 <PatientSearch />

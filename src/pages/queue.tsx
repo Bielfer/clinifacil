@@ -8,7 +8,7 @@ import { appointmentStatus } from '@/constants/appointment-status';
 import { differenceInYears } from 'date-fns';
 import MyLink from '@/components/core/MyLink';
 import paths, { sidebarPaths } from '@/constants/paths';
-import { PlusIcon } from '@heroicons/react/24/outline';
+import { CursorArrowRaysIcon, PlusIcon } from '@heroicons/react/24/outline';
 import RoleController from '@/components/core/RoleController';
 import { roles } from '@/constants/roles';
 import SelectDoctor from '@/components/features/receptionist/SelectDoctor';
@@ -16,8 +16,8 @@ import { useSession } from 'next-auth/react';
 import useReceptionistStore from '@/store/receptionist';
 import { useState } from 'react';
 import Tabs from '@/components/core/Tabs';
-import NoDoctorSelectedMessage from '@/components/features/receptionist/NoDoctorSelectedMessage';
 import { AppointmentStatus } from '@prisma/client';
+import EmptyState from '@/components/core/EmptyState';
 
 const Queue: Page = () => {
   const [tabsStatus, setTabsStatus] = useState<AppointmentStatus>(
@@ -74,7 +74,11 @@ const Queue: Page = () => {
           setValue={setTabsStatus}
         />
         {isReceptionist && !selectedDoctorId ? (
-          <NoDoctorSelectedMessage />
+          <EmptyState
+            icon={CursorArrowRaysIcon}
+            title="Nenhum médico selecionado"
+            subtitle="Para selecionar um médico basta clicar no seletor acima"
+          />
         ) : (
           <Table>
             <Table.Head>
