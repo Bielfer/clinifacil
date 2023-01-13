@@ -12,6 +12,7 @@ export type MyLinkProps = {
   iconRight?: IconType;
   href: string;
   children: ReactNode;
+  onClick?: () => void;
 };
 
 const variants = {
