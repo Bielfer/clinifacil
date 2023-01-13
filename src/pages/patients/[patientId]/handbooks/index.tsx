@@ -1,3 +1,5 @@
+import EmptyState from '@/components/core/EmptyState';
+import If from '@/components/core/If';
 import LinksList from '@/components/core/LinksList';
 import LinksListSkeleton from '@/components/core/LinksList/LinksListSkeleton';
 import MyLink from '@/components/core/MyLink';
@@ -11,6 +13,7 @@ import paths, {
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
 import { PlusIcon } from '@heroicons/react/20/solid';
+import { ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -22,13 +25,14 @@ const PatientHandbook: Page = () => {
   const { data: doctor } = trpc.doctor.get.useQuery({
     userId: session?.user.id,
   });
-  const { data: appointments } = trpc.appointment.getMany.useQuery(
-    {
-      patientId: parseInt(patientId, 10),
-      doctorId: doctor?.id,
-    },
-    { enabled: !!doctor?.id }
-  );
+  const { data: appointments, isLoading: isLoadingAppointments } =
+    trpc.appointment.getMany.useQuery(
+      {
+        patientId: parseInt(patientId, 10),
+        doctorId: doctor?.id,
+      },
+      { enabled: !!doctor?.id }
+    );
   const activeAppointment = appointments?.[0];
 
   return (
@@ -52,23 +56,41 @@ const PatientHandbook: Page = () => {
           tabs={patientAppointmentPaths({ patientId })}
         />
         <div className="mx-auto max-w-2xl">
-          {activeAppointment ? (
-            <LinksList>
-              {activeAppointment.handbooks.map((handbook) => (
-                <LinksList.Item
-                  key={handbook.id}
-                  href={paths.patientHandbookById({
-                    patientId,
-                    handbookId: handbook.id,
-                  })}
-                >
-                  {handbook.title}
-                </LinksList.Item>
-              ))}
-            </LinksList>
-          ) : (
-            <LinksListSkeleton rows={5} />
-          )}
+          <If>
+            <If.Case condition={isLoadingAppointments}>
+              <LinksListSkeleton rows={5} />
+            </If.Case>
+            <If.Case
+              condition={
+                !!activeAppointment && activeAppointment.handbooks.length > 0
+              }
+            >
+              <LinksList>
+                {activeAppointment?.handbooks.map((handbook) => (
+                  <LinksList.Item
+                    key={handbook.id}
+                    href={paths.patientHandbookById({
+                      patientId,
+                      handbookId: handbook.id,
+                    })}
+                  >
+                    {handbook.title}
+                  </LinksList.Item>
+                ))}
+              </LinksList>
+            </If.Case>
+            <If.Case
+              condition={
+                !!activeAppointment && activeAppointment.handbooks.length <= 0
+              }
+            >
+              <EmptyState
+                icon={ClipboardDocumentListIcon}
+                title="Nenhuma consulta criada"
+                subtitle="Para criar uma nova consulta basta clicar no botão Nova Consulta acima!"
+              />
+            </If.Case>
+          </If>
         </div>
       </Sidebar>
     </>
