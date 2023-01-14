@@ -42,6 +42,9 @@ const Queue: Page = () => {
     },
     { enabled: queryAppointments }
   );
+  const { mutate: updateAppointment } = trpc.appointment.update.useMutation();
+
+  const isOpenStatus = tabsStatus === appointmentStatus.open;
 
   return (
     <>
@@ -106,8 +109,16 @@ const Queue: Page = () => {
                         <MyLink
                           href={paths.patientsById(appointment.patient.id)}
                           variant="primary"
+                          onClick={() => {
+                            if (!isOpenStatus) return;
+
+                            updateAppointment({
+                              id: appointment.id,
+                              status: appointmentStatus.finished,
+                            });
+                          }}
                         >
-                          Consultar Paciente
+                          {isOpenStatus ? 'Consultar Paciente' : 'Ver Consulta'}
                         </MyLink>
                       </RoleController>
                     </Table.Data>
