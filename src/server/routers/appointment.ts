@@ -118,16 +118,15 @@ export const appointmentRouter = router({
       return appointment;
     }),
   update: privateProcedure
-    .use(isAuthorized({ inputKey: 'userId' }))
+    .use(authorizeHigherOrEqualRole(roles.doctor))
     .input(
       z.object({
-        userId: z.string(),
         id: z.number(),
         status: z.enum(appointmentStatusValues).optional(),
       })
     )
     .mutation(async ({ input }) => {
-      const { id, userId, ...filteredInput } = input;
+      const { id, ...filteredInput } = input;
 
       const [appointmentData, error] = await tryCatch(
         prisma.$transaction(async (transaction) => {
