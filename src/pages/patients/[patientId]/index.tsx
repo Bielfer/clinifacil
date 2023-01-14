@@ -1,4 +1,4 @@
-import List from '@/components/core/List';
+import DescriptionList from '@/components/core/DescriptionList';
 import MyLink from '@/components/core/MyLink';
 import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
@@ -74,7 +74,7 @@ const PatientsById: Page = () => {
             },
           ]}
         />
-        <List
+        <DescriptionList
           className="pt-14"
           title="Informações Gerais"
           loading={isLoading}

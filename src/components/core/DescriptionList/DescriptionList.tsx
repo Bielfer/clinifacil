@@ -10,7 +10,7 @@ type Props = {
   link?: { text: string; href: string };
 };
 
-const List: FC<Props> = ({
+const DescriptionList: FC<Props> = ({
   items,
   title,
   subtitle,
@@ -54,4 +54,4 @@ const List: FC<Props> = ({
   </div>
 );
 
-export default List;
+export default DescriptionList;
