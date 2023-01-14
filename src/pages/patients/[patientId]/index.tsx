@@ -26,7 +26,7 @@ const PatientsById: Page = () => {
   const { data: appointments } = trpc.appointment.getMany.useQuery(
     {
       patientId: parseInt(patientId, 10),
-      status: appointmentStatus.open,
+      status: [appointmentStatus.open, appointmentStatus.finished],
     },
     { enabled: !!patientId }
   );
