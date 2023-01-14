@@ -141,8 +141,8 @@ export const appointmentRouter = router({
 
           if (!appointment) throw new Error('Appointment not found');
 
-          if (appointment.status === 'CLOSED')
-            throw new Error('Appointment already closed');
+          if (appointment.status === appointmentStatus.archived)
+            throw new Error('Appointment already archived');
 
           const updatedAppointment = await transaction.appointment.update({
             where: { id },

@@ -3,7 +3,7 @@ import { AppointmentStatus } from '@prisma/client';
 export const appointmentStatus = {
   open: 'OPEN',
   finished: 'FINISHED',
-  closed: 'CLOSED',
+  archived: 'ARCHIVED',
 } as const;
 
 export const appointmentStatusValues = Object.values(
