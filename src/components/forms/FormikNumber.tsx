@@ -17,7 +17,7 @@ const FormikNumber = ({
   format = 'default',
   ...props
 }: Props) => {
-  const [, { error, initialValue }, { setValue }] = useField(name);
+  const [, { error, initialValue, touched }, { setValue }] = useField(name);
   const [input, setInput] = useState(initialValue);
 
   const formats = {
@@ -39,7 +39,7 @@ const FormikNumber = ({
       onChange={handleChange}
       label={label}
       className={className}
-      error={error}
+      error={touched && error ? error : ''}
       hint={hint}
       {...props}
     />
