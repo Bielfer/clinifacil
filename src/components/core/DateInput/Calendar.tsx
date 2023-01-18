@@ -35,6 +35,7 @@ import {
 type Props = {
   date: Date;
   setDate: Dispatch<SetStateAction<Date>>;
+  onDateSelected?: () => void;
   className?: string;
 };
 
@@ -42,6 +43,7 @@ const Calendar: FC<Props> = ({
   date: selectedDate,
   setDate: setSelectedDate,
   className,
+  onDateSelected,
 }) => {
   const [calendarDate, setCalendarDate] = useState(selectedDate);
 
@@ -158,7 +160,10 @@ const Calendar: FC<Props> = ({
                 <button
                   key={formatISO(day)}
                   type="button"
-                  onClick={() => setSelectedDate(day)}
+                  onClick={() => {
+                    setSelectedDate(day);
+                    if (onDateSelected) onDateSelected();
+                  }}
                   className={clsx(
                     isSelected && 'text-white',
                     !isSelected && isToday && 'text-primary-600',

@@ -65,7 +65,11 @@ const DateInput: FC<Props> = ({
         onClose={() => setIsOpen(false)}
         className="w-full max-w-sm"
       >
-        <Calendar date={date} setDate={setDate} />
+        <Calendar
+          date={date}
+          setDate={setDate}
+          onDateSelected={() => setIsOpen(false)}
+        />
       </Modal>
     </>
   );
