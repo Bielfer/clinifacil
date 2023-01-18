@@ -8,6 +8,7 @@ const validations = {
   exactCharacters: (num: number) =>
     `Esse campo deve conter exatamente ${num} caracteres`,
   cellphone: 'O número de celular deve ter 9 dígitos',
+  minValue: (num: number) => `Insira um valor maior que ${num}`,
 } as const;
 
 export default validations;
