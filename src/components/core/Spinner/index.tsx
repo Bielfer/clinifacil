@@ -1,9 +1,10 @@
 import clsx from 'clsx';
+import type { FC } from 'react';
 import ConditionalWrapper from '../ConditionalWrapper';
 
-type Size = 'sm' | 'md' | 'lg' | 'xl';
+type Size = keyof typeof sizes;
 
-type Color = 'primary' | 'white';
+type Color = keyof typeof colors;
 
 interface Props {
   className?: string;
@@ -22,18 +23,19 @@ const sizes = {
 const colors = {
   primary: 'text-primary-700',
   white: 'text-white',
+  inherit: '',
 };
 
-const Spinner = ({
+const Spinner: FC<Props> = ({
   className,
   size = 'md',
   color = 'primary',
   page,
-}: Props) => (
+}) => (
   <ConditionalWrapper
     condition={page || false}
     renderWrapper={(children) => (
-      <div className="h-screen w-screen flex items-center justify-center">
+      <div className="flex h-screen w-screen items-center justify-center">
         {children}
       </div>
     )}
