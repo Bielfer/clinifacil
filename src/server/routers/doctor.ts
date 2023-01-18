@@ -30,6 +30,7 @@ export const doctorRouter = router({
         name: z.string(),
         cpf: z.string(),
         crm: z.string(),
+        city: z.string(),
         email: z.string().optional(),
         cellphone: z.string().optional(),
       })
