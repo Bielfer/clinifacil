@@ -28,7 +28,7 @@ const ChangeMessageDynamically: FC<Props> = ({ patient }) => {
     patient?.name
   }, na qualidade de seu médico assistente, atesto para os devidos fins que o mesmo, por motivo de doença, ficou (ou ficará) impossibilitado de exercer suas atividades durante ${
     values.duration
-  } dia(s), a partir de ${format(values.startDate, 'dd/MM/yyyy')}`;
+  } dia(s), a partir de ${format(values.startDate, 'dd/MM/yyyy')}.`;
 
   useEffect(() => {
     setFieldValue('message', message);
