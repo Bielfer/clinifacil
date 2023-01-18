@@ -21,6 +21,7 @@ const variants = {
     'rounded-lg text-primary-700 hover:bg-primary-100 hover:text-primary-900',
   secondary:
     'rounded-lg text-slate-700 hover:bg-slate-100 hover:text-slate-900',
+  error: 'rounded-lg text-red-700 hover:bg-red-100 hover:text-red-900',
   'button-primary':
     'border border-transparent text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500',
   'button-secondary':

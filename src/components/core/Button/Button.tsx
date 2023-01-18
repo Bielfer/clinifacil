@@ -23,9 +23,10 @@ export const variantStyles = {
   white:
     'border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500',
   'link-primary':
-    'rounded-lg py-1 px-2 text-primary-700 hover:bg-primary-100 hover:text-primary-900',
+    'rounded-lg text-primary-700 hover:bg-primary-100 hover:text-primary-900',
   'link-secondary':
-    'rounded-lg py-1 px-2 text-slate-700 hover:bg-slate-100 hover:text-slate-900',
+    'rounded-lg text-slate-700 hover:bg-slate-100 hover:text-slate-900',
+  'link-error': 'rounded-lg text-red-700 hover:bg-red-100 hover:text-red-900',
 };
 
 export const buttonSizes = {
