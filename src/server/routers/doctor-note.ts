@@ -7,6 +7,30 @@ import { z } from 'zod';
 import { authorizeHigherOrEqualRole } from '../middlewares';
 
 export const doctorNotesRouter = router({
+  getMany: privateProcedure
+    .use(authorizeHigherOrEqualRole(roles.doctor))
+    .input(
+      z.object({
+        patientId: z.number(),
+      })
+    )
+    .query(async ({ input }) => {
+      const { patientId } = input;
+
+      const [doctorNotes, error] = await tryCatch(
+        prisma.doctorNote.findMany({
+          where: {
+            appointment: {
+              patientId,
+            },
+          },
+        })
+      );
+
+      if (error) throw new TRPCError({ code: 'BAD_REQUEST', message: error });
+
+      return doctorNotes;
+    }),
   create: privateProcedure
     .use(authorizeHigherOrEqualRole(roles.doctor))
     .input(
