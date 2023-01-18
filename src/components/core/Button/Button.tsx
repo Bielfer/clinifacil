@@ -23,10 +23,9 @@ export const variantStyles = {
   white:
     'border border-gray-300 text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500',
   'link-primary':
-    'rounded-lg text-primary-700 hover:bg-primary-100 hover:text-primary-900',
-  'link-secondary':
-    'rounded-lg text-slate-700 hover:bg-slate-100 hover:text-slate-900',
-  'link-error': 'rounded-lg text-red-700 hover:bg-red-100 hover:text-red-900',
+    'text-primary-700 hover:bg-primary-100 hover:text-primary-900',
+  'link-secondary': 'text-slate-700 hover:bg-slate-100 hover:text-slate-900',
+  'link-error': 'text-red-700 hover:bg-red-100 hover:text-red-900',
 };
 
 export const buttonSizes = {
@@ -49,13 +48,13 @@ const Button: FC<ButtonProps> = ({
   ...props
 }) => {
   const isButton = !variant.includes('link');
-  const buttonStyles = isButton ? 'rounded-lg shadow-sm' : '';
+  const buttonStyles = isButton ? 'shadow-sm' : '';
 
   return (
     <button
       type={type === 'submit' ? 'submit' : 'button'}
       className={clsx(
-        'inline-flex items-center whitespace-nowrap font-medium transition duration-200',
+        'inline-flex items-center whitespace-nowrap rounded-lg font-medium transition duration-200',
         buttonStyles,
         variantStyles[variant],
         buttonSizes[size],
