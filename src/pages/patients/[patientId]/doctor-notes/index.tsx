@@ -1,11 +1,13 @@
 import Button from '@/components/core/Button';
 import DescriptionList from '@/components/core/DescriptionList';
 import EmptyState from '@/components/core/EmptyState';
+import IconButton from '@/components/core/IconButton';
 import LoadingWrapper from '@/components/core/LoadingWrapper';
 import MyLink from '@/components/core/MyLink';
 import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
 import Text from '@/components/core/Text';
+import DoctorNotePrintable from '@/components/features/printables/DoctorNotePrintable';
 import paths, {
   patientAppointmentPaths,
   sidebarPaths,
@@ -14,8 +16,11 @@ import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
 import { PlusIcon, PrinterIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline';
+import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
 
 const DoctorNotes: Page = () => {
   const router = useRouter();
@@ -28,8 +33,18 @@ const DoctorNotes: Page = () => {
     { patientId: parseInt(patientId, 10) },
     { enabled: !!patientId }
   );
+  const { data: session } = useSession();
+  const { data: doctor, isLoading: isLoadingDoctor } = trpc.doctor.get.useQuery(
+    { userId: session?.user.id },
+    { enabled: !!session }
+  );
   const { mutateAsync: deleteDoctorNote, isLoading: isDeletingDoctorNote } =
     trpc.doctorNote.delete.useMutation();
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
 
   const handleDeleteDoctorNote = async (doctorNoteId: number) => {
     await deleteDoctorNote({ id: doctorNoteId });
@@ -56,33 +71,59 @@ const DoctorNotes: Page = () => {
           className="pt-2 pb-6"
           tabs={patientAppointmentPaths({ patientId })}
         />
-        <LoadingWrapper loading={isLoadingDoctorNotes}>
+        <LoadingWrapper loading={isLoadingDoctorNotes || isLoadingDoctor}>
           {doctorNotes && doctorNotes.length > 0 ? (
             <DescriptionList
               className="mx-auto max-w-2xl"
               items={
-                doctorNotes?.map(({ id, duration }) => ({
-                  label: `Atestado  de ${duration} dia(s)`,
+                doctorNotes?.map((doctorNote) => ({
+                  label: `Atestado  de ${doctorNote.duration} dia(s)`,
                   buttonsOrLinks: [
-                    <Button
-                      key={1}
-                      variant="link-primary"
-                      iconLeft={PrinterIcon}
-                      size="sm"
-                      onClick={() => console.log('print')}
-                    >
-                      Imprimir
-                    </Button>,
-                    <Button
-                      key={2}
-                      variant="link-error"
-                      iconLeft={TrashIcon}
-                      size="sm"
-                      loading={isDeletingDoctorNote}
-                      onClick={() => handleDeleteDoctorNote(id)}
-                    >
-                      Apagar
-                    </Button>,
+                    <>
+                      <Button
+                        className="hidden sm:inline-flex"
+                        variant="link-primary"
+                        iconLeft={PrinterIcon}
+                        size="sm"
+                        onClick={handlePrint}
+                      >
+                        Imprimir
+                      </Button>
+                      <IconButton
+                        icon={PrinterIcon}
+                        variant="link-primary"
+                        size="lg"
+                        className="sm:hidden"
+                        onClick={handlePrint}
+                      />
+                      <div className="hidden">
+                        <DoctorNotePrintable
+                          ref={printRef}
+                          doctorNote={doctorNote}
+                          doctor={doctor}
+                        />
+                      </div>
+                    </>,
+                    <>
+                      <Button
+                        className="hidden sm:inline-flex"
+                        variant="link-error"
+                        iconLeft={TrashIcon}
+                        size="sm"
+                        loading={isDeletingDoctorNote}
+                        onClick={() => handleDeleteDoctorNote(doctorNote.id)}
+                      >
+                        Apagar
+                      </Button>
+                      <IconButton
+                        className="sm:hidden"
+                        variant="link-error"
+                        icon={TrashIcon}
+                        size="lg"
+                        loading={isDeletingDoctorNote}
+                        onClick={() => handleDeleteDoctorNote(doctorNote.id)}
+                      />
+                    </>,
                   ],
                 })) ?? []
               }
