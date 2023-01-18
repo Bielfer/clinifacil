@@ -8,7 +8,7 @@ type Props = {
     value?: string | number | null;
     buttonsOrLinks?: ReactElement[];
   }[];
-  title: string;
+  title?: string;
   subtitle?: string;
   loading?: boolean;
   className?: string;
@@ -27,21 +27,23 @@ const DescriptionList: FC<Props> = ({
 
   return (
     <div className={className}>
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h3 className="text-lg font-medium leading-6 text-gray-900">
-            {title}
-          </h3>
-          {!!subtitle && (
-            <p className="max-w-2xl text-sm text-gray-500">{subtitle}</p>
+      {title && (
+        <div className="flex items-center justify-between">
+          <div className="space-y-1">
+            <h3 className="text-lg font-medium leading-6 text-gray-900">
+              {title}
+            </h3>
+            {!!subtitle && (
+              <p className="max-w-2xl text-sm text-gray-500">{subtitle}</p>
+            )}
+          </div>
+          {!!link && (
+            <MyLink href={link.href} variant="button-secondary">
+              {link.text}
+            </MyLink>
           )}
         </div>
-        {!!link && (
-          <MyLink href={link.href} variant="button-secondary">
-            {link.text}
-          </MyLink>
-        )}
-      </div>
+      )}
       <dl className="divide-y divide-gray-200">
         {items.map((item) => (
           <div
