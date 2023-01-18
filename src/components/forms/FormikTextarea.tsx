@@ -1,13 +1,14 @@
-import clsx from 'clsx';
 import { useField } from 'formik';
-import { TextareaHTMLAttributes } from 'react';
-import InputLayout from '../core/InputLayout';
+import Textarea from '../core/Textarea';
 
-interface Props extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface Props {
   name: string;
   hint?: string;
   label?: string;
-  classNameTextarea?: string;
+  className?: string;
+  placeholder?: string;
+  disabled?: boolean;
+  rows?: number;
 }
 
 const FormikTextarea = ({
@@ -16,30 +17,24 @@ const FormikTextarea = ({
   hint,
   label,
   placeholder,
-  classNameTextarea,
+  disabled,
+  rows,
 }: Props) => {
-  const [{ value }, { error }, { setValue }] = useField(name);
-
-  const errorStyles = !error
-    ? 'shadow-sm focus:ring-primary-500 focus:border-primary-500 block w-full sm:text-sm border-gray-300 rounded-md'
-    : 'block w-full pr-10 border-red-300 text-red-900 placeholder-red-300 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm rounded-md';
+  const [{ value }, { error, touched }, { setValue }] = useField(name);
 
   return (
-    <InputLayout
+    <Textarea
       name={name}
+      value={value}
+      setValue={setValue}
       className={className}
-      error={error}
+      disabled={disabled}
+      error={touched && error ? error : ''}
       hint={hint}
       label={label}
-      shadow
-    >
-      <textarea
-        className={clsx(errorStyles, classNameTextarea)}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        placeholder={placeholder}
-      />
-    </InputLayout>
+      placeholder={placeholder}
+      rows={rows}
+    />
   );
 };
 
