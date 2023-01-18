@@ -142,18 +142,32 @@ model HandbookFieldOption {
 }
 
 model Appointment {
-  id        Int               @id @default(autoincrement())
-  status    AppointmentStatus @default(OPEN)
-  patient   Patient           @relation(fields: [patientId], references: [id])
-  patientId Int
-  doctor    Doctor            @relation(fields: [doctorId], references: [id])
-  doctorId  Int
-  handbooks Handbook[]
-  createdAt DateTime          @default(now())
-  updatedAt DateTime          @updatedAt()
+  id          Int               @id @default(autoincrement())
+  status      AppointmentStatus @default(OPEN)
+  patient     Patient           @relation(fields: [patientId], references: [id])
+  patientId   Int
+  doctor      Doctor            @relation(fields: [doctorId], references: [id])
+  doctorId    Int
+  handbooks   Handbook[]
+  doctorNotes DoctorNote[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt()
 
   @@index([patientId])
   @@index([doctorId])
+}
+
+model DoctorNote {
+  id            Int         @id @default(autoincrement())
+  message       String      @db.Text
+  startDate     DateTime
+  duration      Int
+  appointment   Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt()
+
+  @@index([appointmentId])
 }
 
 enum Role {
