@@ -8,12 +8,12 @@ import Head from 'next/head';
 const NewPatientDoctorNote: Page = () => (
   <>
     <Head>
-      <title>CliniFácil | Crie uma nova Receita</title>
+      <title>CliniFácil | Crie um novo Atestado</title>
     </Head>
     <Sidebar items={sidebarPaths}>
       <div className="mx-auto max-w-2xl">
         <Text h2 className="pb-6">
-          Crie uma nova Receita
+          Crie um novo Atestado
         </Text>
         <FormDoctorNote />
       </div>
