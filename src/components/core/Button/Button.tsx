@@ -48,7 +48,8 @@ const Button: FC<ButtonProps> = ({
   loading,
   ...props
 }) => {
-  const buttonStyles = !variant.includes('link') ? 'rounded-lg shadow-sm' : '';
+  const isButton = !variant.includes('link');
+  const buttonStyles = isButton ? 'rounded-lg shadow-sm' : '';
 
   return (
     <button
@@ -63,7 +64,7 @@ const Button: FC<ButtonProps> = ({
       {...props}
     >
       {loading ? (
-        <Spinner size="sm" color="white" />
+        <Spinner size="sm" color="inherit" />
       ) : (
         <>
           {IconLeft && (
