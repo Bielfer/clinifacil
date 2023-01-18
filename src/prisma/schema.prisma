@@ -86,6 +86,7 @@ model Doctor {
   crm           String
   email         String?
   cellphone     String?
+  city          String
   receptionists Receptionist[]
   handbooks     Handbook[]
   appointments  Appointment[]
