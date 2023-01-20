@@ -6,6 +6,7 @@ import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
 import Text from '@/components/core/Text';
 import { useToast } from '@/components/core/Toast';
+import PrescriptionPrintable from '@/components/features/printables/PrescriptionPrintable';
 import paths, {
   patientAppointmentPaths,
   sidebarPaths,
@@ -13,9 +14,12 @@ import paths, {
 import tryCatch from '@/helpers/tryCatch';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
-import { PlusIcon, TrashIcon } from '@heroicons/react/20/solid';
+import { PlusIcon, PrinterIcon, TrashIcon } from '@heroicons/react/20/solid';
+import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { useRef } from 'react';
+import { useReactToPrint } from 'react-to-print';
 
 const PatientPrescriptions: Page = () => {
   const router = useRouter();
@@ -30,6 +34,16 @@ const PatientPrescriptions: Page = () => {
     variables: deleteParameters,
     isLoading: isDeletingPrescription,
   } = trpc.prescription.delete.useMutation();
+  const { data: session } = useSession();
+  const { data: doctor } = trpc.doctor.get.useQuery(
+    { userId: session?.user.id },
+    { enabled: !!session }
+  );
+  const printRef = useRef<HTMLDivElement>(null);
+
+  const handlePrint = useReactToPrint({
+    content: () => printRef.current,
+  });
 
   const handleDeletePrescription = async (prescriptionId: number) => {
     const [, error] = await tryCatch(
@@ -53,13 +67,29 @@ const PatientPrescriptions: Page = () => {
       <Sidebar items={sidebarPaths}>
         <div className="flex items-center justify-between">
           <Text h2>Receitas do Paciente</Text>
-          <MyLink
-            href={paths.newPatientPrescriptions(patientId)}
-            iconLeft={PlusIcon}
-            variant="button-primary"
-          >
-            Nova Receita
-          </MyLink>
+          <div className="flex flex-col-reverse items-end gap-y-2 pl-3 sm:flex-row sm:items-center sm:gap-y-0 sm:gap-x-3">
+            <Button
+              iconLeft={PrinterIcon}
+              variant="secondary"
+              onClick={handlePrint}
+            >
+              Imprimir
+            </Button>
+            <div className="hidden">
+              <PrescriptionPrintable
+                ref={printRef}
+                doctor={doctor}
+                prescriptions={prescriptions ?? []}
+              />
+            </div>
+            <MyLink
+              href={paths.newPatientPrescriptions(patientId)}
+              iconLeft={PlusIcon}
+              variant="button-primary"
+            >
+              Nova Receita
+            </MyLink>
+          </div>
         </div>
         <TabsNavigation
           className="pt-2 pb-6"
