@@ -5,6 +5,29 @@ import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
 export const prescriptionRouter = router({
+  getMany: privateProcedure
+    .input(
+      z.object({
+        patientId: z.number(),
+      })
+    )
+    .query(async ({ input }) => {
+      const { patientId } = input;
+
+      const [prescriptions, error] = await tryCatch(
+        prisma.prescription.findMany({
+          where: {
+            appointment: {
+              patientId,
+            },
+          },
+        })
+      );
+
+      if (error) throw new TRPCError({ code: 'BAD_REQUEST', message: error });
+
+      return prescriptions;
+    }),
   create: privateProcedure
     .input(
       z.object({
