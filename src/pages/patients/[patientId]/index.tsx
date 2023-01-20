@@ -78,7 +78,14 @@ const PatientsById: Page = () => {
           className="pt-14"
           title="Informações Gerais"
           loading={isLoading}
-          link={{ text: 'Editar', href: paths.editPatient(patientId) }}
+          linkOrButton={
+            <MyLink
+              href={paths.editPatient(patientId)}
+              variant="button-secondary"
+            >
+              Editar
+            </MyLink>
+          }
           items={[
             { label: 'Nome', value: patient?.name },
             { label: 'Sexo', value: patient?.sex as string },

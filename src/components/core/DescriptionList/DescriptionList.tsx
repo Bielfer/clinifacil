@@ -1,6 +1,5 @@
 /* eslint react/no-array-index-key:off */
 import { FC, Fragment } from 'react';
-import MyLink from '../MyLink';
 
 type Props = {
   items: {
@@ -12,7 +11,7 @@ type Props = {
   subtitle?: string;
   loading?: boolean;
   className?: string;
-  link?: { text: string; href: string };
+  linkOrButton?: JSX.Element;
 };
 
 const DescriptionList: FC<Props> = ({
@@ -21,26 +20,22 @@ const DescriptionList: FC<Props> = ({
   subtitle,
   loading,
   className,
-  link,
+  linkOrButton,
 }) => (
   <div className={className}>
-    {title && (
-      <div className="flex items-center justify-between">
-        <div className="space-y-1">
+    <div className="flex items-center justify-between">
+      <div className="space-y-1">
+        {title && (
           <h3 className="text-lg font-medium leading-6 text-gray-900">
             {title}
           </h3>
-          {!!subtitle && (
-            <p className="max-w-2xl text-sm text-gray-500">{subtitle}</p>
-          )}
-        </div>
-        {!!link && (
-          <MyLink href={link.href} variant="button-secondary">
-            {link.text}
-          </MyLink>
+        )}
+        {!!subtitle && (
+          <p className="max-w-2xl text-sm text-gray-500">{subtitle}</p>
         )}
       </div>
-    )}
+      {linkOrButton}
+    </div>
     <dl className="divide-y divide-gray-200">
       {items.map((item, idx) => (
         <div
