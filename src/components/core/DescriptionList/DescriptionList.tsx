@@ -1,11 +1,12 @@
-import type { FC, ReactElement } from 'react';
+/* eslint react/no-array-index-key:off */
+import { FC, Fragment } from 'react';
 import MyLink from '../MyLink';
 
 type Props = {
   items: {
     label: string;
     value?: string | number | null;
-    buttonsOrLinks?: ReactElement[];
+    buttonsOrLinks?: JSX.Element[];
   }[];
   title?: string;
   subtitle?: string;
@@ -41,10 +42,10 @@ const DescriptionList: FC<Props> = ({
       </div>
     )}
     <dl className="divide-y divide-gray-200">
-      {items.map((item) => (
+      {items.map((item, idx) => (
         <div
           className="flex items-center py-4 sm:gap-4 sm:py-5"
-          key={item.value + item.label}
+          key={`${item.value} ${item.label} ${idx}`}
         >
           <div className="grid flex-grow items-center sm:grid-cols-5">
             <dt className="flex items-center text-sm font-medium text-gray-500 sm:col-span-2">
@@ -62,8 +63,8 @@ const DescriptionList: FC<Props> = ({
           </div>
           {!!item.buttonsOrLinks && (
             <div className="flex flex-shrink-0 items-center gap-x-2">
-              {item.buttonsOrLinks.map((buttonOrLink) => (
-                <>
+              {item.buttonsOrLinks.map((buttonOrLink, buttonIdx) => (
+                <Fragment key={buttonIdx}>
                   <span
                     className="text-gray-300 first:hidden"
                     aria-hidden="true"
@@ -71,7 +72,7 @@ const DescriptionList: FC<Props> = ({
                     |
                   </span>
                   {buttonOrLink}
-                </>
+                </Fragment>
               ))}
             </div>
           )}
