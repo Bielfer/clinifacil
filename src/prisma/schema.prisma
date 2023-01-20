@@ -92,6 +92,7 @@ model Doctor {
   appointments  Appointment[]
   user          User?          @relation(fields: [userId], references: [id])
   userId        String?        @unique
+  medications   Medication[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt()
 }
@@ -143,16 +144,17 @@ model HandbookFieldOption {
 }
 
 model Appointment {
-  id          Int               @id @default(autoincrement())
-  status      AppointmentStatus @default(OPEN)
-  patient     Patient           @relation(fields: [patientId], references: [id])
-  patientId   Int
-  doctor      Doctor            @relation(fields: [doctorId], references: [id])
-  doctorId    Int
-  handbooks   Handbook[]
-  doctorNotes DoctorNote[]
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @updatedAt()
+  id            Int               @id @default(autoincrement())
+  status        AppointmentStatus @default(OPEN)
+  patient       Patient           @relation(fields: [patientId], references: [id])
+  patientId     Int
+  doctor        Doctor            @relation(fields: [doctorId], references: [id])
+  doctorId      Int
+  handbooks     Handbook[]
+  doctorNotes   DoctorNote[]
+  prescriptions Prescription[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt()
 
   @@index([patientId])
   @@index([doctorId])
@@ -167,6 +169,30 @@ model DoctorNote {
   appointmentId Int
   createdAt     DateTime    @default(now())
   updatedAt     DateTime    @updatedAt()
+
+  @@index([appointmentId])
+}
+
+model Medication {
+  id        Int      @id @default(autoincrement())
+  name      String
+  doctor    Doctor   @relation(fields: [doctorId], references: [id])
+  doctorId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt()
+
+  @@index([doctorId])
+}
+
+model Prescription {
+  id             Int         @id @default(autoincrement())
+  medicationName String
+  boxAmount      Int
+  instructions   String
+  appointment    Appointment @relation(fields: [appointmentId], references: [id])
+  appointmentId  Int
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt()
 
   @@index([appointmentId])
 }
