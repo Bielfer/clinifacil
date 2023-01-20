@@ -21,4 +21,7 @@ const NewPatientPrescription: Page = () => (
   </>
 );
 
+NewPatientPrescription.auth = 'block';
+NewPatientPrescription.allowHigherOrEqualRole = 'DOCTOR';
+
 export default NewPatientPrescription;
