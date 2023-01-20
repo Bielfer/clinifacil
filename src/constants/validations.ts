@@ -5,6 +5,8 @@ const validations = {
   isNumberValid: 'Use ponto em vez de vírgula',
   minCharacters: (num: number) =>
     `Esse campo deve conter mais de ${num} caracteres`,
+  maxCharacters: (num: number) =>
+    `Esse campo deve conter menos de ${num} caracteres`,
   exactCharacters: (num: number) =>
     `Esse campo deve conter exatamente ${num} caracteres`,
   cellphone: 'O número de celular deve ter 9 dígitos',
