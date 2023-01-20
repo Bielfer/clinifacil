@@ -25,6 +25,10 @@ const paths = {
     `/patients/${patientId}/doctor-notes`,
   newPatientDoctorNotes: (patientId: string | number) =>
     `/patients/${patientId}/doctor-notes/new`,
+  patientPrescriptions: (patientId: string | number) =>
+    `/patients/${patientId}/prescriptions`,
+  newPatientPrescriptions: (patientId: string | number) =>
+    `/patients/${patientId}/prescriptions/new`,
   specificPatientAppointments: (patientId: string | number) =>
     `/patients/${patientId}/appointments`,
   allPatientAppointments: (patientId: string | number) =>
@@ -42,7 +46,7 @@ export const patientAppointmentPaths = ({
   patientId: string;
 }) => [
   { text: 'Prontuário', href: paths.patientHandbooks(patientId) },
-  { text: 'Receitas', href: paths.patientsById(patientId) },
+  { text: 'Receitas', href: paths.patientPrescriptions(patientId) },
   { text: 'Atestados', href: paths.patientDoctorNotes(patientId) },
 ];
 
