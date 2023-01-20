@@ -38,8 +38,11 @@ const DoctorNotes: Page = () => {
     { userId: session?.user.id },
     { enabled: !!session }
   );
-  const { mutateAsync: deleteDoctorNote, isLoading: isDeletingDoctorNote } =
-    trpc.doctorNote.delete.useMutation();
+  const {
+    mutateAsync: deleteDoctorNote,
+    isLoading: isDeletingDoctorNote,
+    variables: deleteParameters,
+  } = trpc.doctorNote.delete.useMutation();
   const printRef = useRef<HTMLDivElement>(null);
 
   const handlePrint = useReactToPrint({
@@ -110,7 +113,10 @@ const DoctorNotes: Page = () => {
                         variant="link-error"
                         iconLeft={TrashIcon}
                         size="sm"
-                        loading={isDeletingDoctorNote}
+                        loading={
+                          isDeletingDoctorNote &&
+                          deleteParameters?.id === doctorNote.id
+                        }
                         onClick={() => handleDeleteDoctorNote(doctorNote.id)}
                       >
                         Apagar
@@ -120,7 +126,10 @@ const DoctorNotes: Page = () => {
                         variant="link-error"
                         icon={TrashIcon}
                         size="lg"
-                        loading={isDeletingDoctorNote}
+                        loading={
+                          isDeletingDoctorNote &&
+                          deleteParameters?.id === doctorNote.id
+                        }
                         onClick={() => handleDeleteDoctorNote(doctorNote.id)}
                       />
                     </>,
