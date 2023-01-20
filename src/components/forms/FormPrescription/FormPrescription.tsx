@@ -1,0 +1,152 @@
+import Button from '@/components/core/Button';
+import { useToast } from '@/components/core/Toast';
+import hints from '@/constants/hints';
+import paths from '@/constants/paths';
+import validations from '@/constants/validations';
+import tryCatch from '@/helpers/tryCatch';
+import zodValidator from '@/helpers/zod-validator';
+import { trpc } from '@/services/trpc';
+import { Form, Formik } from 'formik';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import type { FC } from 'react';
+import { z } from 'zod';
+import FormikAutocomplete from '../FormikAutocomplete';
+import FormikNumber from '../FormikNumber';
+import FormikTextarea from '../FormikTextarea';
+import ChangeInstructionsDynamically from './ChangeInstructionsDynamically';
+
+const FormPrescription: FC = () => {
+  const router = useRouter();
+  const patientId = router.query.patientId as string;
+  const { addToast } = useToast();
+  const { data: session } = useSession();
+  const { data: doctor } = trpc.doctor.get.useQuery(
+    {
+      userId: session?.user.id,
+    },
+    { enabled: !!session }
+  );
+  const { data: medications } = trpc.doctor.medications.useQuery(
+    { doctorId: doctor?.id ?? 0 },
+    { enabled: !!doctor }
+  );
+  const { mutateAsync: createPrescription } =
+    trpc.prescription.create.useMutation();
+  const { data: appointments, refetch: refetchAppointments } =
+    trpc.appointment.getMany.useQuery(
+      {
+        patientId: parseInt(patientId, 10),
+        doctorId: doctor?.id,
+      },
+      { enabled: !!patientId }
+    );
+  const activeAppointment = appointments?.[0];
+
+  const initialValues = {
+    medicationName: '',
+    boxAmount: 1,
+    instructions: '',
+    interval: 0,
+    duration: 0,
+  };
+
+  const validate = z.object({
+    medicationName: z.string({ required_error: validations.required }),
+    boxAmount: z
+      .number({ required_error: validations.required })
+      .min(0, validations.minValue(1)),
+    instructions: z
+      .string({ required_error: validations.required })
+      .max(191, validations.maxCharacters(191)),
+    interval: z
+      .number({ required_error: validations.required })
+      .min(0, validations.minValue(1)),
+    duration: z
+      .number({ required_error: validations.required })
+      .min(0, validations.minValue(1)),
+  });
+
+  const handleSubmit = async (values: typeof initialValues) => {
+    const { interval, duration, ...filteredValues } = values;
+
+    if (!activeAppointment) {
+      addToast({
+        type: 'error',
+        content:
+          'Não foi encontrada uma consulta aberta para esse paciente, tente novamente em 5 segundos!',
+      });
+      refetchAppointments();
+      return;
+    }
+
+    const [, error] = await tryCatch(
+      createPrescription({
+        ...filteredValues,
+        appointmentId: activeAppointment?.id,
+      })
+    );
+
+    if (error) {
+      addToast({
+        type: 'error',
+        content: 'Falha ao adicionar esse remédio na receita!',
+      });
+      return;
+    }
+
+    router.push(paths.patientPrescriptions(patientId));
+  };
+
+  return (
+    <Formik
+      initialValues={initialValues}
+      validate={zodValidator(validate)}
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting }) => (
+        <Form className="flex flex-col gap-y-6">
+          <FormikAutocomplete
+            name="medicationName"
+            hint={hints.required}
+            label="Nome da Medicação"
+            options={
+              medications?.map(({ name }) => ({
+                text: name,
+                value: name,
+              })) ?? []
+            }
+          />
+          <FormikNumber
+            name="boxAmount"
+            label="Quantidade de Caixas"
+            hint={hints.required}
+          />
+          <FormikNumber
+            name="interval"
+            label="Intervalo entre usos"
+            hint={hints.required}
+          />
+          <FormikNumber
+            name="duration"
+            label="Tempo de uso"
+            hint={hints.required}
+          />
+          <FormikTextarea
+            name="instructions"
+            hint={hints.required}
+            label="Instruções para uso da Medicação"
+          />
+          <ChangeInstructionsDynamically />
+          <div className="flex justify-end">
+            <Button type="submit" variant="primary" loading={isSubmitting}>
+              Salvar
+            </Button>
+          </div>
+        </Form>
+      )}
+    </Formik>
+  );
+};
+
+export default FormPrescription;
