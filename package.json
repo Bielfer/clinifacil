@@ -10,7 +10,8 @@
     "test": "jest --watch",
     "analyze": "ANALYZE=true yarn build",
     "studio": "npx prisma studio --browser=none",
-    "db-push": "npx prisma db push"
+    "db-push": "npx prisma db push",
+    "seed": "npx prisma db seed"
   },
   "dependencies": {
     "@headlessui/react": "^1.6.5",
@@ -70,6 +71,7 @@
     "typescript": "4.7.4"
   },
   "prisma": {
-    "schema": "src/prisma/schema.prisma"
+    "schema": "src/prisma/schema.prisma",
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} src/prisma/seed.ts"
   }
 }
