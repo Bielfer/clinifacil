@@ -151,8 +151,8 @@ model Appointment {
   patientId     Int
   doctor        Doctor            @relation(fields: [doctorId], references: [id])
   doctorId      Int
-  type          AppointmentType?  @relation(fields: [typeId], references: [id])
-  typeId        Int?              @unique
+  type          AppointmentType   @relation(fields: [typeId], references: [id])
+  typeId        Int               @unique
   handbooks     Handbook[]
   doctorNotes   DoctorNote[]
   prescriptions Prescription[]
