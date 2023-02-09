@@ -80,21 +80,22 @@ model Patient {
 }
 
 model Doctor {
-  id            Int            @id @default(autoincrement())
-  name          String
-  cpf           String
-  crm           String
-  email         String?
-  cellphone     String?
-  city          String
-  receptionists Receptionist[]
-  handbooks     Handbook[]
-  appointments  Appointment[]
-  user          User?          @relation(fields: [userId], references: [id])
-  userId        String?        @unique
-  medications   Medication[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt()
+  id               Int               @id @default(autoincrement())
+  name             String
+  cpf              String
+  crm              String
+  email            String?
+  cellphone        String?
+  city             String
+  receptionists    Receptionist[]
+  handbooks        Handbook[]
+  appointments     Appointment[]
+  appointmentTypes AppointmentType[]
+  user             User?             @relation(fields: [userId], references: [id])
+  userId           String?           @unique
+  medications      Medication[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt()
 }
 
 model Receptionist {
@@ -150,6 +151,8 @@ model Appointment {
   patientId     Int
   doctor        Doctor            @relation(fields: [doctorId], references: [id])
   doctorId      Int
+  type          AppointmentType?  @relation(fields: [typeId], references: [id])
+  typeId        Int?              @unique
   handbooks     Handbook[]
   doctorNotes   DoctorNote[]
   prescriptions Prescription[]
@@ -157,6 +160,20 @@ model Appointment {
   updatedAt     DateTime          @updatedAt()
 
   @@index([patientId])
+  @@index([doctorId])
+  @@index([typeId])
+}
+
+model AppointmentType {
+  id          Int          @id @default(autoincrement())
+  name        String
+  price       Int?
+  appointment Appointment?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt()
+  doctor      Doctor?      @relation(fields: [doctorId], references: [id])
+  doctorId    Int?
+
   @@index([doctorId])
 }
 
