@@ -89,10 +89,24 @@ export const appointmentRouter = router({
       z.object({
         doctorId: z.number(),
         patientId: z.number(),
+        appointmentTypeId: z.number(),
       })
     )
     .mutation(async ({ input }) => {
-      const { doctorId, patientId } = input;
+      const { doctorId, patientId, appointmentTypeId } = input;
+
+      const [appointmentType, appointmentTypeError] = await tryCatch(
+        prisma.appointmentType.findUnique({
+          where: { id: appointmentTypeId },
+          select: { price: true, name: true },
+        })
+      );
+
+      if (appointmentTypeError || !appointmentType)
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: appointmentTypeError ?? 'No appointment type was found!',
+        });
 
       const [appointment, error] = await tryCatch(
         prisma.appointment.create({
@@ -107,6 +121,9 @@ export const appointmentRouter = router({
               connect: {
                 id: patientId,
               },
+            },
+            type: {
+              create: appointmentType,
             },
           },
           include: appointmentReturnFormat,
