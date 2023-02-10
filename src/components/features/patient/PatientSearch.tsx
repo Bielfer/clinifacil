@@ -1,5 +1,5 @@
 /* eslint @next/next/no-img-element:off */
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Combobox } from '@headlessui/react';
 import {
   MagnifyingGlassIcon,
@@ -7,27 +7,18 @@ import {
 } from '@heroicons/react/20/solid';
 import { PlusIcon, UsersIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
-import Button from '@/components/core/Button';
 import MyLink from '@/components/core/MyLink';
 import { format } from 'date-fns';
 import { formatCPF } from '@/helpers/formatters';
 import { trpc } from '@/services/trpc';
-import { useOnClickOutside, useRoles, useTimeout } from '@/hooks';
+import { useOnClickOutside, useTimeout } from '@/hooks';
 import paths from '@/constants/paths';
-import { useRouter } from 'next/router';
-import useReceptionistStore from '@/store/receptionist';
-import { useSession } from 'next-auth/react';
-import { useToast } from '@/components/core/Toast';
 
 type Props = {
   className?: string;
 };
 
 const PatientSearch = ({ className }: Props) => {
-  const router = useRouter();
-  const { isDoctor } = useRoles();
-  const { addToast } = useToast();
-  const { data: session } = useSession();
   const [input, setInput] = useState('');
   const [query, setQuery] = useState('');
   const { data: patients } = trpc.patient.getMany.useQuery(
@@ -35,38 +26,17 @@ const PatientSearch = ({ className }: Props) => {
     { enabled: query.length >= 3 }
   );
   const [selectedPatient, setSelectedPatient] = useState(patients?.[0]);
-  const { reset } = useTimeout(() => setQuery(input), 500);
+  const { reset, clear } = useTimeout(() => setQuery(input), 500);
   const inputRef = useRef<HTMLDivElement>(null);
+
   useOnClickOutside(inputRef, () => setInput(''));
-  const {
-    isLoading: isCreatingAppointment,
-    isError: failedToCreateAppointment,
-    mutateAsync: createAppointment,
-  } = trpc.appointment.create.useMutation();
-  const selectedDoctorId = useReceptionistStore(
-    (state) => state.selectedDoctorId
+
+  useEffect(
+    () => () => {
+      clear();
+    },
+    [clear]
   );
-  const { data: doctor } = trpc.doctor.get.useQuery(
-    { userId: session?.user.id },
-    { enabled: isDoctor }
-  );
-
-  const handleButtonCreateAppointment = async (patientId: number) => {
-    await createAppointment({
-      doctorId: (isDoctor ? doctor?.id : selectedDoctorId) ?? 0,
-      patientId,
-    });
-
-    if (failedToCreateAppointment) {
-      addToast({
-        type: 'error',
-        content: 'Houve algum problema ao criar a consulta, tente novamente!',
-      });
-      return;
-    }
-
-    router.push(paths.queue);
-  };
 
   return (
     <Combobox
@@ -178,15 +148,12 @@ const PatientSearch = ({ className }: Props) => {
                       >
                         Ver Paciente
                       </MyLink>
-                      <Button
-                        variant="primary"
-                        loading={isCreatingAppointment}
-                        onClick={() =>
-                          handleButtonCreateAppointment(activeOption.id)
-                        }
+                      <MyLink
+                        variant="button-primary"
+                        href={paths.newPatientAppointment(activeOption.id)}
                       >
                         Colocar na Fila
-                      </Button>
+                      </MyLink>
                     </div>
                   </div>
                 </div>

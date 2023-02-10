@@ -3,14 +3,11 @@ import paths from '@/constants/paths';
 import validations from '@/constants/validations';
 import tryCatch from '@/helpers/tryCatch';
 import zodValidator from '@/helpers/zod-validator';
-import { useRoles } from '@/hooks';
 import { trpc } from '@/services/trpc';
-import useReceptionistStore from '@/store/receptionist';
 import { Patient } from '@prisma/client';
 import clsx from 'clsx';
 import { format, parse } from 'date-fns';
 import { Form, Formik } from 'formik';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { z } from 'zod';
 import Button from '../core/Button';
@@ -25,22 +22,11 @@ type Props = {
 
 const FormPatient = ({ className, patient }: Props) => {
   const router = useRouter();
-  const { isDoctor } = useRoles();
-  const { data: session } = useSession();
   const { addToast } = useToast();
   const { mutateAsync: createPatient, isError: errorCreatingPatient } =
     trpc.patient.create.useMutation();
   const { mutateAsync: editPatient, isError: errorEditingPatient } =
     trpc.patient.editById.useMutation();
-  const { mutateAsync: createAppointment, isError: errorCreatingAppointment } =
-    trpc.appointment.create.useMutation();
-  const selectedDoctorId = useReceptionistStore(
-    (state) => state.selectedDoctorId
-  );
-  const { data: doctor } = trpc.doctor.get.useQuery(
-    { userId: session?.user.id },
-    { enabled: isDoctor }
-  );
 
   const initialValues = {
     cpf: patient?.cpf ?? '',
@@ -95,19 +81,7 @@ const FormPatient = ({ className, patient }: Props) => {
       return;
     }
 
-    await tryCatch(
-      createAppointment({
-        doctorId: (isDoctor ? doctor?.id : selectedDoctorId) ?? 0,
-        patientId: createdPatient.id,
-      })
-    );
-
-    if (errorCreatingAppointment) {
-      router.push(paths.patients);
-      return;
-    }
-
-    router.push(paths.queue);
+    router.push(paths.newPatientAppointment(createdPatient.id));
   };
 
   return (
