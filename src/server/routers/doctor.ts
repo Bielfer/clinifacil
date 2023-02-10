@@ -156,6 +156,28 @@ export const doctorRouter = router({
 
       return medications;
     }),
+  appointmentTypes: privateProcedure
+    .use(authorizeHigherOrEqualRole(roles.doctor))
+    .input(
+      z.object({
+        doctorId: z.number(),
+      })
+    )
+    .query(async ({ input }) => {
+      const { doctorId } = input;
+
+      const [appointmentTypes, error] = await tryCatch(
+        prisma.appointmentType.findMany({
+          where: {
+            doctorId,
+          },
+        })
+      );
+
+      if (error) throw new TRPCError({ code: 'BAD_REQUEST', message: error });
+
+      return appointmentTypes;
+    }),
 });
 
 export type DoctorRouter = typeof doctorRouter;
