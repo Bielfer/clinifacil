@@ -1,4 +1,4 @@
-import { AppointmentStatus } from '@prisma/client';
+import type { AppointmentStatus } from '@prisma/client';
 
 export const appointmentStatus = {
   open: 'OPEN',

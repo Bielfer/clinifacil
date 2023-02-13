@@ -16,7 +16,7 @@ import { useSession } from 'next-auth/react';
 import useReceptionistStore from '@/store/receptionist';
 import { useState } from 'react';
 import Tabs from '@/components/core/Tabs';
-import { AppointmentStatus } from '@prisma/client';
+import type { AppointmentStatus } from '@prisma/client';
 import EmptyState from '@/components/core/EmptyState';
 
 const Queue: Page = () => {

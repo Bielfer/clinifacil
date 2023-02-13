@@ -4,7 +4,7 @@ import validations from '@/constants/validations';
 import tryCatch from '@/helpers/tryCatch';
 import zodValidator from '@/helpers/zod-validator';
 import { trpc } from '@/services/trpc';
-import { Patient } from '@prisma/client';
+import type { Patient } from '@prisma/client';
 import clsx from 'clsx';
 import { format, parse } from 'date-fns';
 import { Form, Formik } from 'formik';
