@@ -31,7 +31,8 @@ const PatientsById: Page = () => {
     { enabled: !!patientId }
   );
 
-  const activeAppointmentHandbooks = appointments?.[0].handbooks;
+  const activeAppointmentHandbooks =
+    appointments && appointments.length > 0 && appointments[0].handbooks;
   const appointmentHasHandbook =
     activeAppointmentHandbooks && activeAppointmentHandbooks.length > 0;
 
