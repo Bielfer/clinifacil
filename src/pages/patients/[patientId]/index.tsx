@@ -6,6 +6,7 @@ import Text from '@/components/core/Text';
 import { appointmentStatus } from '@/constants/appointment-status';
 import paths, { sidebarPaths } from '@/constants/paths';
 import { useRoles } from '@/hooks';
+import useActiveDoctor from '@/hooks/useActiveDoctor';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
 import { ArrowRightCircleIcon, PlusIcon } from '@heroicons/react/20/solid';
@@ -17,6 +18,7 @@ const PatientsById: Page = () => {
   const router = useRouter();
   const { isDoctor } = useRoles();
   const patientId = router.query.patientId as string;
+  const { data: doctor } = useActiveDoctor();
   const { data: patient, isLoading } = trpc.patient.getById.useQuery(
     {
       id: parseInt(patientId, 10),
@@ -27,14 +29,22 @@ const PatientsById: Page = () => {
     {
       patientId: parseInt(patientId, 10),
       status: [appointmentStatus.open, appointmentStatus.finished],
+      doctorId: doctor?.id,
     },
     { enabled: !!patientId }
   );
 
+  const hasActiveAppointment = appointments && appointments.length > 0;
   const activeAppointmentHandbooks =
-    appointments && appointments.length > 0 && appointments[0].handbooks;
+    hasActiveAppointment && appointments[0].handbooks;
   const appointmentHasHandbook =
     activeAppointmentHandbooks && activeAppointmentHandbooks.length > 0;
+
+  let href: string;
+
+  if (!hasActiveAppointment) href = paths.newPatientAppointment(patientId);
+  else if (appointmentHasHandbook) href = paths.patientHandbooks(patientId);
+  else href = paths.newPatientHandbook(patientId);
 
   return (
     <>
@@ -46,11 +56,7 @@ const PatientsById: Page = () => {
           <Text h2>Detalhes do Paciente</Text>
           {isDoctor && (
             <MyLink
-              href={
-                appointmentHasHandbook
-                  ? paths.patientHandbooks(patientId)
-                  : paths.newPatientHandbook(patientId)
-              }
+              href={href}
               variant="button-primary"
               iconLeft={
                 appointmentHasHandbook ? ArrowRightCircleIcon : PlusIcon
