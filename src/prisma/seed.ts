@@ -1,4 +1,5 @@
 /* eslint no-console:off */
+import { AppointmentStatus } from '@prisma/client';
 import { prisma } from '../services/prisma';
 
 const connectAppointmentsToAppointmentType = async () => {
@@ -24,8 +25,24 @@ const connectAppointmentsToAppointmentType = async () => {
   });
 };
 
+const changeAppointmentsStatus = async (status: AppointmentStatus) => {
+  await prisma.appointment.updateMany({
+    where: {
+      NOT: {
+        status: 'ARCHIVED',
+      },
+    },
+    data: {
+      status,
+    },
+  });
+
+  console.log('Appointments status updated');
+};
+
 const main = async () => {
   await connectAppointmentsToAppointmentType();
+  await changeAppointmentsStatus('ARCHIVED');
 };
 
 main()
