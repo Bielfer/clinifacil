@@ -1,12 +1,11 @@
 import MyLink from '@/components/core/MyLink';
 import Container from '@/components/core/Container';
 import paths from '@/constants/paths';
-import { GiftIcon } from '@heroicons/react/24/solid';
 
 const Hero = () => (
   <Container className="pt-20 pb-16 text-center lg:pt-32">
     <h1 className="font-display mx-auto max-w-4xl text-5xl font-medium tracking-tight text-slate-900 sm:text-7xl">
-      Presentear seus amigos nunca foi{' '}
+      Gerir a sua clínica nunca foi{' '}
       <span className="relative whitespace-nowrap text-primary-600">
         <svg
           aria-hidden="true"
@@ -20,17 +19,14 @@ const Hero = () => (
       </span>
     </h1>
     <p className="mx-auto mt-6 max-w-2xl text-lg tracking-tight text-slate-700">
-      Dar presentes em grupo nunca é uma tarefa fácil. Porém, com um Presentin
-      você consegue lembrar seus amigos de todas as suas memórias juntos.
+      A maioria dos softwares de gestão de clínica funcionam, mas são difíceis
+      de usar. Nossa missão é acabar com essa dificuldade.
     </p>
     <div className="mt-10 flex justify-center space-x-6">
-      <MyLink href={paths.home} variant="button-primary" iconLeft={GiftIcon}>
-        Crie o seu Presentin
+      <MyLink href={paths.login} variant="button-primary">
+        Cadastre-se Agora
       </MyLink>
     </div>
-    <p className="mx-auto mt-6 max-w-2xl text-sm tracking-tight text-slate-900">
-      Você paga apenas na hora de enviar o seu Presentin
-    </p>
   </Container>
 );
 
