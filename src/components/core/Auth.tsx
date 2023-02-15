@@ -4,6 +4,7 @@ import { AuthType } from '@/types/auth';
 import { Role } from '@/types/role';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 import Page403 from './Page403';
 import Spinner from './Spinner';
 
@@ -26,6 +27,10 @@ const Auth = ({
   const isLoggedIn = status === 'authenticated';
   const isUnauthenticated = status === 'unauthenticated';
   const userRole = session?.user.role;
+
+  if (!Cookies.get('authed') && isLoggedIn) Cookies.set('authed', 'true');
+
+  if (isUnauthenticated) Cookies.remove('authed');
 
   if (isLoading && (type === 'wait' || type === 'block')) {
     return <Spinner page size="xl" />;
