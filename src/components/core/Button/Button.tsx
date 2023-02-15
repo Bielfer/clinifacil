@@ -13,6 +13,7 @@ export type ButtonProps = {
   size?: keyof typeof buttonSizes;
   loading?: boolean;
   onClick?: () => void;
+  disabled?: boolean;
 };
 
 export const variantStyles = {
@@ -45,6 +46,7 @@ const Button: FC<ButtonProps> = ({
   variant = 'white',
   size = 'md',
   loading,
+  disabled,
   ...props
 }) => {
   const isButton = !variant.includes('link');
@@ -60,6 +62,7 @@ const Button: FC<ButtonProps> = ({
         buttonSizes[size],
         className
       )}
+      disabled={loading || disabled}
       {...props}
     >
       {loading ? (
