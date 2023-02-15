@@ -13,26 +13,29 @@ import { ArrowRightCircleIcon, PlusIcon } from '@heroicons/react/20/solid';
 import { differenceInYears, format } from 'date-fns';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { Url } from 'url';
 
 const PatientsById: Page = () => {
   const router = useRouter();
   const { isDoctor } = useRoles();
   const patientId = router.query.patientId as string;
   const { data: doctor } = useActiveDoctor();
-  const { data: patient, isLoading } = trpc.patient.getById.useQuery(
-    {
-      id: parseInt(patientId, 10),
-    },
-    { enabled: !!patientId }
-  );
-  const { data: appointments } = trpc.appointment.getMany.useQuery(
-    {
-      patientId: parseInt(patientId, 10),
-      status: [appointmentStatus.open, appointmentStatus.finished],
-      doctorId: doctor?.id,
-    },
-    { enabled: !!patientId }
-  );
+  const { data: patient, isLoading: isLoadingPatient } =
+    trpc.patient.getById.useQuery(
+      {
+        id: parseInt(patientId, 10),
+      },
+      { enabled: !!patientId }
+    );
+  const { data: appointments, isLoading: isLoadingAppointments } =
+    trpc.appointment.getMany.useQuery(
+      {
+        patientId: parseInt(patientId, 10),
+        status: [appointmentStatus.open, appointmentStatus.finished],
+        doctorId: doctor?.id,
+      },
+      { enabled: !!patientId }
+    );
 
   const hasActiveAppointment = appointments && appointments.length > 0;
   const activeAppointmentHandbooks =
@@ -40,9 +43,13 @@ const PatientsById: Page = () => {
   const appointmentHasHandbook =
     activeAppointmentHandbooks && activeAppointmentHandbooks.length > 0;
 
-  let href: string;
+  let href: string | Partial<Url>;
 
-  if (!hasActiveAppointment) href = paths.newPatientAppointment(patientId);
+  if (!hasActiveAppointment)
+    href = {
+      pathname: paths.newPatientAppointment(patientId),
+      query: { onSubmitRedirectUrl: paths.patientHandbooks(patientId) },
+    };
   else if (appointmentHasHandbook) href = paths.patientHandbooks(patientId);
   else href = paths.newPatientHandbook(patientId);
 
@@ -61,6 +68,7 @@ const PatientsById: Page = () => {
               iconLeft={
                 appointmentHasHandbook ? ArrowRightCircleIcon : PlusIcon
               }
+              isLoading={isLoadingAppointments}
             >
               {appointmentHasHandbook
                 ? 'Continuar Atendimento'
@@ -84,7 +92,7 @@ const PatientsById: Page = () => {
         <DescriptionList
           className="pt-14"
           title="Informações Gerais"
-          loading={isLoading}
+          loading={isLoadingPatient}
           linkOrButton={
             <MyLink
               href={paths.editPatient(patientId)}
