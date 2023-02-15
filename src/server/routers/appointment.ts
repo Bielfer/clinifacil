@@ -90,10 +90,11 @@ export const appointmentRouter = router({
         doctorId: z.number(),
         patientId: z.number(),
         appointmentTypeId: z.number(),
+        status: z.enum(appointmentStatusValues).optional(),
       })
     )
     .mutation(async ({ input }) => {
-      const { doctorId, patientId, appointmentTypeId } = input;
+      const { doctorId, patientId, appointmentTypeId, status } = input;
 
       const [appointmentType, appointmentTypeError] = await tryCatch(
         prisma.appointmentType.findUnique({
@@ -111,7 +112,7 @@ export const appointmentRouter = router({
       const [appointment, error] = await tryCatch(
         prisma.appointment.create({
           data: {
-            status: appointmentStatus.open,
+            status: status ?? appointmentStatus.open,
             doctor: {
               connect: {
                 id: doctorId,
