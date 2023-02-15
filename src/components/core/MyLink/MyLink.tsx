@@ -2,7 +2,9 @@ import type { FC, ReactNode } from 'react';
 import Link from 'next/link';
 import clsx from 'clsx';
 import { IconType } from '@/types/core';
+import { Url } from 'url';
 import { buttonSizes } from '../Button';
+import Spinner from '../Spinner';
 
 export type MyLinkProps = {
   className?: string;
@@ -10,9 +12,11 @@ export type MyLinkProps = {
   size?: keyof typeof buttonSizes;
   iconLeft?: IconType;
   iconRight?: IconType;
-  href: string;
+  href: string | Partial<Url>;
   children: ReactNode;
   onClick?: () => void;
+  isLoading?: boolean;
+  disabled?: boolean;
 };
 
 const variants = {
@@ -38,27 +42,38 @@ const MyLink: FC<MyLinkProps> = ({
   size = 'md',
   iconLeft: IconLeft,
   iconRight: IconRight,
+  isLoading,
+  disabled,
   ...props
 }) => {
   const linkStyles = !variant.includes('button') ? '' : 'rounded-lg shadow-sm';
 
   return (
     <Link
-      href={href || ''}
+      href={href}
       passHref
       className={clsx(
         'inline-flex items-center whitespace-nowrap font-medium transition duration-200',
         linkStyles,
         variants[variant],
         buttonSizes[size],
+        disabled && 'pointer-events-none',
         className
       )}
       {...props}
     >
-      {IconLeft && <IconLeft className="-ml-0.5 mr-2 h-5 w-5 flex-shrink-0" />}
-      {children}
-      {IconRight && (
-        <IconRight className="ml-2 -mr-0.5 h-5 w-5 flex-shrink-0" />
+      {isLoading ? (
+        <Spinner size="sm" color="inherit" />
+      ) : (
+        <>
+          {IconLeft && (
+            <IconLeft className="-ml-0.5 mr-2 h-5 w-5 flex-shrink-0" />
+          )}
+          {children}
+          {IconRight && (
+            <IconRight className="ml-2 -mr-0.5 h-5 w-5 flex-shrink-0" />
+          )}
+        </>
       )}
     </Link>
   );
