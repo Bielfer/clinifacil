@@ -1,7 +1,9 @@
 import Button from '@/components/core/Button';
 import { useToast } from '@/components/core/Toast';
 import paths from '@/constants/paths';
+import validations from '@/constants/validations';
 import tryCatch from '@/helpers/tryCatch';
+import zodValidator from '@/helpers/zod-validator';
 import { trpc } from '@/services/trpc';
 import { FieldValue } from '@/types/handbook';
 import type {
@@ -13,6 +15,7 @@ import { Form, Formik } from 'formik';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
+import { z } from 'zod';
 import FormikSelect from '../FormikSelect';
 import HandbookFields from './HandbookFields';
 
@@ -54,6 +57,18 @@ const FormHandbook: FC<Props> = ({ handbook, appointmentId }) => {
       fields: [],
     }) as FormHandbookType,
   };
+
+  const validate = z.object({
+    selectedHandbookId: z.number().refine(
+      (val) => {
+        if (!appointmentId) return true;
+        return val > 0;
+      },
+      {
+        message: validations.required,
+      }
+    ),
+  });
 
   const handleSubmit = async (values: typeof initialValues) => {
     const { id, ...filteredHandbook } = values.handbook;
@@ -99,7 +114,11 @@ const FormHandbook: FC<Props> = ({ handbook, appointmentId }) => {
   };
 
   return (
-    <Formik initialValues={initialValues} onSubmit={handleSubmit}>
+    <Formik
+      initialValues={initialValues}
+      validate={zodValidator(validate)}
+      onSubmit={handleSubmit}
+    >
       {({ isSubmitting }) => (
         <Form className="flex flex-col gap-y-6">
           {!handbook && (
