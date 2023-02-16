@@ -30,7 +30,7 @@ const Autocomplete: FC<Props> = ({
   placeholder,
   label,
 }) => {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState(selected);
 
   const filteredOptions =
     input === ''
@@ -50,7 +50,10 @@ const Autocomplete: FC<Props> = ({
     >
       <Combobox value={selected} onChange={setSelected}>
         <Combobox.Input
-          onChange={(event) => setInput(event.target.value)}
+          onChange={(event) => {
+            setInput(event.target.value);
+            setSelected(event.target.value);
+          }}
           displayValue={(value: string) => {
             const t =
               options.find((option) => option.value === value)?.text ?? input;
