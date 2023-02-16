@@ -1,4 +1,8 @@
-import { TicketIcon, UsersIcon } from '@heroicons/react/24/outline';
+import {
+  BanknotesIcon,
+  TicketIcon,
+  UsersIcon,
+} from '@heroicons/react/24/outline';
 
 const paths = {
   home: '/',
@@ -35,11 +39,17 @@ const paths = {
     `/patients/${patientId}/all-appointments`,
   newPatientAppointment: (patientId: string | number) =>
     `/patients/${patientId}/appointments/new`,
+  appointmentsSummary: '/appointments/summary',
 } as const;
 
 export const sidebarPaths = [
   { text: 'Fila', href: paths.queue, icon: TicketIcon },
   { text: 'Pacientes', href: paths.patients, icon: UsersIcon },
+  {
+    text: 'Fechamento de Caixa',
+    href: paths.appointmentsSummary,
+    icon: BanknotesIcon,
+  },
 ] as const;
 
 export const patientAppointmentPaths = ({
