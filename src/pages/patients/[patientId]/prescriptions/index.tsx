@@ -45,6 +45,9 @@ const PatientPrescriptions: Page = () => {
     { userId: session?.user.id },
     { enabled: !!session }
   );
+  const { data: patient } = trpc.patient.getById.useQuery({
+    id: parseInt(patientId, 10),
+  });
   const printRef = useRef<HTMLDivElement>(null);
 
   const handlePrint = useReactToPrint({
@@ -86,6 +89,7 @@ const PatientPrescriptions: Page = () => {
                 ref={printRef}
                 doctor={doctor}
                 prescriptions={prescriptions ?? []}
+                patient={patient}
               />
             </div>
             <MyLink

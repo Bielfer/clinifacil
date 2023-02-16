@@ -1,17 +1,18 @@
 /* eslint react/display-name:off */
 import Text from '@/components/core/Text';
 import { monthNames } from '@/constants/dates';
-import type { Doctor, Prescription } from '@prisma/client';
+import type { Doctor, Patient, Prescription } from '@prisma/client';
 import { getDate, getMonth, getYear } from 'date-fns';
 import { forwardRef } from 'react';
 
 type Props = {
   prescriptions: Prescription[];
   doctor?: Doctor | null | undefined;
+  patient?: Patient | null | undefined;
 };
 
 const PrescriptionPrintable = forwardRef<HTMLDivElement, Props>(
-  ({ prescriptions, doctor }, ref) => {
+  ({ prescriptions, doctor, patient }, ref) => {
     const today = new Date();
 
     return (
@@ -23,18 +24,22 @@ const PrescriptionPrintable = forwardRef<HTMLDivElement, Props>(
           Receita
         </Text>
         <div>
-          {prescriptions.map((prescription, idx) => (
-            <div
-              key={prescription.id}
-              className="border-t border-dashed border-gray-700 py-3 px-6 first:border-0"
-            >
-              <Text p>
-                {idx + 1}. {prescription.medicationName} -{' '}
-                {prescription.boxAmount} Caixa(s)
-              </Text>
-              <Text p>{prescription.instructions}</Text>
-            </div>
-          ))}
+          <Text>Para:</Text>
+          <Text>{patient?.name}</Text>
+          <div className="mt-4">
+            {prescriptions.map((prescription, idx) => (
+              <div
+                key={prescription.id}
+                className="border-t border-dashed border-gray-700 py-3 px-6 first:border-0"
+              >
+                <Text p>
+                  {idx + 1}. {prescription.medicationName} -{' '}
+                  {prescription.boxAmount} Caixa(s)
+                </Text>
+                <Text p>{prescription.instructions}</Text>
+              </div>
+            ))}
+          </div>
         </div>
         <div>
           <Text>
