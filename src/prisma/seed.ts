@@ -79,11 +79,11 @@ const createDoctor = async () => {
 };
 
 const connectUserAndDoctor = async () => {
-  const id = 'cle74xxjs0000kx08vaiigii6';
+  const id = '';
 
   await prisma.doctor.update({
     where: {
-      id: 1,
+      id: 0,
     },
     data: {
       user: {
