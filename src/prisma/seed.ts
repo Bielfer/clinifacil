@@ -1,6 +1,8 @@
 /* eslint no-console:off */
 /* eslint @typescript-eslint/no-unused-vars:off */
-import { AppointmentStatus } from '@prisma/client';
+import { handbookFieldSchema } from '@/server/routers/handbook';
+import { AppointmentStatus, HandbookField } from '@prisma/client';
+import { z } from 'zod';
 import { prisma } from '../services/prisma';
 
 const connectAppointmentsToAppointmentType = async () => {
@@ -78,17 +80,21 @@ const createDoctor = async () => {
   console.log('Doctor created:', doctor);
 };
 
-const connectUserAndDoctor = async () => {
-  const id = '';
-
+const connectUserAndDoctor = async ({
+  userId,
+  doctorId,
+}: {
+  userId: string;
+  doctorId: number;
+}) => {
   await prisma.doctor.update({
     where: {
-      id: 0,
+      id: doctorId,
     },
     data: {
       user: {
         connect: {
-          id,
+          id: userId,
         },
       },
     },
@@ -96,12 +102,64 @@ const connectUserAndDoctor = async () => {
 
   await prisma.user.update({
     where: {
-      id,
+      id: userId,
     },
     data: {
       role: 'DOCTOR',
     },
   });
+};
+
+const createDoctorHandbook = async ({
+  fields,
+  doctorId,
+  title,
+}: {
+  fields: z.infer<typeof handbookFieldSchema>[];
+  doctorId: number;
+  title: string;
+}) => {
+  const formattedFields = fields.map((field) => ({
+    ...field,
+    value: field.value,
+    options: {
+      create: field.options,
+    },
+  }));
+
+  const handbook = await prisma.handbook.create({
+    data: {
+      title,
+      fields: {
+        create: formattedFields,
+      },
+      doctors: {
+        connect: [{ id: doctorId }],
+      },
+    },
+  });
+
+  console.log(handbook);
+};
+
+const listLastDoctorHandbooks = async (doctorId: number) => {
+  const handbooks = await prisma.handbook.findMany({
+    where: {
+      doctors: {
+        some: {
+          id: doctorId,
+        },
+      },
+    },
+    include: {
+      fields: {
+        include: { options: true },
+      },
+    },
+    take: 5,
+  });
+
+  console.log(handbooks);
 };
 
 const main = async () => {};
