@@ -162,6 +162,33 @@ const listLastDoctorHandbooks = async (doctorId: number) => {
   console.log(handbooks);
 };
 
+const createDoctorAppointmentTypes = async ({
+  doctorId,
+  appointmentTypes,
+}: {
+  doctorId: number;
+  appointmentTypes: { name: string; price?: number }[];
+}) => {
+  const formattedAppointmentTypes = appointmentTypes.map((appointmentType) => ({
+    ...appointmentType,
+    doctorId,
+  }));
+
+  await prisma.appointmentType.createMany({
+    data: formattedAppointmentTypes,
+  });
+};
+
+const listDoctorAppointmentTypes = async (doctorId: number) => {
+  const appointmentTypes = await prisma.appointmentType.findMany({
+    where: {
+      doctorId,
+    },
+  });
+
+  console.log(appointmentTypes);
+};
+
 const main = async () => {};
 
 main()
