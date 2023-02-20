@@ -40,6 +40,9 @@ const paths = {
   newPatientAppointment: (patientId: string | number) =>
     `/patients/${patientId}/appointments/new`,
   appointmentsSummary: '/appointments/summary',
+  patientExams: (patientId: string | number) => `/patients/${patientId}/exams`,
+  newPatientExam: (patientId: string | number) =>
+    `/patients/${patientId}/exams/new`,
 } as const;
 
 export const sidebarPaths = [
@@ -60,6 +63,7 @@ export const patientAppointmentPaths = ({
   { text: 'Prontuário', href: paths.patientHandbooks(patientId) },
   { text: 'Receituário', href: paths.patientPrescriptions(patientId) },
   { text: 'Atestados', href: paths.patientDoctorNotes(patientId) },
+  { text: 'Exames', href: paths.patientExams(patientId) },
 ];
 
 export default paths;
