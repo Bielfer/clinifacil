@@ -80,7 +80,7 @@ model Patient {
 }
 
 model Doctor {
-  id               Int               @id @default(autoincrement())
+  id               Int                  @id @default(autoincrement())
   name             String
   cpf              String
   crm              String
@@ -91,11 +91,12 @@ model Doctor {
   handbooks        Handbook[]
   appointments     Appointment[]
   appointmentTypes AppointmentType[]
-  user             User?             @relation(fields: [userId], references: [id])
-  userId           String?           @unique
+  prescriptions    DoctorPrescription[]
+  user             User?                @relation(fields: [userId], references: [id])
+  userId           String?              @unique
   medications      Medication[]
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt()
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt()
 }
 
 model Receptionist {
@@ -212,6 +213,18 @@ model Prescription {
   updatedAt      DateTime    @updatedAt()
 
   @@index([appointmentId])
+}
+
+model DoctorPrescription {
+  id            Int    @id @default(autoincrement())
+  name          String
+  backgroundUrl String
+  translateX    Int    @default(0)
+  translateY    Int    @default(0)
+  doctor        Doctor @relation(fields: [doctorId], references: [id])
+  doctorId      Int
+
+  @@index([doctorId])
 }
 
 enum Role {
