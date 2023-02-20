@@ -14,6 +14,7 @@ import paths, {
   patientAppointmentPaths,
   sidebarPaths,
 } from '@/constants/paths';
+import { printableTypes } from '@/constants/printables';
 import tryCatch from '@/helpers/tryCatch';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
@@ -54,6 +55,7 @@ const PatientPrescriptions: Page = () => {
   const { data: printables } = trpc.doctor.printables.useQuery(
     {
       doctorId: doctor?.id ?? 0,
+      type: printableTypes.prescription,
     },
     { enabled: !!doctor }
   );
