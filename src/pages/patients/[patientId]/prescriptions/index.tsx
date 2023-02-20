@@ -16,12 +16,12 @@ import paths, {
 } from '@/constants/paths';
 import { printableTypes } from '@/constants/printables';
 import tryCatch from '@/helpers/tryCatch';
+import { useActiveDoctor } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
 import { PlusIcon, PrinterIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { DocumentTextIcon } from '@heroicons/react/24/outline';
 import type { Printable } from '@prisma/client';
-import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useRef, useState } from 'react';
@@ -32,23 +32,23 @@ const PatientPrescriptions: Page = () => {
   const router = useRouter();
   const patientId = router.query.patientId as string;
   const { addToast } = useToast();
+  const { data: doctor } = useActiveDoctor();
   const {
     data: prescriptions,
     isLoading: isLoadingPrescriptions,
     refetch: refetchPrescriptions,
-  } = trpc.prescription.getMany.useQuery({
-    patientId: parseInt(patientId, 10),
-  });
+  } = trpc.prescription.getMany.useQuery(
+    {
+      patientId: parseInt(patientId, 10),
+      doctorId: doctor?.id ?? 0,
+    },
+    { enabled: !!doctor && !!patientId }
+  );
   const {
     mutateAsync: deletePrescription,
     variables: deleteParameters,
     isLoading: isDeletingPrescription,
   } = trpc.prescription.delete.useMutation();
-  const { data: session } = useSession();
-  const { data: doctor } = trpc.doctor.get.useQuery(
-    { userId: session?.user.id },
-    { enabled: !!session }
-  );
   const { data: patient } = trpc.patient.getById.useQuery({
     id: parseInt(patientId, 10),
   });
