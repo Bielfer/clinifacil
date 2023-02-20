@@ -2,6 +2,7 @@ import { publicProcedure, router } from '@/server/trpc';
 import { appointmentRouter } from './appointment';
 import { doctorRouter } from './doctor';
 import { doctorNotesRouter } from './doctor-note';
+import { examRouter } from './exam';
 import { handbookRouter } from './handbook';
 import { patientRouter } from './patient';
 import { prescriptionRouter } from './prescription';
@@ -18,6 +19,7 @@ export const appRouter = router({
   appointment: appointmentRouter,
   doctorNote: doctorNotesRouter,
   prescription: prescriptionRouter,
+  exam: examRouter,
 });
 
 export type AppRouter = typeof appRouter;
