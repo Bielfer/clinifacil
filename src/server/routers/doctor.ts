@@ -1,3 +1,4 @@
+import { printableTypesValues } from '@/constants/printables';
 import { roles } from '@/constants/roles';
 import tryCatch from '@/helpers/tryCatch';
 import { privateProcedure, router } from '@/server/trpc';
@@ -183,15 +184,17 @@ export const doctorRouter = router({
     .input(
       z.object({
         doctorId: z.number(),
+        type: z.enum(printableTypesValues).optional(),
       })
     )
     .query(async ({ input }) => {
-      const { doctorId } = input;
+      const { doctorId, type } = input;
 
       const [prescriptions, error] = await tryCatch(
         prisma.printable.findMany({
           where: {
             doctorId,
+            ...(type && { type }),
           },
         })
       );

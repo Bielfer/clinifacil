@@ -216,12 +216,13 @@ model Prescription {
 }
 
 model Printable {
-  id            Int    @id @default(autoincrement())
+  id            Int           @id @default(autoincrement())
   name          String
+  type          PrintableType
   backgroundUrl String
-  translateX    Int    @default(0)
-  translateY    Int    @default(0)
-  doctor        Doctor @relation(fields: [doctorId], references: [id])
+  translateX    Int           @default(0)
+  translateY    Int           @default(0)
+  doctor        Doctor        @relation(fields: [doctorId], references: [id])
   doctorId      Int
 
   @@index([doctorId])
@@ -251,4 +252,10 @@ enum AppointmentStatus {
   OPEN
   FINISHED
   ARCHIVED
+}
+
+enum PrintableType {
+  DOCTOR_NOTE
+  PRESCRIPTION
+  EXAMS
 }
