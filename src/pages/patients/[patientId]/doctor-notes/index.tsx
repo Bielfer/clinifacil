@@ -7,12 +7,14 @@ import MyLink from '@/components/core/MyLink';
 import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
 import Text from '@/components/core/Text';
+import { useToast } from '@/components/core/Toast';
 import DoctorNotePrintable from '@/components/features/printables/DoctorNotePrintable';
 import paths, {
   patientAppointmentPaths,
   sidebarPaths,
 } from '@/constants/paths';
 import { printableTypes } from '@/constants/printables';
+import tryCatch from '@/helpers/tryCatch';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
 import { PlusIcon, PrinterIcon, TrashIcon } from '@heroicons/react/20/solid';
@@ -25,6 +27,7 @@ import { useReactToPrint } from 'react-to-print';
 
 const DoctorNotes: Page = () => {
   const router = useRouter();
+  const { addToast } = useToast();
   const patientId = router.query.patientId as string;
   const {
     data: doctorNotes,
@@ -60,7 +63,14 @@ const DoctorNotes: Page = () => {
   });
 
   const handleDeleteDoctorNote = async (doctorNoteId: number) => {
-    await deleteDoctorNote({ id: doctorNoteId });
+    const [, error] = await tryCatch(deleteDoctorNote({ id: doctorNoteId }));
+
+    if (error)
+      addToast({
+        type: 'error',
+        content: 'Falha ao remover remédio, tente novamente em 5 segundos!',
+      });
+
     await refetchDoctorNotes();
   };
 
