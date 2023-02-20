@@ -19,7 +19,7 @@ import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
 import { PlusIcon, PrinterIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { DocumentTextIcon } from '@heroicons/react/24/outline';
-import type { DoctorPrescription } from '@prisma/client';
+import type { Printable } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -51,14 +51,14 @@ const PatientPrescriptions: Page = () => {
   const { data: patient } = trpc.patient.getById.useQuery({
     id: parseInt(patientId, 10),
   });
-  const { data: doctorPrescriptions } = trpc.doctor.prescriptions.useQuery(
+  const { data: printables } = trpc.doctor.printables.useQuery(
     {
       doctorId: doctor?.id ?? 0,
     },
     { enabled: !!doctor }
   );
-  const [selectedDoctorPrescription, setSelectedDoctorPrescription] = useState<
-    DoctorPrescription | undefined
+  const [selectedPrintable, setSelectedPrintable] = useState<
+    Printable | undefined
   >();
   const [isOpen, setIsOpen] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
@@ -68,7 +68,7 @@ const PatientPrescriptions: Page = () => {
   });
 
   const handlePrintButton = () => {
-    if (doctorPrescriptions && doctorPrescriptions?.length > 0) {
+    if (printables && printables?.length > 0) {
       setIsOpen(true);
       return;
     }
@@ -112,7 +112,7 @@ const PatientPrescriptions: Page = () => {
                 doctor={doctor}
                 prescriptions={prescriptions ?? []}
                 patient={patient}
-                doctorPrescription={selectedDoctorPrescription}
+                printable={selectedPrintable}
               />
             </div>
             <MyLink
@@ -188,15 +188,15 @@ const PatientPrescriptions: Page = () => {
       >
         <DescriptionList
           items={
-            doctorPrescriptions?.map((doctorPrescription) => ({
-              label: doctorPrescription.name,
+            printables?.map((printable) => ({
+              label: printable.name,
               buttonsOrLinks: [
                 <Button
                   variant="link-primary"
                   iconLeft={PrinterIcon}
                   onClick={() => {
                     flushSync(() => {
-                      setSelectedDoctorPrescription(doctorPrescription);
+                      setSelectedPrintable(printable);
                       setIsOpen(false);
                     });
                     handlePrint();

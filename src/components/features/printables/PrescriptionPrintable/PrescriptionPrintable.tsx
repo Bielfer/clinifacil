@@ -7,12 +7,7 @@ import {
   translateYArray,
   translateYArrayNegative,
 } from '@/constants/styles';
-import type {
-  Doctor,
-  DoctorPrescription,
-  Patient,
-  Prescription,
-} from '@prisma/client';
+import type { Doctor, Printable, Patient, Prescription } from '@prisma/client';
 import clsx from 'clsx';
 import { getDate, getMonth, getYear } from 'date-fns';
 import { forwardRef } from 'react';
@@ -22,17 +17,15 @@ type Props = {
   prescriptions: Prescription[];
   doctor?: Doctor | null | undefined;
   patient?: Patient | null | undefined;
-  doctorPrescription?: DoctorPrescription | null | undefined;
+  printable?: Printable | null | undefined;
 };
 
 const PrescriptionPrintable = forwardRef<HTMLDivElement, Props>(
-  ({ prescriptions, doctor, patient, doctorPrescription }, ref) => {
+  ({ prescriptions, doctor, patient, printable }, ref) => {
     const today = new Date();
-    const doctorPrescriptionBackground = doctorPrescription?.backgroundUrl;
-    const translateX =
-      (doctorPrescription && doctorPrescription.translateX) ?? 0;
-    const translateY =
-      (doctorPrescription && doctorPrescription.translateY) ?? 0;
+    const doctorPrescriptionBackground = printable?.backgroundUrl;
+    const translateX = (printable && printable.translateX) ?? 0;
+    const translateY = (printable && printable.translateY) ?? 0;
     const translateXStyle =
       translateX >= 0
         ? translateXArray[translateX]

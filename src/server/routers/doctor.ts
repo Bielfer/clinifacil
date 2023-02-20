@@ -178,7 +178,7 @@ export const doctorRouter = router({
 
       return appointmentTypes;
     }),
-  prescriptions: privateProcedure
+  printables: privateProcedure
     .use(authorizeHigherOrEqualRole(roles.doctor))
     .input(
       z.object({
@@ -189,7 +189,7 @@ export const doctorRouter = router({
       const { doctorId } = input;
 
       const [prescriptions, error] = await tryCatch(
-        prisma.doctorPrescription.findMany({
+        prisma.printable.findMany({
           where: {
             doctorId,
           },

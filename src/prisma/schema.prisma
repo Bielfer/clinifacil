@@ -80,7 +80,7 @@ model Patient {
 }
 
 model Doctor {
-  id               Int                  @id @default(autoincrement())
+  id               Int               @id @default(autoincrement())
   name             String
   cpf              String
   crm              String
@@ -91,12 +91,12 @@ model Doctor {
   handbooks        Handbook[]
   appointments     Appointment[]
   appointmentTypes AppointmentType[]
-  prescriptions    DoctorPrescription[]
-  user             User?                @relation(fields: [userId], references: [id])
-  userId           String?              @unique
+  printables       Printable[]
+  user             User?             @relation(fields: [userId], references: [id])
+  userId           String?           @unique
   medications      Medication[]
-  createdAt        DateTime             @default(now())
-  updatedAt        DateTime             @updatedAt()
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt()
 }
 
 model Receptionist {
@@ -215,7 +215,7 @@ model Prescription {
   @@index([appointmentId])
 }
 
-model DoctorPrescription {
+model Printable {
   id            Int    @id @default(autoincrement())
   name          String
   backgroundUrl String
