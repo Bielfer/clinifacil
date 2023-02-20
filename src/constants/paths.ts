@@ -58,7 +58,7 @@ export const patientAppointmentPaths = ({
   patientId: string;
 }) => [
   { text: 'Prontuário', href: paths.patientHandbooks(patientId) },
-  { text: 'Receitas', href: paths.patientPrescriptions(patientId) },
+  { text: 'Receituário', href: paths.patientPrescriptions(patientId) },
   { text: 'Atestados', href: paths.patientDoctorNotes(patientId) },
 ];
 
