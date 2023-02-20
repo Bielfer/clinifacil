@@ -15,11 +15,11 @@ import paths, {
 } from '@/constants/paths';
 import { printableTypes } from '@/constants/printables';
 import tryCatch from '@/helpers/tryCatch';
+import { useActiveDoctor } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
 import { PlusIcon, PrinterIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline';
-import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useRef } from 'react';
@@ -29,18 +29,14 @@ const DoctorNotes: Page = () => {
   const router = useRouter();
   const { addToast } = useToast();
   const patientId = router.query.patientId as string;
+  const { data: doctor, isLoading: isLoadingDoctor } = useActiveDoctor();
   const {
     data: doctorNotes,
     isLoading: isLoadingDoctorNotes,
     refetch: refetchDoctorNotes,
   } = trpc.doctorNote.getMany.useQuery(
-    { patientId: parseInt(patientId, 10) },
-    { enabled: !!patientId }
-  );
-  const { data: session } = useSession();
-  const { data: doctor, isLoading: isLoadingDoctor } = trpc.doctor.get.useQuery(
-    { userId: session?.user.id },
-    { enabled: !!session }
+    { patientId: parseInt(patientId, 10), doctorId: doctor?.id ?? 0 },
+    { enabled: !!patientId && !!doctor }
   );
   const {
     mutateAsync: deleteDoctorNote,
