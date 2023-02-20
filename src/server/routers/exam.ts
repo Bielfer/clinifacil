@@ -8,7 +8,7 @@ export const examRouter = router({
   getMany: privateProcedure
     .input(
       z.object({
-        patientId: z.number(),
+        patientId: z.number().optional(),
         doctorId: z.number(),
       })
     )
@@ -18,10 +18,14 @@ export const examRouter = router({
       const [exams, error] = await tryCatch(
         prisma.exam.findMany({
           where: {
-            appointment: {
-              patientId,
-              doctorId,
-            },
+            doctorId,
+            ...(patientId
+              ? {
+                  appointment: {
+                    patientId,
+                  },
+                }
+              : { appointment: null }),
           },
         })
       );
