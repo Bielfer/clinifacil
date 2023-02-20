@@ -12,6 +12,7 @@ import paths, {
   patientAppointmentPaths,
   sidebarPaths,
 } from '@/constants/paths';
+import { printableTypes } from '@/constants/printables';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
 import { PlusIcon, PrinterIcon, TrashIcon } from '@heroicons/react/20/solid';
@@ -43,7 +44,16 @@ const DoctorNotes: Page = () => {
     isLoading: isDeletingDoctorNote,
     variables: deleteParameters,
   } = trpc.doctorNote.delete.useMutation();
+  const { data: printables } = trpc.doctor.printables.useQuery(
+    {
+      doctorId: doctor?.id ?? 0,
+      type: printableTypes.doctorNote,
+    },
+    { enabled: !!doctor }
+  );
   const printRef = useRef<HTMLDivElement>(null);
+
+  const printableExists = (!!printables && printables.length > 0) || undefined;
 
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
@@ -104,6 +114,7 @@ const DoctorNotes: Page = () => {
                           ref={printRef}
                           doctorNote={doctorNote}
                           doctor={doctor}
+                          printable={printableExists && printables?.[0]}
                         />
                       </div>
                     </>,
