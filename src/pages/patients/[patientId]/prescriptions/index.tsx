@@ -3,6 +3,7 @@ import DescriptionList from '@/components/core/DescriptionList';
 import EmptyState from '@/components/core/EmptyState';
 import IconButton from '@/components/core/IconButton';
 import LoadingWrapper from '@/components/core/LoadingWrapper';
+import Modal from '@/components/core/Modal';
 import MyLink from '@/components/core/MyLink';
 import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
@@ -18,10 +19,12 @@ import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
 import { PlusIcon, PrinterIcon, TrashIcon } from '@heroicons/react/20/solid';
 import { DocumentTextIcon } from '@heroicons/react/24/outline';
+import type { DoctorPrescription } from '@prisma/client';
 import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { useReactToPrint } from 'react-to-print';
 
 const PatientPrescriptions: Page = () => {
@@ -48,11 +51,30 @@ const PatientPrescriptions: Page = () => {
   const { data: patient } = trpc.patient.getById.useQuery({
     id: parseInt(patientId, 10),
   });
+  const { data: doctorPrescriptions } = trpc.doctor.prescriptions.useQuery(
+    {
+      doctorId: doctor?.id ?? 0,
+    },
+    { enabled: !!doctor }
+  );
+  const [selectedDoctorPrescription, setSelectedDoctorPrescription] = useState<
+    DoctorPrescription | undefined
+  >();
+  const [isOpen, setIsOpen] = useState(false);
   const printRef = useRef<HTMLDivElement>(null);
 
   const handlePrint = useReactToPrint({
     content: () => printRef.current,
   });
+
+  const handlePrintButton = () => {
+    if (doctorPrescriptions && doctorPrescriptions?.length > 0) {
+      setIsOpen(true);
+      return;
+    }
+
+    handlePrint();
+  };
 
   const handleDeletePrescription = async (prescriptionId: number) => {
     const [, error] = await tryCatch(
@@ -80,7 +102,7 @@ const PatientPrescriptions: Page = () => {
             <Button
               iconLeft={PrinterIcon}
               variant="secondary"
-              onClick={handlePrint}
+              onClick={handlePrintButton}
             >
               Imprimir
             </Button>
@@ -90,6 +112,7 @@ const PatientPrescriptions: Page = () => {
                 doctor={doctor}
                 prescriptions={prescriptions ?? []}
                 patient={patient}
+                doctorPrescription={selectedDoctorPrescription}
               />
             </div>
             <MyLink
@@ -157,6 +180,36 @@ const PatientPrescriptions: Page = () => {
           )}
         </LoadingWrapper>
       </Sidebar>
+      <Modal
+        isOpen={isOpen}
+        onClose={() => {
+          setIsOpen(false);
+        }}
+      >
+        <DescriptionList
+          items={
+            doctorPrescriptions?.map((doctorPrescription) => ({
+              label: doctorPrescription.name,
+              buttonsOrLinks: [
+                <Button
+                  variant="link-primary"
+                  iconLeft={PrinterIcon}
+                  onClick={() => {
+                    flushSync(() => {
+                      setSelectedDoctorPrescription(doctorPrescription);
+                      setIsOpen(false);
+                    });
+                    handlePrint();
+                  }}
+                  key={0}
+                >
+                  Imprimir
+                </Button>,
+              ],
+            })) ?? []
+          }
+        />
+      </Modal>
     </>
   );
 };
