@@ -46,17 +46,22 @@ const ExamPrintable = forwardRef<HTMLDivElement, Props>(
         ref={ref}
       >
         {background ? (
-          <ul
+          <div
             className={clsx(
-              'absolute top-1/2 left-1/2 flex h-screen w-screen list-inside list-disc flex-col gap-y-3',
+              'absolute top-1/2 left-1/2 flex h-screen w-full flex-col gap-y-2',
               translateXStyle,
               translateYStyle
             )}
           >
-            {exams.map((exam) => (
-              <li key={exam.id}>{exam.name}</li>
-            ))}
-          </ul>
+            <Text>Para:</Text>
+            <Text b>{patient?.name}</Text>
+            <Text className="mt-2">Solicito:</Text>
+            <ul className="flex list-inside list-disc flex-col gap-y-3">
+              {exams.map((exam) => (
+                <li key={exam.id}>{exam.name}</li>
+              ))}
+            </ul>
+          </div>
         ) : (
           <>
             <Text b className="mb-6 justify-center">

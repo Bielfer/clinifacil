@@ -54,6 +54,7 @@ const PrescriptionPrintable = forwardRef<HTMLDivElement, Props>(
               translateYStyle
             )}
             prescriptions={prescriptions}
+            patient={patient}
           />
         ) : (
           <>
