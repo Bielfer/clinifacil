@@ -29,6 +29,7 @@
         "namedComponents": "arrow-function",
         "unnamedComponents": "arrow-function"
       }
-    ]
+    ],
+    "no-underscore-dangle": "off"
   }
 }
