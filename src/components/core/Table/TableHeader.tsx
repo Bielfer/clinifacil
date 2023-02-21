@@ -12,7 +12,7 @@ const TableHeader: FC<Props> = ({ children, hidden, className }) => (
   <th
     scope="col"
     className={clsx(
-      'py-3.5 px-4 text-left text-sm font-semibold text-slate-900 first:sm:pl-6 last:sm:pr-6',
+      'py-3.5 px-3 text-left text-sm font-semibold text-slate-900 first:pl-6 last:pr-6 first:sm:pl-0 last:sm:pr-0',
       className
     )}
   >

@@ -5,7 +5,7 @@ interface Props {
 }
 
 const TableHead: FC<Props> = ({ children }) => (
-  <thead className="bg-slate-50">
+  <thead>
     <tr>{children}</tr>
   </thead>
 );
