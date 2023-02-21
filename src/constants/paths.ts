@@ -43,6 +43,8 @@ const paths = {
   patientExams: (patientId: string | number) => `/patients/${patientId}/exams`,
   newPatientExam: (patientId: string | number) =>
     `/patients/${patientId}/exams/new`,
+  appointmentTypesByName: (typeName: string | number) =>
+    `/appointments/types/${typeName}`,
 } as const;
 
 export const sidebarPaths = [
