@@ -3,6 +3,10 @@ import {
   appointmentStatusValues,
 } from '@/constants/appointment-status';
 import { roles } from '@/constants/roles';
+import {
+  timeIntervalDates,
+  timeIntervalValues,
+} from '@/constants/time-intervals';
 import tryCatch from '@/helpers/tryCatch';
 import { router, privateProcedure } from '@/server/trpc';
 import { prisma } from '@/services/prisma';
@@ -175,6 +179,51 @@ export const appointmentRouter = router({
       if (error) throw new TRPCError({ code: 'BAD_REQUEST', message: error });
 
       return appointmentData;
+    }),
+  summary: privateProcedure
+    .use(authorizeHigherOrEqualRole(roles.receptionist))
+    .input(
+      z.object({
+        doctorId: z.number(),
+        interval: z.enum(timeIntervalValues).optional(),
+      })
+    )
+    .query(async ({ input }) => {
+      const { doctorId, interval = 'TODAY' } = input;
+
+      const [appointmentTypes, error] = await tryCatch(
+        prisma.appointmentType.groupBy({
+          by: ['name'],
+          where: {
+            createdAt: {
+              gte: timeIntervalDates[interval].gte,
+              lte: timeIntervalDates[interval].lte,
+            },
+            appointment: {
+              status: {
+                in: [appointmentStatus.finished, appointmentStatus.archived],
+              },
+              doctorId,
+            },
+          },
+          _sum: {
+            price: true,
+          },
+          orderBy: {
+            name: 'asc',
+          },
+        })
+      );
+
+      if (error) throw new TRPCError({ code: 'BAD_REQUEST', message: error });
+
+      const total = appointmentTypes?.reduce(
+        (accumulator, currentValue) =>
+          accumulator + (currentValue._sum?.price ?? 0),
+        0
+      );
+
+      return { appointmentTypes, total };
     }),
 });
 
