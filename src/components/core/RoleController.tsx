@@ -1,4 +1,5 @@
 import { roles } from '@/constants/roles';
+import { isHigherOrEqualInRoleHierarchy } from '@/helpers/roles';
 import { Role } from '@/types/role';
 import { useSession } from 'next-auth/react';
 
@@ -11,14 +12,14 @@ type Props = {
 
 const RoleController = ({
   role,
-  adminRole = roles.master,
+  adminRole = roles.admin,
   children,
   show = true,
 }: Props) => {
   const { data: session } = useSession();
   const userRole = session?.user.role;
 
-  if (adminRole === userRole) return children;
+  if (isHigherOrEqualInRoleHierarchy(userRole, adminRole)) return children;
 
   if (!show && role === userRole) return null;
 
