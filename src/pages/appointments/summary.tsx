@@ -38,7 +38,7 @@ const AppointmentsSummary: Page = () => {
         <title>CliniFácil | Resumo do Fechamento de Caixa</title>
       </Head>
       <Sidebar items={sidebarPaths}>
-        <div className="mb-10 flex items-center justify-between">
+        <div className="mb-6 flex items-center justify-between">
           <Text h2>Resumo do Fechamento de Caixa</Text>
           <Dropdown
             data={(
@@ -69,7 +69,7 @@ const AppointmentsSummary: Page = () => {
             <Table>
               <Table.Head>
                 <Table.Header>Tipo de Consulta</Table.Header>
-                <Table.Header>Total</Table.Header>
+                <Table.Header>Valor</Table.Header>
                 <Table.Header> </Table.Header>
               </Table.Head>
               <Table.Body>
