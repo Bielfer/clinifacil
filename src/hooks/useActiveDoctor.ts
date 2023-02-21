@@ -15,7 +15,7 @@ const useActiveDoctor = () => {
     : { id: selectedDoctorId };
 
   const data = trpc.doctor.get.useQuery(query, {
-    enabled: !!session,
+    enabled: isDoctor ? !!session : !!selectedDoctorId,
   });
 
   return data;
