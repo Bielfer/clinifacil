@@ -8,41 +8,39 @@ import { appointmentStatus } from '@/constants/appointment-status';
 import { differenceInYears } from 'date-fns';
 import MyLink from '@/components/core/MyLink';
 import paths, { sidebarPaths } from '@/constants/paths';
-import { CursorArrowRaysIcon, PlusIcon } from '@heroicons/react/24/outline';
+import {
+  CursorArrowRaysIcon,
+  PlusIcon,
+  UsersIcon,
+} from '@heroicons/react/24/outline';
 import RoleController from '@/components/core/RoleController';
 import { roles } from '@/constants/roles';
 import SelectDoctor from '@/components/features/receptionist/SelectDoctor';
-import { useSession } from 'next-auth/react';
-import useReceptionistStore from '@/store/receptionist';
 import { useState } from 'react';
 import Tabs from '@/components/core/Tabs';
 import type { AppointmentStatus } from '@prisma/client';
 import EmptyState from '@/components/core/EmptyState';
+import { useActiveDoctor, useRoles } from '@/hooks';
+import If from '@/components/core/If';
+import useReceptionistStore from '@/store/receptionist';
 
 const Queue: Page = () => {
   const [tabsStatus, setTabsStatus] = useState<AppointmentStatus>(
     appointmentStatus.open
   );
-  const { data: session } = useSession();
-  const userRole = session?.user.role;
-  const isDoctor = userRole === roles.doctor;
-  const isReceptionist = userRole === roles.receptionist;
+  const { isReceptionist, isAdminOrHigher } = useRoles();
+  const { data: doctor } = useActiveDoctor();
+  const { data: appointments, isLoading } = trpc.appointment.getMany.useQuery(
+    {
+      doctorId: doctor?.id,
+      status: tabsStatus,
+    },
+    { enabled: !!doctor }
+  );
+  const { mutate: updateAppointment } = trpc.appointment.update.useMutation();
   const selectedDoctorId = useReceptionistStore(
     (state) => state.selectedDoctorId
   );
-  const { data: doctor } = trpc.doctor.get.useQuery(
-    { userId: session?.user.id },
-    { enabled: isDoctor }
-  );
-  const queryAppointments = isDoctor ? !!doctor?.id : !!selectedDoctorId;
-  const { data: appointments, isLoading } = trpc.appointment.getMany.useQuery(
-    {
-      doctorId: isDoctor ? doctor?.id : selectedDoctorId,
-      status: tabsStatus,
-    },
-    { enabled: queryAppointments }
-  );
-  const { mutate: updateAppointment } = trpc.appointment.update.useMutation();
 
   const isOpenStatus = tabsStatus === appointmentStatus.open;
 
@@ -76,24 +74,32 @@ const Queue: Page = () => {
           value={tabsStatus}
           setValue={setTabsStatus}
         />
-        {isReceptionist && !selectedDoctorId ? (
-          <EmptyState
-            icon={CursorArrowRaysIcon}
-            title="Nenhum médico selecionado"
-            subtitle="Para selecionar um médico basta clicar no seletor acima"
-          />
-        ) : (
-          <Table>
-            <Table.Head>
-              <Table.Header>Nome</Table.Header>
-              <Table.Header>Idade</Table.Header>
-              <Table.Header> </Table.Header>
-            </Table.Head>
-            <Table.Body>
-              {isLoading ? (
-                <Table.Skeleton rows={5} columns={3} />
-              ) : (
-                appointments?.map((appointment) => (
+        <If>
+          <If.Case condition={!!appointments && appointments.length === 0}>
+            <EmptyState
+              icon={UsersIcon}
+              title="Nenhum paciente adicionado à fila"
+              subtitle="Para adicionar um paciente à fila basta clicar no botão Nova Consulta"
+            />
+          </If.Case>
+          <If.Case
+            condition={(isReceptionist || isAdminOrHigher) && !selectedDoctorId}
+          >
+            <EmptyState
+              icon={CursorArrowRaysIcon}
+              title="Nenhum médico selecionado"
+              subtitle="Para selecionar um médico basta clicar no seletor acima"
+            />
+          </If.Case>
+          <If.Case condition={!!appointments && appointments.length > 0}>
+            <Table>
+              <Table.Head>
+                <Table.Header>Nome</Table.Header>
+                <Table.Header>Idade</Table.Header>
+                <Table.Header> </Table.Header>
+              </Table.Head>
+              <Table.Body>
+                {appointments?.map((appointment) => (
                   <Table.Row key={appointment.id}>
                     <Table.Data>{appointment.patient.name}</Table.Data>
                     <Table.Data>
@@ -123,11 +129,23 @@ const Queue: Page = () => {
                       </RoleController>
                     </Table.Data>
                   </Table.Row>
-                ))
-              )}
-            </Table.Body>
-          </Table>
-        )}
+                ))}
+              </Table.Body>
+            </Table>
+          </If.Case>
+          <If.Case condition={isLoading}>
+            <Table>
+              <Table.Head>
+                <Table.Header>Nome</Table.Header>
+                <Table.Header>Idade</Table.Header>
+                <Table.Header> </Table.Header>
+              </Table.Head>
+              <Table.Body>
+                <Table.Skeleton rows={5} columns={3} />
+              </Table.Body>
+            </Table>
+          </If.Case>
+        </If>
       </Sidebar>
     </>
   );
