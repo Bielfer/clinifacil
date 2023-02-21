@@ -1,4 +1,5 @@
 import FormikAutocomplete from '@/components/forms/FormikAutocomplete';
+import FormikDate from '@/components/forms/FormikDate';
 import FormikInput from '@/components/forms/FormikInput';
 import FormikSwitch from '@/components/forms/FormikSwitch';
 import FormikTextarea from '@/components/forms/FormikTextarea';
@@ -42,7 +43,7 @@ export const toRenderField = ({
         options={options ?? []}
       />
     ),
-    DATE: <FormikInput name={name} label={label} key={key} />,
+    DATE: <FormikDate name={name} label={label} key={key} />,
   };
 
   return fieldMatcher[field];
