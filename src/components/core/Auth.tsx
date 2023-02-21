@@ -28,8 +28,9 @@ const Auth = ({
   const isUnauthenticated = status === 'unauthenticated';
   const userRole = session?.user.role;
 
-  if (!Cookies.get('authed') && isLoggedIn) Cookies.set('authed', 'true');
-
+  if (!Cookies.get('authed') && isLoggedIn) {
+    Cookies.set('authed', 'true', { sameSite: 'Strict', expires: 40 });
+  }
   if (isUnauthenticated) Cookies.remove('authed');
 
   if (isLoading && (type === 'wait' || type === 'block')) {
