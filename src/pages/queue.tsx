@@ -78,8 +78,16 @@ const Queue: Page = () => {
           <If.Case condition={!!appointments && appointments.length === 0}>
             <EmptyState
               icon={UsersIcon}
-              title="Nenhum paciente adicionado à fila"
-              subtitle="Para adicionar um paciente à fila basta clicar no botão Nova Consulta"
+              title={
+                isOpenStatus
+                  ? 'Nenhum paciente adicionado à fila'
+                  : 'Nenhum paciente atendido'
+              }
+              subtitle={
+                isOpenStatus
+                  ? 'Para adicionar um paciente à fila basta clicar no botão Nova Consulta'
+                  : 'Quando um paciente for atendido ele irá aparecer aqui'
+              }
             />
           </If.Case>
           <If.Case
