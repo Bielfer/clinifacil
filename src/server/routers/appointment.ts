@@ -31,6 +31,7 @@ const appointmentReturnFormat = {
       },
     },
   },
+  type: true,
 };
 
 export const appointmentRouter = router({
@@ -65,10 +66,17 @@ export const appointmentRouter = router({
           .enum(appointmentStatusValues)
           .or(z.enum(appointmentStatusValues).array())
           .optional(),
+        interval: z.enum(timeIntervalValues).optional(),
+        typeName: z.string().optional(),
       })
     )
     .query(async ({ input }) => {
-      const { status: inputStatus, ...inputWithoutStatus } = input;
+      const {
+        status: inputStatus,
+        interval,
+        typeName,
+        ...inputWithoutStatus
+      } = input;
       const statusOrList = Array.isArray(input.status)
         ? input.status?.map((status) => ({ status: { equals: status } }))
         : [{ status: { equals: input.status } }];
@@ -78,6 +86,13 @@ export const appointmentRouter = router({
           where: {
             ...inputWithoutStatus,
             ...(inputStatus && { OR: statusOrList }),
+            ...(interval && {
+              createdAt: {
+                gte: timeIntervalDates[interval].gte,
+                lte: timeIntervalDates[interval].lte,
+              },
+            }),
+            ...(typeName && { type: { name: typeName } }),
           },
           include: appointmentReturnFormat,
         })
