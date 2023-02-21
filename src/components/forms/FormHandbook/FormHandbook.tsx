@@ -4,6 +4,7 @@ import paths from '@/constants/paths';
 import validations from '@/constants/validations';
 import tryCatch from '@/helpers/tryCatch';
 import zodValidator from '@/helpers/zod-validator';
+import { useActiveDoctor } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import { FieldValue } from '@/types/handbook';
 import type {
@@ -12,7 +13,6 @@ import type {
   HandbookFieldOption,
 } from '@prisma/client';
 import { Form, Formik } from 'formik';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
 import { z } from 'zod';
@@ -35,14 +35,10 @@ const FormHandbook: FC<Props> = ({ handbook, appointmentId }) => {
   const router = useRouter();
   const { addToast } = useToast();
   const patientId = router.query.patientId as string;
-  const { data: session } = useSession();
-  const { data: doctor } = trpc.doctor.get.useQuery({
-    userId: session?.user.id,
-  });
+  const { data: doctor } = useActiveDoctor();
   const { data: handbooks } = trpc.doctor.handbooks.useQuery(
     {
       doctorId: doctor?.id,
-      userId: session?.user.id,
     },
     { enabled: !!doctor }
   );
