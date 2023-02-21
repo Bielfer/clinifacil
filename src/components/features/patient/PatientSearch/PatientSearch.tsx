@@ -1,5 +1,4 @@
-/* eslint @next/next/no-img-element:off */
-import { FC, useEffect, useRef, useState } from 'react';
+import { FC, useRef, useState } from 'react';
 import { Combobox } from '@headlessui/react';
 import {
   MagnifyingGlassIcon,
@@ -27,17 +26,10 @@ const PatientSearch: FC = ({ className }: Props) => {
     { enabled: query.length >= 3 }
   );
   const [selectedPatient, setSelectedPatient] = useState<Patient | undefined>();
-  const { reset, clear } = useTimeout(() => setQuery(input), 500);
+  const { reset } = useTimeout(() => setQuery(input), 500);
   const inputRef = useRef<HTMLDivElement>(null);
 
   useOnClickOutside(inputRef, () => setInput(''));
-
-  useEffect(
-    () => () => {
-      clear();
-    },
-    [clear]
-  );
 
   return (
     <Combobox
