@@ -5,11 +5,11 @@ import { privateProcedure, router } from '@/server/trpc';
 import { prisma } from '@/services/prisma';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { authorizeHigherOrEqualRole, isAuthorized } from '../middlewares';
+import { authorizeHigherOrEqualRole } from '../middlewares';
 
 export const doctorRouter = router({
   get: privateProcedure
-    .use(isAuthorized({ inputKey: 'userId' }))
+    .use(authorizeHigherOrEqualRole(roles.doctor))
     .input(
       z.object({ id: z.number().optional(), userId: z.string().optional() })
     )
@@ -49,7 +49,6 @@ export const doctorRouter = router({
     }),
   edit: privateProcedure
     .use(authorizeHigherOrEqualRole(roles.doctor))
-    .use(isAuthorized({ inputKey: 'id' }))
     .input(
       z.object({
         id: z.number(),
@@ -74,7 +73,7 @@ export const doctorRouter = router({
       return doctor;
     }),
   handbooks: privateProcedure
-    .use(isAuthorized({ inputKey: 'userId' }))
+    .use(authorizeHigherOrEqualRole(roles.doctor))
     .input(
       z.object({
         doctorId: z.number().optional(),
@@ -106,7 +105,7 @@ export const doctorRouter = router({
       return handbooks;
     }),
   putHandbook: privateProcedure
-    .use(isAuthorized({ inputKey: 'doctorId' }))
+    .use(authorizeHigherOrEqualRole(roles.doctor))
     .input(
       z.object({
         doctorId: z.number(),

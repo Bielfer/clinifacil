@@ -12,7 +12,7 @@ import { router, privateProcedure } from '@/server/trpc';
 import { prisma } from '@/services/prisma';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
-import { authorizeHigherOrEqualRole, isAuthorized } from '../middlewares';
+import { authorizeHigherOrEqualRole } from '../middlewares';
 
 const appointmentReturnFormat = {
   doctor: {
@@ -36,7 +36,7 @@ const appointmentReturnFormat = {
 
 export const appointmentRouter = router({
   get: privateProcedure
-    .use(isAuthorized({ inputKey: 'doctorId' }))
+    .use(authorizeHigherOrEqualRole(roles.receptionist))
     .input(
       z.object({
         id: z.number(),
