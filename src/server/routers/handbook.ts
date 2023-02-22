@@ -53,6 +53,9 @@ export const handbookRouter = router({
               include: {
                 options: true,
               },
+              orderBy: {
+                displayOrder: 'asc',
+              },
             },
           },
         })

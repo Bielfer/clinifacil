@@ -124,14 +124,15 @@ model Handbook {
 }
 
 model HandbookField {
-  id         Int                   @id @default(autoincrement())
-  label      String
-  type       HandbookFieldType
-  handbook   Handbook?             @relation(fields: [handbookId], references: [id])
-  handbookId Int?
-  required   Boolean               @default(false)
-  options    HandbookFieldOption[]
-  value      Json?
+  id           Int                   @id @default(autoincrement())
+  label        String
+  type         HandbookFieldType
+  handbook     Handbook?             @relation(fields: [handbookId], references: [id])
+  handbookId   Int?
+  required     Boolean               @default(false)
+  displayOrder Int                   @default(0)
+  options      HandbookFieldOption[]
+  value        Json?
 
   @@index([handbookId])
 }
