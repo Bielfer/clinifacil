@@ -8,19 +8,17 @@ export const prescriptionRouter = router({
   getMany: privateProcedure
     .input(
       z.object({
-        patientId: z.number(),
-        doctorId: z.number(),
+        appointmentId: z.number(),
       })
     )
     .query(async ({ input }) => {
-      const { patientId, doctorId } = input;
+      const { appointmentId } = input;
 
       const [prescriptions, error] = await tryCatch(
         prisma.prescription.findMany({
           where: {
             appointment: {
-              patientId,
-              doctorId,
+              id: appointmentId,
             },
           },
         })

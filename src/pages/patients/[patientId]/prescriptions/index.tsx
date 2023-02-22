@@ -33,16 +33,22 @@ const PatientPrescriptions: Page = () => {
   const patientId = router.query.patientId as string;
   const { addToast } = useToast();
   const { data: doctor } = useActiveDoctor();
+  const { data: activeAppointment } = trpc.appointment.active.useQuery(
+    {
+      patientId: parseInt(patientId, 10),
+      doctorId: doctor?.id ?? 0,
+    },
+    { enabled: !!doctor && !!patientId }
+  );
   const {
     data: prescriptions,
     isLoading: isLoadingPrescriptions,
     refetch: refetchPrescriptions,
   } = trpc.prescription.getMany.useQuery(
     {
-      patientId: parseInt(patientId, 10),
-      doctorId: doctor?.id ?? 0,
+      appointmentId: activeAppointment?.id ?? 0,
     },
-    { enabled: !!doctor && !!patientId }
+    { enabled: !!activeAppointment }
   );
   const {
     mutateAsync: deletePrescription,
