@@ -95,6 +95,9 @@ export const doctorRouter = router({
           include: {
             fields: {
               include: { options: true },
+              orderBy: {
+                displayOrder: 'asc',
+              },
             },
           },
         })
