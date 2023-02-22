@@ -4,17 +4,14 @@ import paths from '@/constants/paths';
 import validations from '@/constants/validations';
 import tryCatch from '@/helpers/tryCatch';
 import zodValidator from '@/helpers/zod-validator';
-import { useRoles } from '@/hooks';
+import { useActiveDoctor, useRoles } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import useReceptionistStore from '@/store/receptionist';
 import clsx from 'clsx';
 import { Form, Formik } from 'formik';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
-
 import type { FC } from 'react';
 import { z } from 'zod';
-
 import Button from '../core/Button';
 import { useToast } from '../core/Toast';
 import FormikSelect from './FormikSelect';
@@ -28,13 +25,7 @@ const FormAppointment: FC<Props> = ({ className, onSubmitRedirectUrl }) => {
   const { isDoctor } = useRoles();
   const router = useRouter();
   const patientId = router.query.patientId as string;
-  const { data: session } = useSession();
-  const { data: doctor } = trpc.doctor.get.useQuery(
-    {
-      userId: session?.user.id,
-    },
-    { enabled: !!session }
-  );
+  const { data: doctor } = useActiveDoctor();
   const selectedDoctorId = useReceptionistStore(
     (state) => state.selectedDoctorId
   );
@@ -53,10 +44,18 @@ const FormAppointment: FC<Props> = ({ className, onSubmitRedirectUrl }) => {
   });
 
   const handleSubmit = async (values: typeof initialValues) => {
+    if (!doctor) {
+      addToast({
+        content: 'Ocorreu um erro, tente novamente em 5 segundos!',
+        type: 'error',
+      });
+      return;
+    }
+
     const [, error] = await tryCatch(
       createAppointment({
         appointmentTypeId: values.typeId,
-        doctorId: 1,
+        doctorId: doctor.id,
         patientId: parseInt(patientId, 10),
         ...(onSubmitRedirectUrl && { status: appointmentStatus.finished }),
       })
