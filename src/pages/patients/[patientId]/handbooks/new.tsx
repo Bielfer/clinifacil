@@ -3,8 +3,7 @@ import Sidebar from '@/components/core/Sidebar';
 import Text from '@/components/core/Text';
 import FormHandbook from '@/components/forms/FormHandbook';
 import { sidebarPaths } from '@/constants/paths';
-import { useActiveDoctor } from '@/hooks';
-import { trpc } from '@/services/trpc';
+import { useActiveAppointment } from '@/hooks';
 import { Page } from '@/types/auth';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -12,15 +11,8 @@ import { useRouter } from 'next/router';
 const PatientNewHandbook: Page = () => {
   const router = useRouter();
   const patientId = router.query.patientId as string;
-  const { data: doctor } = useActiveDoctor();
   const { data: activeAppointment, isLoading: isLoadingAppointment } =
-    trpc.appointment.active.useQuery(
-      {
-        patientId: parseInt(patientId, 10),
-        doctorId: doctor?.id ?? 0,
-      },
-      { enabled: !!doctor && !!patientId }
-    );
+    useActiveAppointment({ patientId: parseInt(patientId, 10) });
 
   return (
     <>

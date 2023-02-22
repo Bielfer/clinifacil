@@ -4,7 +4,7 @@ import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
 import Text from '@/components/core/Text';
 import paths, { patientDetailsPaths, sidebarPaths } from '@/constants/paths';
-import { useRoles, useActiveDoctor } from '@/hooks';
+import { useActiveAppointment, useRoles } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
 import { ArrowRightCircleIcon, PlusIcon } from '@heroicons/react/20/solid';
@@ -17,7 +17,6 @@ const PatientsById: Page = () => {
   const router = useRouter();
   const { isDoctor } = useRoles();
   const patientId = router.query.patientId as string;
-  const { data: doctor } = useActiveDoctor();
   const { data: patient, isLoading: isLoadingPatient } =
     trpc.patient.getById.useQuery(
       {
@@ -26,13 +25,7 @@ const PatientsById: Page = () => {
       { enabled: !!patientId }
     );
   const { data: activeAppointment, isLoading: isLoadingAppointment } =
-    trpc.appointment.active.useQuery(
-      {
-        patientId: parseInt(patientId, 10),
-        doctorId: doctor?.id ?? 0,
-      },
-      { enabled: !!doctor && !!patientId }
-    );
+    useActiveAppointment({ patientId: parseInt(patientId, 10) });
 
   const activeAppointmentHandbooks =
     activeAppointment && activeAppointment.handbooks;

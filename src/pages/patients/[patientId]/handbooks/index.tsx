@@ -9,29 +9,18 @@ import paths, {
   patientAppointmentPaths,
   sidebarPaths,
 } from '@/constants/paths';
-import { trpc } from '@/services/trpc';
+import { useActiveAppointment } from '@/hooks';
 import { Page } from '@/types/auth';
 import { PencilIcon, PlusIcon } from '@heroicons/react/20/solid';
 import { ClipboardDocumentListIcon } from '@heroicons/react/24/outline';
-import { useSession } from 'next-auth/react';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
 const PatientHandbook: Page = () => {
   const router = useRouter();
   const patientId = router.query.patientId as string;
-  const { data: session } = useSession();
-  const { data: doctor } = trpc.doctor.get.useQuery({
-    userId: session?.user.id,
-  });
   const { data: activeAppointment, isLoading: isLoadingAppointment } =
-    trpc.appointment.active.useQuery(
-      {
-        patientId: parseInt(patientId, 10),
-        doctorId: doctor?.id ?? 0,
-      },
-      { enabled: !!doctor && !!patientId }
-    );
+    useActiveAppointment({ patientId: parseInt(patientId, 10) });
 
   return (
     <>

@@ -5,7 +5,6 @@ import tryCatch from '@/helpers/tryCatch';
 import zodValidator from '@/helpers/zod-validator';
 import { trpc } from '@/services/trpc';
 import { Form, Formik } from 'formik';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import type { FC } from 'react';
 import { z } from 'zod';
@@ -15,6 +14,7 @@ import { useToast } from '@/components/core/Toast';
 import FormikDate from '@/components/forms/FormikDate';
 import FormikNumber from '@/components/forms/FormikNumber';
 import FormikTextarea from '@/components/forms/FormikTextarea';
+import { useActiveAppointment } from '@/hooks';
 import ChangeMessageDynamically from './ChangeMessageDynamically';
 import FormikInput from '../FormikInput';
 
@@ -22,24 +22,11 @@ const FormDoctorNote: FC = () => {
   const router = useRouter();
   const patientId = router.query.patientId as string;
   const { addToast } = useToast();
-  const { data: session } = useSession();
-  const { data: doctor } = trpc.doctor.get.useQuery(
-    {
-      userId: session?.user.id,
-    },
-    { enabled: !!session }
-  );
   const {
     data: activeAppointment,
     isLoading: isLoadingAppointment,
     refetch: refetchAppointment,
-  } = trpc.appointment.active.useQuery(
-    {
-      patientId: parseInt(patientId, 10),
-      doctorId: doctor?.id ?? 0,
-    },
-    { enabled: !!doctor && !!patientId }
-  );
+  } = useActiveAppointment({ patientId: parseInt(patientId, 10) });
   const { mutateAsync: createDoctorNote } =
     trpc.doctorNote.create.useMutation();
 

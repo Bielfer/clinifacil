@@ -15,7 +15,7 @@ import paths, {
 } from '@/constants/paths';
 import { printableTypes } from '@/constants/printables';
 import tryCatch from '@/helpers/tryCatch';
-import { useActiveDoctor } from '@/hooks';
+import { useActiveAppointment, useActiveDoctor } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
 import { PlusIcon, PrinterIcon, TrashIcon } from '@heroicons/react/20/solid';
@@ -30,13 +30,9 @@ const DoctorNotes: Page = () => {
   const { addToast } = useToast();
   const patientId = router.query.patientId as string;
   const { data: doctor, isLoading: isLoadingDoctor } = useActiveDoctor();
-  const { data: activeAppointment } = trpc.appointment.active.useQuery(
-    {
-      patientId: parseInt(patientId, 10),
-      doctorId: doctor?.id ?? 0,
-    },
-    { enabled: !!doctor && !!patientId }
-  );
+  const { data: activeAppointment } = useActiveAppointment({
+    patientId: parseInt(patientId, 10),
+  });
   const {
     data: doctorNotes,
     isLoading: isLoadingDoctorNotes,
