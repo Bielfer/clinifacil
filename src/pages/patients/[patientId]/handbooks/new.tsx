@@ -3,7 +3,7 @@ import Sidebar from '@/components/core/Sidebar';
 import Text from '@/components/core/Text';
 import FormHandbook from '@/components/forms/FormHandbook';
 import { sidebarPaths } from '@/constants/paths';
-import useActiveDoctor from '@/hooks/useActiveDoctor';
+import { useActiveDoctor } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
 import Head from 'next/head';
