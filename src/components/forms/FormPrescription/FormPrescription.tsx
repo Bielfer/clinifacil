@@ -14,7 +14,6 @@ import { z } from 'zod';
 import FormikAutocomplete from '../FormikAutocomplete';
 import FormikNumber from '../FormikNumber';
 import FormikTextarea from '../FormikTextarea';
-import ChangeInstructionsDynamically from './ChangeInstructionsDynamically';
 
 const FormPrescription: FC = () => {
   const router = useRouter();
@@ -46,9 +45,7 @@ const FormPrescription: FC = () => {
   const initialValues = {
     medicationName: '',
     boxAmount: 1,
-    instructions: '',
-    interval: 0,
-    duration: 0,
+    instructions: 'Tomar 1 comprimido via oral de 0/0 horas por 0 dias',
   };
 
   const validate = z.object({
@@ -59,17 +56,9 @@ const FormPrescription: FC = () => {
     instructions: z
       .string({ required_error: validations.required })
       .max(191, validations.maxCharacters(191)),
-    interval: z
-      .number({ required_error: validations.required })
-      .min(0, validations.minValue(1)),
-    duration: z
-      .number({ required_error: validations.required })
-      .min(0, validations.minValue(1)),
   });
 
   const handleSubmit = async (values: typeof initialValues) => {
-    const { interval, duration, ...filteredValues } = values;
-
     if (!activeAppointment) {
       addToast({
         type: 'error',
@@ -82,7 +71,7 @@ const FormPrescription: FC = () => {
 
     const [, error] = await tryCatch(
       createPrescription({
-        ...filteredValues,
+        ...values,
         appointmentId: activeAppointment?.id,
       })
     );
@@ -122,22 +111,11 @@ const FormPrescription: FC = () => {
             label="Quantidade de Caixas"
             hint={hints.required}
           />
-          <FormikNumber
-            name="interval"
-            label="Intervalo entre usos"
-            hint={hints.required}
-          />
-          <FormikNumber
-            name="duration"
-            label="Tempo de uso"
-            hint={hints.required}
-          />
           <FormikTextarea
             name="instructions"
             hint={hints.required}
             label="Instruções para uso da Medicação"
           />
-          <ChangeInstructionsDynamically />
           <div className="flex justify-end">
             <Button type="submit" variant="primary" loading={isSubmitting}>
               Salvar
