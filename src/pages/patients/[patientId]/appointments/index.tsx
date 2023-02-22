@@ -36,9 +36,9 @@ const PatientAppointments: Page = () => {
         </Text>
         <TabsNavigation tabs={patientDetailsPaths({ patientId })} />
         <LoadingWrapper loading={isLoading}>
-          <div className="pt-4">
+          <div className="divide-y divide-gray-300 py-4">
             {appointments?.map((appointment) => (
-              <>
+              <div key={appointment.id}>
                 <Text h4 className="my-4">
                   Dia {format(appointment.createdAt, 'dd/MM/yyyy')}
                 </Text>
@@ -88,7 +88,7 @@ const PatientAppointments: Page = () => {
                       )}
                   </div>
                 </div>
-              </>
+              </div>
             ))}
           </div>
         </LoadingWrapper>
