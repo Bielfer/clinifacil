@@ -29,16 +29,22 @@ const PatientExams: Page = () => {
   const patientId = useRouter().query.patientId as string;
   const { addToast } = useToast();
   const { data: doctor } = useActiveDoctor();
+  const { data: activeAppointment } = trpc.appointment.active.useQuery(
+    {
+      patientId: parseInt(patientId, 10),
+      doctorId: doctor?.id ?? 0,
+    },
+    { enabled: !!doctor && !!patientId }
+  );
   const {
     data: exams,
     isLoading: isLoadingExams,
     refetch: refetchExams,
   } = trpc.exam.getMany.useQuery(
     {
-      patientId: parseInt(patientId, 10),
-      doctorId: doctor?.id ?? 0,
+      appointmentId: activeAppointment?.id,
     },
-    { enabled: !!doctor }
+    { enabled: !!activeAppointment }
   );
   const {
     mutateAsync: deleteExam,
