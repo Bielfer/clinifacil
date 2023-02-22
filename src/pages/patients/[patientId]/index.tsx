@@ -4,7 +4,7 @@ import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
 import Text from '@/components/core/Text';
 import { appointmentStatus } from '@/constants/appointment-status';
-import paths, { sidebarPaths } from '@/constants/paths';
+import paths, { patientDetailsPaths, sidebarPaths } from '@/constants/paths';
 import { useRoles } from '@/hooks';
 import useActiveDoctor from '@/hooks/useActiveDoctor';
 import { trpc } from '@/services/trpc';
@@ -76,19 +76,7 @@ const PatientsById: Page = () => {
             </MyLink>
           )}
         </div>
-        <TabsNavigation
-          tabs={[
-            { text: 'Informações', href: paths.patientsById(patientId) },
-            {
-              text: 'Minhas Consultas',
-              href: paths.specificPatientAppointments(patientId),
-            },
-            {
-              text: 'Todas as Consultas',
-              href: paths.allPatientAppointments(patientId),
-            },
-          ]}
-        />
+        <TabsNavigation tabs={patientDetailsPaths({ patientId })} />
         <DescriptionList
           className="pt-14"
           title="Informações Gerais"

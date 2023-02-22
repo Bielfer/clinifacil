@@ -67,5 +67,16 @@ export const patientAppointmentPaths = ({
   { text: 'Atestados', href: paths.patientDoctorNotes(patientId) },
   { text: 'Exames', href: paths.patientExams(patientId) },
 ];
+export const patientDetailsPaths = ({ patientId }: { patientId: string }) => [
+  { text: 'Informações', href: paths.patientsById(patientId) },
+  {
+    text: 'Minhas Consultas',
+    href: paths.specificPatientAppointments(patientId),
+  },
+  {
+    text: 'Todas as Consultas',
+    href: paths.allPatientAppointments(patientId),
+  },
+];
 
 export default paths;
