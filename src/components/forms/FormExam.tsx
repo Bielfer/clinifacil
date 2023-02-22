@@ -5,9 +5,9 @@ import paths from '@/constants/paths';
 import validations from '@/constants/validations';
 import tryCatch from '@/helpers/tryCatch';
 import zodValidator from '@/helpers/zod-validator';
+import { useActiveAppointment, useActiveDoctor } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import { Form, Formik } from 'formik';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import type { FC } from 'react';
 import { z } from 'zod';
@@ -17,27 +17,14 @@ const FormExam: FC = () => {
   const router = useRouter();
   const patientId = router.query.patientId as string;
   const { addToast } = useToast();
-  const { data: session } = useSession();
-  const { data: doctor } = trpc.doctor.get.useQuery(
-    {
-      userId: session?.user.id,
-    },
-    { enabled: !!session }
-  );
+  const { data: doctor } = useActiveDoctor();
   const { data: exams } = trpc.exam.getMany.useQuery(
     { doctorId: doctor?.id ?? 0 },
     { enabled: !!doctor }
   );
   const { mutateAsync: createExam } = trpc.exam.create.useMutation();
-  const { data: appointments, refetch: refetchAppointments } =
-    trpc.appointment.getMany.useQuery(
-      {
-        patientId: parseInt(patientId, 10),
-        doctorId: doctor?.id,
-      },
-      { enabled: !!patientId }
-    );
-  const activeAppointment = appointments?.[0];
+  const { data: activeAppointment, refetch: refetchAppointment } =
+    useActiveAppointment({ patientId: parseInt(patientId, 10) });
 
   const initialValues = {
     name: '',
@@ -54,7 +41,7 @@ const FormExam: FC = () => {
         content:
           'Não foi encontrada uma consulta aberta para esse paciente, tente novamente em 5 segundos!',
       });
-      refetchAppointments();
+      refetchAppointment();
       return;
     }
 

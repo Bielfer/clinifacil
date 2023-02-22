@@ -15,7 +15,7 @@ import { useRef } from 'react';
 import { useReactToPrint } from 'react-to-print';
 import ExamPrintable from '@/components/features/printables/ExamPrintable';
 import { trpc } from '@/services/trpc';
-import { useActiveDoctor } from '@/hooks';
+import { useActiveAppointment, useActiveDoctor } from '@/hooks';
 import { printableTypes } from '@/constants/printables';
 import DescriptionList from '@/components/core/DescriptionList';
 import LoadingWrapper from '@/components/core/LoadingWrapper';
@@ -29,16 +29,18 @@ const PatientExams: Page = () => {
   const patientId = useRouter().query.patientId as string;
   const { addToast } = useToast();
   const { data: doctor } = useActiveDoctor();
+  const { data: activeAppointment } = useActiveAppointment({
+    patientId: parseInt(patientId, 10),
+  });
   const {
     data: exams,
     isLoading: isLoadingExams,
     refetch: refetchExams,
   } = trpc.exam.getMany.useQuery(
     {
-      patientId: parseInt(patientId, 10),
-      doctorId: doctor?.id ?? 0,
+      appointmentId: activeAppointment?.id,
     },
-    { enabled: !!doctor }
+    { enabled: !!activeAppointment }
   );
   const {
     mutateAsync: deleteExam,

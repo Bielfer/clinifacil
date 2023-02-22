@@ -5,7 +5,6 @@ import tryCatch from '@/helpers/tryCatch';
 import zodValidator from '@/helpers/zod-validator';
 import { trpc } from '@/services/trpc';
 import { Form, Formik } from 'formik';
-import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import type { FC } from 'react';
 import { z } from 'zod';
@@ -15,38 +14,27 @@ import { useToast } from '@/components/core/Toast';
 import FormikDate from '@/components/forms/FormikDate';
 import FormikNumber from '@/components/forms/FormikNumber';
 import FormikTextarea from '@/components/forms/FormikTextarea';
+import { useActiveAppointment } from '@/hooks';
 import ChangeMessageDynamically from './ChangeMessageDynamically';
+import FormikInput from '../FormikInput';
 
 const FormDoctorNote: FC = () => {
   const router = useRouter();
   const patientId = router.query.patientId as string;
   const { addToast } = useToast();
-  const { data: session } = useSession();
-  const { data: doctor } = trpc.doctor.get.useQuery(
-    {
-      userId: session?.user.id,
-    },
-    { enabled: !!session }
-  );
   const {
-    data: appointments,
-    isLoading: isLoadingAppointments,
-    refetch: refetchAppointments,
-  } = trpc.appointment.getMany.useQuery(
-    {
-      patientId: parseInt(patientId, 10),
-      doctorId: doctor?.id,
-    },
-    { enabled: !!patientId }
-  );
+    data: activeAppointment,
+    isLoading: isLoadingAppointment,
+    refetch: refetchAppointment,
+  } = useActiveAppointment({ patientId: parseInt(patientId, 10) });
   const { mutateAsync: createDoctorNote } =
     trpc.doctorNote.create.useMutation();
-  const activeAppointment = appointments?.[0];
 
   const initialValues = {
     message: '',
     startDate: new Date(),
     duration: 0,
+    cid: '',
   };
 
   const validate = z.object({
@@ -55,11 +43,12 @@ const FormDoctorNote: FC = () => {
     duration: z
       .number({ required_error: validations.required })
       .min(1, validations.minValue(0)),
+    cid: z.string({ invalid_type_error: validations.string }).optional(),
   });
 
   const handleSubmit = async (values: typeof initialValues) => {
     if (!activeAppointment) {
-      refetchAppointments();
+      refetchAppointment();
       addToast({
         type: 'error',
         content:
@@ -88,7 +77,7 @@ const FormDoctorNote: FC = () => {
   };
 
   return (
-    <LoadingWrapper loading={isLoadingAppointments}>
+    <LoadingWrapper loading={isLoadingAppointment}>
       <Formik
         initialValues={initialValues}
         validate={zodValidator(validate)}
@@ -106,6 +95,7 @@ const FormDoctorNote: FC = () => {
               label="Duração do Atestado"
               hint={hints.required}
             />
+            <FormikInput name="cid" label="CID" />
             <FormikTextarea
               name="message"
               label="Conteúdo do Atestado"

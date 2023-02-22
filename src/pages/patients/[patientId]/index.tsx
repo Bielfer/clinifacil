@@ -3,10 +3,8 @@ import MyLink from '@/components/core/MyLink';
 import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
 import Text from '@/components/core/Text';
-import { appointmentStatus } from '@/constants/appointment-status';
-import paths, { sidebarPaths } from '@/constants/paths';
-import { useRoles } from '@/hooks';
-import useActiveDoctor from '@/hooks/useActiveDoctor';
+import paths, { patientDetailsPaths, sidebarPaths } from '@/constants/paths';
+import { useActiveAppointment, useRoles } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
 import { ArrowRightCircleIcon, PlusIcon } from '@heroicons/react/20/solid';
@@ -19,7 +17,6 @@ const PatientsById: Page = () => {
   const router = useRouter();
   const { isDoctor } = useRoles();
   const patientId = router.query.patientId as string;
-  const { data: doctor } = useActiveDoctor();
   const { data: patient, isLoading: isLoadingPatient } =
     trpc.patient.getById.useQuery(
       {
@@ -27,25 +24,17 @@ const PatientsById: Page = () => {
       },
       { enabled: !!patientId }
     );
-  const { data: appointments, isLoading: isLoadingAppointments } =
-    trpc.appointment.getMany.useQuery(
-      {
-        patientId: parseInt(patientId, 10),
-        status: [appointmentStatus.open, appointmentStatus.finished],
-        doctorId: doctor?.id,
-      },
-      { enabled: !!patientId }
-    );
+  const { data: activeAppointment, isLoading: isLoadingAppointment } =
+    useActiveAppointment({ patientId: parseInt(patientId, 10) });
 
-  const hasActiveAppointment = appointments && appointments.length > 0;
   const activeAppointmentHandbooks =
-    hasActiveAppointment && appointments[0].handbooks;
+    activeAppointment && activeAppointment.handbooks;
   const appointmentHasHandbook =
     activeAppointmentHandbooks && activeAppointmentHandbooks.length > 0;
 
   let href: string | Partial<Url>;
 
-  if (!hasActiveAppointment)
+  if (!activeAppointment)
     href = {
       pathname: paths.newPatientAppointment(patientId),
       query: { onSubmitRedirectUrl: paths.patientHandbooks(patientId) },
@@ -68,7 +57,7 @@ const PatientsById: Page = () => {
               iconLeft={
                 appointmentHasHandbook ? ArrowRightCircleIcon : PlusIcon
               }
-              isLoading={isLoadingAppointments}
+              isLoading={isLoadingAppointment}
             >
               {appointmentHasHandbook
                 ? 'Continuar Atendimento'
@@ -76,19 +65,7 @@ const PatientsById: Page = () => {
             </MyLink>
           )}
         </div>
-        <TabsNavigation
-          tabs={[
-            { text: 'Informações', href: paths.patientsById(patientId) },
-            {
-              text: 'Minhas Consultas',
-              href: paths.specificPatientAppointments(patientId),
-            },
-            {
-              text: 'Todas as Consultas',
-              href: paths.allPatientAppointments(patientId),
-            },
-          ]}
-        />
+        <TabsNavigation tabs={patientDetailsPaths({ patientId })} />
         <DescriptionList
           className="pt-14"
           title="Informações Gerais"

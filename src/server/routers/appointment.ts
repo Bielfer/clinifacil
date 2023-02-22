@@ -34,28 +34,47 @@ const appointmentReturnFormat = {
   type: true,
 };
 
+const getActiveAppointment = async ({
+  doctorId,
+  patientId,
+}: {
+  doctorId: number;
+  patientId: number;
+}) => {
+  const [appointments, error] = await tryCatch(
+    prisma.appointment.findMany({
+      where: {
+        doctorId,
+        patientId,
+        status: {
+          in: [appointmentStatus.open, appointmentStatus.finished],
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+      take: 1,
+      include: appointmentReturnFormat,
+    })
+  );
+
+  if (error) throw new TRPCError({ code: 'BAD_REQUEST', message: error });
+
+  const hasActiveAppointment = appointments && appointments.length > 0;
+
+  return hasActiveAppointment ? appointments[0] : null;
+};
+
 export const appointmentRouter = router({
-  get: privateProcedure
+  active: privateProcedure
     .use(authorizeHigherOrEqualRole(roles.receptionist))
     .input(
       z.object({
-        id: z.number(),
+        patientId: z.number(),
+        doctorId: z.number(),
       })
     )
-    .query(async ({ input }) => {
-      const [appointment, error] = await tryCatch(
-        prisma.appointment.findUnique({
-          where: {
-            id: input.id,
-          },
-          include: appointmentReturnFormat,
-        })
-      );
-
-      if (error) throw new TRPCError({ code: 'BAD_REQUEST', message: error });
-
-      return appointment;
-    }),
+    .query(({ input }) => getActiveAppointment(input)),
   getMany: privateProcedure
     .use(authorizeHigherOrEqualRole(roles.receptionist))
     .input(
@@ -68,11 +87,15 @@ export const appointmentRouter = router({
           .optional(),
         interval: z.enum(timeIntervalValues).optional(),
         typeName: z.string().optional(),
+        orderBy: z
+          .record(z.enum(['createdAt']), z.enum(['asc', 'desc']))
+          .optional(),
       })
     )
     .query(async ({ input }) => {
       const {
         status: inputStatus,
+        orderBy = { createdAt: 'asc' },
         interval,
         typeName,
         ...inputWithoutStatus
@@ -94,6 +117,7 @@ export const appointmentRouter = router({
             }),
             ...(typeName && { type: { name: typeName } }),
           },
+          orderBy,
           include: appointmentReturnFormat,
         })
       );
@@ -114,6 +138,24 @@ export const appointmentRouter = router({
     )
     .mutation(async ({ input }) => {
       const { doctorId, patientId, appointmentTypeId, status } = input;
+
+      const activeAppointment = await getActiveAppointment({
+        doctorId,
+        patientId,
+      });
+
+      if (activeAppointment) {
+        const [updatedAppointment, error] = await tryCatch(
+          prisma.appointment.update({
+            where: { id: activeAppointment.id },
+            data: { status: appointmentStatus.open },
+          })
+        );
+
+        if (error) throw new TRPCError({ code: 'BAD_REQUEST', message: error });
+
+        return updatedAppointment;
+      }
 
       const [appointmentType, appointmentTypeError] = await tryCatch(
         prisma.appointmentType.findUnique({

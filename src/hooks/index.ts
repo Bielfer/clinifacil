@@ -3,6 +3,7 @@ import useOnClickOutside from './useOnClickOutside';
 import useTimeout from './useTimeout';
 import useRoles from './useRoles';
 import useActiveDoctor from './useActiveDoctor';
+import useActiveAppointment from './useActiveAppointment';
 
 export {
   useCopyToClipboard,
@@ -10,4 +11,5 @@ export {
   useTimeout,
   useRoles,
   useActiveDoctor,
+  useActiveAppointment,
 };

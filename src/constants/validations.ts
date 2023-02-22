@@ -11,6 +11,7 @@ const validations = {
     `Esse campo deve conter exatamente ${num} caracteres`,
   cellphone: 'O número de celular deve ter 9 dígitos',
   minValue: (num: number) => `Insira um valor maior que ${num}`,
+  string: 'Campo deve conter apenas letras e números',
 } as const;
 
 export default validations;

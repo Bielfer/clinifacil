@@ -1,4 +1,5 @@
 /* eslint react/no-array-index-key:off */
+import clsx from 'clsx';
 import { FC, Fragment } from 'react';
 
 type Props = {
@@ -46,7 +47,12 @@ const DescriptionList: FC<Props> = ({
             <dt className="flex items-center text-sm font-medium text-gray-500 sm:col-span-2">
               {item.label}
             </dt>
-            <dd className="flex items-center text-sm text-gray-900 sm:mt-0">
+            <dd
+              className={clsx(
+                'flex items-center text-sm text-gray-900 sm:mt-0',
+                !item.buttonsOrLinks && 'col-span-3'
+              )}
+            >
               {loading ? (
                 <span className="h-2 w-2/3 animate-pulse rounded-full bg-slate-200">
                   {' '}
