@@ -16,6 +16,7 @@ import FormikDate from '@/components/forms/FormikDate';
 import FormikNumber from '@/components/forms/FormikNumber';
 import FormikTextarea from '@/components/forms/FormikTextarea';
 import ChangeMessageDynamically from './ChangeMessageDynamically';
+import FormikInput from '../FormikInput';
 
 const FormDoctorNote: FC = () => {
   const router = useRouter();
@@ -47,6 +48,7 @@ const FormDoctorNote: FC = () => {
     message: '',
     startDate: new Date(),
     duration: 0,
+    cid: '',
   };
 
   const validate = z.object({
@@ -55,6 +57,7 @@ const FormDoctorNote: FC = () => {
     duration: z
       .number({ required_error: validations.required })
       .min(1, validations.minValue(0)),
+    cid: z.string({ invalid_type_error: validations.string }).optional(),
   });
 
   const handleSubmit = async (values: typeof initialValues) => {
@@ -106,6 +109,7 @@ const FormDoctorNote: FC = () => {
               label="Duração do Atestado"
               hint={hints.required}
             />
+            <FormikInput name="cid" label="CID" />
             <FormikTextarea
               name="message"
               label="Conteúdo do Atestado"

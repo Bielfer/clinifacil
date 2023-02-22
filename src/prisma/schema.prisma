@@ -185,6 +185,7 @@ model DoctorNote {
   message       String      @db.Text
   startDate     DateTime
   duration      Int
+  cid           String?
   appointment   Appointment @relation(fields: [appointmentId], references: [id])
   appointmentId Int
   createdAt     DateTime    @default(now())

@@ -41,6 +41,7 @@ export const doctorNotesRouter = router({
         duration: z.number(),
         startDate: z.date(),
         message: z.string(),
+        cid: z.string().optional(),
       })
     )
     .mutation(async ({ input }) => {

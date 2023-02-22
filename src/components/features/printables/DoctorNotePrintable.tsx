@@ -30,13 +30,24 @@ const DoctorNotePrintable = forwardRef<HTMLDivElement, Props>(
         ref={ref}
       >
         {background ? (
-          <Text className="w-5/6 text-justify">{doctorNote.message}</Text>
+          <div className="w-5/6 text-justify">
+            <Text>{doctorNote.message}</Text>
+            {doctorNote?.cid && (
+              <Text className="pt-3">CID: {doctorNote.cid}</Text>
+            )}
+          </div>
         ) : (
           <>
             <Text b className="mb-6 justify-center">
               Atestado Médico
             </Text>
-            <Text className="w-5/6 text-justify">{doctorNote.message}</Text>
+            <div className="w-5/6 text-justify">
+              <Text>{doctorNote.message}</Text>
+              {doctorNote?.cid && (
+                <Text className="pt-3">CID: {doctorNote.cid}</Text>
+              )}
+            </div>
+
             <div>
               <Text>
                 {doctor?.city ?? ''}, {getDate(today)} de{' '}
