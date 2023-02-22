@@ -32,15 +32,14 @@ const FormPrescription: FC = () => {
   );
   const { mutateAsync: createPrescription } =
     trpc.prescription.create.useMutation();
-  const { data: appointments, refetch: refetchAppointments } =
-    trpc.appointment.getMany.useQuery(
+  const { data: activeAppointment, refetch: refetchAppointment } =
+    trpc.appointment.active.useQuery(
       {
         patientId: parseInt(patientId, 10),
-        doctorId: doctor?.id,
+        doctorId: doctor?.id ?? 0,
       },
-      { enabled: !!patientId }
+      { enabled: !!doctor && !!patientId }
     );
-  const activeAppointment = appointments?.[0];
 
   const initialValues = {
     medicationName: '',
@@ -65,7 +64,7 @@ const FormPrescription: FC = () => {
         content:
           'Não foi encontrada uma consulta aberta para esse paciente, tente novamente em 5 segundos!',
       });
-      refetchAppointments();
+      refetchAppointment();
       return;
     }
 

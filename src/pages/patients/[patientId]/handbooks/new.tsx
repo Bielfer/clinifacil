@@ -13,15 +13,14 @@ const PatientNewHandbook: Page = () => {
   const router = useRouter();
   const patientId = router.query.patientId as string;
   const { data: doctor } = useActiveDoctor();
-  const { data: appointments, isLoading: isLoadingAppointments } =
-    trpc.appointment.getMany.useQuery(
+  const { data: activeAppointment, isLoading: isLoadingAppointment } =
+    trpc.appointment.active.useQuery(
       {
         patientId: parseInt(patientId, 10),
-        doctorId: doctor?.id,
+        doctorId: doctor?.id ?? 0,
       },
-      { enabled: !!doctor }
+      { enabled: !!doctor && !!patientId }
     );
-  const activeAppointment = appointments?.[0];
 
   return (
     <>
@@ -33,7 +32,7 @@ const PatientNewHandbook: Page = () => {
           <Text h2 className="pb-6">
             Consulta do Paciente
           </Text>
-          <LoadingWrapper loading={isLoadingAppointments}>
+          <LoadingWrapper loading={isLoadingAppointment}>
             <FormHandbook appointmentId={activeAppointment?.id} />
           </LoadingWrapper>
         </div>

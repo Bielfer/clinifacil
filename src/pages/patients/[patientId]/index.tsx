@@ -3,7 +3,6 @@ import MyLink from '@/components/core/MyLink';
 import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
 import Text from '@/components/core/Text';
-import { appointmentStatus } from '@/constants/appointment-status';
 import paths, { patientDetailsPaths, sidebarPaths } from '@/constants/paths';
 import { useRoles } from '@/hooks';
 import useActiveDoctor from '@/hooks/useActiveDoctor';
@@ -27,25 +26,23 @@ const PatientsById: Page = () => {
       },
       { enabled: !!patientId }
     );
-  const { data: appointments, isLoading: isLoadingAppointments } =
-    trpc.appointment.getMany.useQuery(
+  const { data: activeAppointment, isLoading: isLoadingAppointment } =
+    trpc.appointment.active.useQuery(
       {
         patientId: parseInt(patientId, 10),
-        status: [appointmentStatus.open, appointmentStatus.finished],
-        doctorId: doctor?.id,
+        doctorId: doctor?.id ?? 0,
       },
-      { enabled: !!patientId }
+      { enabled: !!doctor && !!patientId }
     );
 
-  const hasActiveAppointment = appointments && appointments.length > 0;
   const activeAppointmentHandbooks =
-    hasActiveAppointment && appointments[0].handbooks;
+    activeAppointment && activeAppointment.handbooks;
   const appointmentHasHandbook =
     activeAppointmentHandbooks && activeAppointmentHandbooks.length > 0;
 
   let href: string | Partial<Url>;
 
-  if (!hasActiveAppointment)
+  if (!activeAppointment)
     href = {
       pathname: paths.newPatientAppointment(patientId),
       query: { onSubmitRedirectUrl: paths.patientHandbooks(patientId) },
@@ -68,7 +65,7 @@ const PatientsById: Page = () => {
               iconLeft={
                 appointmentHasHandbook ? ArrowRightCircleIcon : PlusIcon
               }
-              isLoading={isLoadingAppointments}
+              isLoading={isLoadingAppointment}
             >
               {appointmentHasHandbook
                 ? 'Continuar Atendimento'

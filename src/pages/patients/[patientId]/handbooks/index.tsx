@@ -24,15 +24,14 @@ const PatientHandbook: Page = () => {
   const { data: doctor } = trpc.doctor.get.useQuery({
     userId: session?.user.id,
   });
-  const { data: appointments, isLoading: isLoadingAppointments } =
-    trpc.appointment.getMany.useQuery(
+  const { data: activeAppointment, isLoading: isLoadingAppointment } =
+    trpc.appointment.active.useQuery(
       {
         patientId: parseInt(patientId, 10),
-        doctorId: doctor?.id,
+        doctorId: doctor?.id ?? 0,
       },
-      { enabled: !!doctor?.id }
+      { enabled: !!doctor && !!patientId }
     );
-  const activeAppointment = appointments?.[0];
 
   return (
     <>
@@ -54,7 +53,7 @@ const PatientHandbook: Page = () => {
           className="pt-2 pb-6"
           tabs={patientAppointmentPaths({ patientId })}
         />
-        <LoadingWrapper loading={isLoadingAppointments}>
+        <LoadingWrapper loading={isLoadingAppointment}>
           <div className="mx-auto max-w-2xl">
             {!!activeAppointment && activeAppointment.handbooks.length > 0 ? (
               <DescriptionList

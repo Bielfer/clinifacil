@@ -35,26 +35,39 @@ const appointmentReturnFormat = {
 };
 
 export const appointmentRouter = router({
-  get: privateProcedure
+  active: privateProcedure
     .use(authorizeHigherOrEqualRole(roles.receptionist))
     .input(
       z.object({
-        id: z.number(),
+        patientId: z.number(),
+        doctorId: z.number(),
       })
     )
     .query(async ({ input }) => {
-      const [appointment, error] = await tryCatch(
-        prisma.appointment.findUnique({
+      const { doctorId, patientId } = input;
+
+      const [appointments, error] = await tryCatch(
+        prisma.appointment.findMany({
           where: {
-            id: input.id,
+            doctorId,
+            patientId,
+            status: {
+              in: [appointmentStatus.open, appointmentStatus.finished],
+            },
           },
+          orderBy: {
+            createdAt: 'desc',
+          },
+          take: 1,
           include: appointmentReturnFormat,
         })
       );
 
       if (error) throw new TRPCError({ code: 'BAD_REQUEST', message: error });
 
-      return appointment;
+      const hasActiveAppointment = appointments && appointments.length > 0;
+
+      return hasActiveAppointment ? appointments[0] : null;
     }),
   getMany: privateProcedure
     .use(authorizeHigherOrEqualRole(roles.receptionist))
@@ -68,11 +81,15 @@ export const appointmentRouter = router({
           .optional(),
         interval: z.enum(timeIntervalValues).optional(),
         typeName: z.string().optional(),
+        orderBy: z
+          .record(z.enum(['createdAt']), z.enum(['asc', 'desc']))
+          .optional(),
       })
     )
     .query(async ({ input }) => {
       const {
         status: inputStatus,
+        orderBy = { createdAt: 'asc' },
         interval,
         typeName,
         ...inputWithoutStatus
@@ -94,6 +111,7 @@ export const appointmentRouter = router({
             }),
             ...(typeName && { type: { name: typeName } }),
           },
+          orderBy,
           include: appointmentReturnFormat,
         })
       );

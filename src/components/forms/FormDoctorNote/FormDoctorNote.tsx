@@ -30,19 +30,18 @@ const FormDoctorNote: FC = () => {
     { enabled: !!session }
   );
   const {
-    data: appointments,
-    isLoading: isLoadingAppointments,
-    refetch: refetchAppointments,
-  } = trpc.appointment.getMany.useQuery(
+    data: activeAppointment,
+    isLoading: isLoadingAppointment,
+    refetch: refetchAppointment,
+  } = trpc.appointment.active.useQuery(
     {
       patientId: parseInt(patientId, 10),
-      doctorId: doctor?.id,
+      doctorId: doctor?.id ?? 0,
     },
-    { enabled: !!patientId }
+    { enabled: !!doctor && !!patientId }
   );
   const { mutateAsync: createDoctorNote } =
     trpc.doctorNote.create.useMutation();
-  const activeAppointment = appointments?.[0];
 
   const initialValues = {
     message: '',
@@ -62,7 +61,7 @@ const FormDoctorNote: FC = () => {
 
   const handleSubmit = async (values: typeof initialValues) => {
     if (!activeAppointment) {
-      refetchAppointments();
+      refetchAppointment();
       addToast({
         type: 'error',
         content:
@@ -91,7 +90,7 @@ const FormDoctorNote: FC = () => {
   };
 
   return (
-    <LoadingWrapper loading={isLoadingAppointments}>
+    <LoadingWrapper loading={isLoadingAppointment}>
       <Formik
         initialValues={initialValues}
         validate={zodValidator(validate)}
