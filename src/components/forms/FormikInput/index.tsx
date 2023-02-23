@@ -9,6 +9,9 @@ interface Props {
   formatter?: string;
   hint?: string;
   className?: string;
+  disabled?: boolean;
+  placeholder?: string;
+  type?: 'text' | 'password';
 }
 
 const FormikInput: FC<Props> = ({
@@ -18,7 +21,9 @@ const FormikInput: FC<Props> = ({
   formatter,
   className,
   hint,
-  ...props
+  disabled,
+  placeholder,
+  type,
 }) => {
   const [{ value }, { error, touched }, { setValue }] = useField(name);
   const [formattedValue, setFormattedValue] = useState('');
@@ -96,13 +101,15 @@ const FormikInput: FC<Props> = ({
     <Input
       value={formatter ? formattedValue : value}
       onChange={handleChange}
-      width="100%"
       password={password}
       label={label}
       className={className}
       error={touched && error ? error : ''}
       hint={hint}
-      {...props}
+      disabled={disabled}
+      name={name}
+      placeholder={placeholder}
+      type={type}
     />
   );
 };

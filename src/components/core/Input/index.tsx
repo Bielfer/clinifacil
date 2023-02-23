@@ -10,7 +10,7 @@ interface Props {
   placeholder?: string;
   className?: string;
   name?: string;
-  type?: 'password' | 'text';
+  type?: 'password' | 'text' | 'number';
   disabled?: boolean;
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
