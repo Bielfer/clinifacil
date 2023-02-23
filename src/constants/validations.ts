@@ -13,6 +13,8 @@ const validations = {
   minValue: (num: number) => `Insira um valor maior que ${num}`,
   string: 'Campo deve conter apenas letras e números',
   cpf: 'Cpf inválido, verifique se todos os números estão corretos',
+  minOptions: (num: number) =>
+    `Escolha ao menos ${num} ${num === 1 ? 'Opção' : 'Opções'}`,
 } as const;
 
 export default validations;
