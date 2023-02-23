@@ -12,6 +12,7 @@ const validations = {
   cellphone: 'O número de celular deve ter 9 dígitos',
   minValue: (num: number) => `Insira um valor maior que ${num}`,
   string: 'Campo deve conter apenas letras e números',
+  cpf: 'Cpf inválido, verifique se todos os números estão corretos',
 } as const;
 
 export default validations;
