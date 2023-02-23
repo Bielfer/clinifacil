@@ -9,11 +9,13 @@ import clsx from 'clsx';
 import { format, parse } from 'date-fns';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
+import { validateCPF } from 'validations-br';
 import { z } from 'zod';
-import Button from '../core/Button';
-import { useToast } from '../core/Toast';
-import FormikInput from './FormikInput';
-import FormikSelect from './FormikSelect';
+import Button from '@/components/core/Button';
+import { useToast } from '@/components/core/Toast';
+import FormikInput from '@/components/forms/FormikInput';
+import FormikSelect from '@/components/forms/FormikSelect';
+import SearchPatientByCpf from './SearchPatientByCpf';
 
 type Props = {
   className?: string;
@@ -23,15 +25,13 @@ type Props = {
 const FormPatient = ({ className, patient }: Props) => {
   const router = useRouter();
   const { addToast } = useToast();
-  const { mutateAsync: createPatient, isError: errorCreatingPatient } =
-    trpc.patient.create.useMutation();
-  const { mutateAsync: editPatient, isError: errorEditingPatient } =
-    trpc.patient.editById.useMutation();
+  const { mutateAsync: createPatient } = trpc.patient.create.useMutation();
+  const { mutateAsync: editPatient } = trpc.patient.editById.useMutation();
 
   const initialValues = {
     cpf: patient?.cpf ?? '',
     name: patient?.name ?? '',
-    birthDate: format(patient?.birthDate ?? new Date(), 'ddMMyyyy') ?? '',
+    birthDate: patient?.birthDate ? format(patient.birthDate, 'ddMMyyyy') : '',
     sex: patient?.sex ?? '',
     email: patient?.email ?? '',
     cellphone: patient?.cellphone ?? '',
@@ -40,9 +40,13 @@ const FormPatient = ({ className, patient }: Props) => {
   const validationSchema = z.object({
     cpf: z
       .string({ required_error: validations.required })
-      .length(11, validations.exactCharacters(11)),
+      .length(11, validations.exactCharacters(11))
+      .refine((arg) => validateCPF(arg), validations.cpf)
+      .optional(),
     name: z.string({ required_error: validations.required }),
-    birthDate: z.string({ required_error: validations.required }),
+    birthDate: z
+      .string({ required_error: validations.required })
+      .length(8, validations.exactCharacters(8)),
     sex: z.enum(['Masculino', 'Feminino', ''], {
       errorMap: () => ({ message: validations.required }),
     }),
@@ -62,7 +66,7 @@ const FormPatient = ({ className, patient }: Props) => {
         editPatient({ ...valuesCopy, id: patient.id })
       );
 
-      if (errorEditingPatient || !updatedPatient) {
+      if (!updatedPatient) {
         addToast({
           type: 'error',
           content: 'Falha ao atualizar o paciente, tente novamente!',
@@ -76,7 +80,7 @@ const FormPatient = ({ className, patient }: Props) => {
 
     const [createdPatient] = await tryCatch(createPatient(valuesCopy));
 
-    if (errorCreatingPatient || !createdPatient) {
+    if (!createdPatient) {
       addToast({ type: 'error', content: 'Falha ao criar o paciente!' });
       return;
     }
@@ -97,9 +101,9 @@ const FormPatient = ({ className, patient }: Props) => {
             name="cpf"
             placeholder="Ex: 123.456.789-10"
             formatter="___.___.___-__"
-            hint={hints.required}
             disabled={!!patient}
           />
+          <SearchPatientByCpf />
           <FormikInput
             label="Nome"
             name="name"
@@ -139,7 +143,7 @@ const FormPatient = ({ className, patient }: Props) => {
 
           <div className="mt-2 flex justify-end">
             <Button variant="primary" type="submit" loading={isSubmitting}>
-              {patient ? 'Atualizar' : 'Criar'}
+              Salvar
             </Button>
           </div>
         </Form>
