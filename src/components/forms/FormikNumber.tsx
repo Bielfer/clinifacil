@@ -1,12 +1,15 @@
 import { useField } from 'formik';
-import { ChangeEvent, InputHTMLAttributes, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import Input from '../core/Input';
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+interface Props {
   label?: string;
   name: string;
   hint?: string;
   format?: 'default' | 'currency';
+  placeholder?: string;
+  className?: string;
+  disabled?: boolean;
 }
 
 const FormikNumber = ({
@@ -15,15 +18,15 @@ const FormikNumber = ({
   hint,
   className,
   format = 'default',
-  ...props
+  placeholder,
+  disabled,
 }: Props) => {
   const [, { error, initialValue, touched }, { setValue }] = useField(name);
   const [input, setInput] = useState(initialValue);
 
   const formats = {
-    default: (value: string) => Number(value.replace(',', '.')),
-    currency: (value: string) =>
-      Math.floor(Number(value.replace(',', '.')) * 100),
+    default: (val: string) => Number(val.replace(',', '.')),
+    currency: (val: string) => Math.floor(Number(val.replace(',', '.')) * 100),
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -41,7 +44,8 @@ const FormikNumber = ({
       className={className}
       error={touched && error ? error : ''}
       hint={hint}
-      {...props}
+      placeholder={placeholder}
+      disabled={disabled}
     />
   );
 };

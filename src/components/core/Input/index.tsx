@@ -1,12 +1,19 @@
 import clsx from 'clsx';
-import { FC, InputHTMLAttributes } from 'react';
+import { ChangeEvent, FC } from 'react';
 import InputLayout from '../InputLayout';
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+interface Props {
   label?: string;
   password?: boolean;
   error?: string;
   hint?: string;
+  placeholder?: string;
+  className?: string;
+  name?: string;
+  type?: 'password' | 'text' | 'number';
+  disabled?: boolean;
+  value: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Input: FC<Props> = ({
@@ -19,7 +26,8 @@ const Input: FC<Props> = ({
   name,
   hint,
   disabled,
-  ...props
+  value,
+  onChange,
 }) => (
   <InputLayout
     name={name}
@@ -30,6 +38,8 @@ const Input: FC<Props> = ({
     shadow
   >
     <input
+      onChange={onChange}
+      value={value}
       className={clsx(
         'block w-full rounded-lg border',
         disabled && 'bg-gray-200',
@@ -41,7 +51,6 @@ const Input: FC<Props> = ({
       type={password ? 'password' : type ?? 'text'}
       id={name}
       disabled={disabled}
-      {...props}
     />
   </InputLayout>
 );

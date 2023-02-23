@@ -1,6 +1,7 @@
 import tryCatch from '@/helpers/tryCatch';
 import { router, privateProcedure } from '@/server/trpc';
 import { prisma } from '@/services/prisma';
+import type { Exam, Prisma } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
 
@@ -36,38 +37,66 @@ export const examRouter = router({
     }),
   create: privateProcedure
     .input(
-      z.object({
-        name: z.string(),
-        appointmentId: z.number(),
-        doctorId: z.number().optional(),
-      })
+      z.union([
+        z.object({
+          name: z.string(),
+          appointmentId: z.number(),
+          doctorId: z.number().optional(),
+        }),
+        z
+          .object({
+            name: z.string(),
+            appointmentId: z.number().optional(),
+            doctorId: z.number().optional(),
+          })
+          .array(),
+      ])
     )
     .mutation(async ({ input }) => {
-      const { appointmentId, doctorId, ...filteredInput } = input;
-
-      const [exam, error] = await tryCatch(
-        prisma.exam.create({
-          data: {
-            ...filteredInput,
-            ...(doctorId && {
-              doctor: {
-                connect: {
-                  id: doctorId,
-                },
+      const formatExam = (exam: {
+        name: string;
+        appointmentId?: number;
+        doctorId?: number;
+      }) => {
+        const { name, appointmentId, doctorId } = exam;
+        return {
+          name,
+          ...(doctorId && {
+            doctor: {
+              connect: {
+                id: doctorId,
               },
-            }),
+            },
+          }),
+          ...(appointmentId && {
             appointment: {
               connect: {
                 id: appointmentId,
               },
             },
-          },
-        })
-      );
+          }),
+        };
+      };
+
+      const writeData = Array.isArray(input)
+        ? input.map((exam) => formatExam(exam))
+        : [formatExam(input)];
+
+      const toCreateExams: Prisma.Prisma__ExamClient<Exam, never>[] = [];
+
+      writeData.forEach(async (exam) => {
+        const toCreateExam = prisma.exam.create({
+          data: exam,
+        });
+
+        toCreateExams.push(toCreateExam);
+      });
+
+      const [exams, error] = await tryCatch(prisma.$transaction(toCreateExams));
 
       if (error) throw new TRPCError({ code: 'BAD_REQUEST', message: error });
 
-      return exam;
+      return exams;
     }),
   delete: privateProcedure
     .input(

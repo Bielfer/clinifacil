@@ -24,7 +24,7 @@ const InputLayout = ({
 }: Props) => (
   <div className={className}>
     {label && (
-      <div className="flex justify-between">
+      <div className="mb-1 flex justify-between">
         <Text htmlFor={name} label>
           {label}
         </Text>
@@ -35,7 +35,7 @@ const InputLayout = ({
         )}
       </div>
     )}
-    <div className={clsx('relative mt-1', shadow && 'shadow-sm')}>
+    <div className={clsx('relative', shadow && 'shadow-sm')}>
       {children}
 
       {!!error && (

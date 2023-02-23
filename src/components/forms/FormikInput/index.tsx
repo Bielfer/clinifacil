@@ -1,20 +1,17 @@
-import {
-  ChangeEvent,
-  FC,
-  InputHTMLAttributes,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useField } from 'formik';
 import Input from '@/components/core/Input';
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+interface Props {
   label?: string;
   name: string;
   password?: boolean;
   formatter?: string;
   hint?: string;
+  className?: string;
+  disabled?: boolean;
+  placeholder?: string;
+  type?: 'text' | 'password';
 }
 
 const FormikInput: FC<Props> = ({
@@ -24,7 +21,9 @@ const FormikInput: FC<Props> = ({
   formatter,
   className,
   hint,
-  ...props
+  disabled,
+  placeholder,
+  type,
 }) => {
   const [{ value }, { error, touched }, { setValue }] = useField(name);
   const [formattedValue, setFormattedValue] = useState('');
@@ -102,13 +101,15 @@ const FormikInput: FC<Props> = ({
     <Input
       value={formatter ? formattedValue : value}
       onChange={handleChange}
-      width="100%"
       password={password}
       label={label}
       className={className}
       error={touched && error ? error : ''}
       hint={hint}
-      {...props}
+      disabled={disabled}
+      name={name}
+      placeholder={placeholder}
+      type={type}
     />
   );
 };

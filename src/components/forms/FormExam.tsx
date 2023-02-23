@@ -11,7 +11,7 @@ import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import type { FC } from 'react';
 import { z } from 'zod';
-import FormikAutocomplete from './FormikAutocomplete';
+import FormikAdd from './FormikAdd';
 
 const FormExam: FC = () => {
   const router = useRouter();
@@ -27,11 +27,11 @@ const FormExam: FC = () => {
     useActiveAppointment({ patientId: parseInt(patientId, 10) });
 
   const initialValues = {
-    name: '',
+    exams: [],
   };
 
   const validate = z.object({
-    name: z.string({ required_error: validations.required }),
+    exams: z.string().array().min(1, validations.minOptions(1)),
   });
 
   const handleSubmit = async (values: typeof initialValues) => {
@@ -46,11 +46,12 @@ const FormExam: FC = () => {
     }
 
     const [, error] = await tryCatch(
-      createExam({
-        ...values,
-        appointmentId: activeAppointment?.id,
-        doctorId: doctor?.id,
-      })
+      createExam(
+        values.exams.map((exam) => ({
+          name: exam,
+          appointmentId: activeAppointment.id,
+        }))
+      )
     );
 
     if (error) {
@@ -72,10 +73,11 @@ const FormExam: FC = () => {
     >
       {({ isSubmitting }) => (
         <Form className="flex flex-col gap-y-6">
-          <FormikAutocomplete
-            name="name"
-            hint={hints.required}
+          <FormikAdd
             label="Nome do Exame"
+            hint={hints.required}
+            name="exams"
+            component="autocomplete"
             options={
               exams?.map(({ name }) => ({
                 text: name,

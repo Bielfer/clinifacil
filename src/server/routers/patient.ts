@@ -7,6 +7,25 @@ import { z } from 'zod';
 import { authorizeHigherOrEqualRole } from '../middlewares';
 
 export const patientRouter = router({
+  get: privateProcedure
+    .use(authorizeHigherOrEqualRole(roles.receptionist))
+    .input(
+      z.object({
+        cpf: z.string().optional(),
+        id: z.number().optional(),
+      })
+    )
+    .query(async ({ input }) => {
+      const [patient, error] = await tryCatch(
+        prisma.patient.findUnique({
+          where: input,
+        })
+      );
+
+      if (error) throw new TRPCError({ code: 'BAD_REQUEST', message: error });
+
+      return patient;
+    }),
   getMany: privateProcedure
     .use(authorizeHigherOrEqualRole(roles.receptionist))
     .input(
@@ -43,12 +62,25 @@ export const patientRouter = router({
         name: z.string(),
         birthDate: z.date().optional(),
         sex: z.enum(['Masculino', 'Feminino']).optional(),
-        cpf: z.string().length(11).optional(),
+        cpf: z.string().optional(),
         email: z.string().email().optional(),
-        cellphone: z.string().max(11).min(10).optional(),
+        cellphone: z.string().optional(),
       })
     )
     .mutation(async ({ input }) => {
+      const [searchedPatient, errorSearching] = await tryCatch(
+        prisma.patient.findUnique({
+          where: {
+            cpf: input.cpf,
+          },
+        })
+      );
+
+      if (errorSearching)
+        throw new TRPCError({ code: 'BAD_REQUEST', message: errorSearching });
+
+      if (searchedPatient) return searchedPatient;
+
       const [patient, error] = await tryCatch(
         prisma.patient.create({
           data: input,
