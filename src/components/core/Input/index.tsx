@@ -1,12 +1,17 @@
 import clsx from 'clsx';
-import { FC, InputHTMLAttributes } from 'react';
+import { FC } from 'react';
 import InputLayout from '../InputLayout';
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+interface Props {
   label?: string;
   password?: boolean;
   error?: string;
   hint?: string;
+  placeholder?: string;
+  className?: string;
+  name?: string;
+  type?: 'password' | 'text';
+  disabled?: boolean;
 }
 
 const Input: FC<Props> = ({

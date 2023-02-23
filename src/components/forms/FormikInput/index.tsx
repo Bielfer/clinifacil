@@ -1,20 +1,14 @@
-import {
-  ChangeEvent,
-  FC,
-  InputHTMLAttributes,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useField } from 'formik';
 import Input from '@/components/core/Input';
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+interface Props {
   label?: string;
   name: string;
   password?: boolean;
   formatter?: string;
   hint?: string;
+  className?: string;
 }
 
 const FormikInput: FC<Props> = ({
