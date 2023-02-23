@@ -47,9 +47,12 @@ const PatientExams: Page = () => {
     variables: deleteParameters,
     isLoading: isDeletingExam,
   } = trpc.exam.delete.useMutation();
-  const { data: patient } = trpc.patient.getById.useQuery({
-    id: parseInt(patientId, 10),
-  });
+  const { data: patient } = trpc.patient.getById.useQuery(
+    {
+      id: parseInt(patientId, 10),
+    },
+    { enabled: !!patientId }
+  );
   const { data: printables } = trpc.doctor.printables.useQuery(
     {
       doctorId: doctor?.id ?? 0,
