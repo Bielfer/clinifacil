@@ -62,9 +62,9 @@ export const patientRouter = router({
         name: z.string(),
         birthDate: z.date().optional(),
         sex: z.enum(['Masculino', 'Feminino']).optional(),
-        cpf: z.string().length(11).optional(),
+        cpf: z.string().optional(),
         email: z.string().email().optional(),
-        cellphone: z.string().max(11).min(10).optional(),
+        cellphone: z.string().optional(),
       })
     )
     .mutation(async ({ input }) => {
