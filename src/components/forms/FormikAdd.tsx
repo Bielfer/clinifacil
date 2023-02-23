@@ -98,28 +98,30 @@ const FormikAdd: FC<Props> = ({
               }}
             />
           </div>
-          {form.values[name].length > 0 && (
-            <div className="mt-2 divide-y divide-gray-200 border-t border-b border-gray-200">
-              {(form.values[name] as string[]).map((insertedValue, idx) => (
-                <div
-                  className="relative flex items-center py-4"
-                  key={insertedValue}
-                >
-                  <div className="min-w-0 flex-1 text-sm">
-                    <p className="select-none font-medium text-gray-700">
-                      {insertedValue}
-                    </p>
-                  </div>
+          <div className="px-2">
+            {form.values[name].length > 0 && (
+              <div className="mt-2 divide-y divide-gray-200 border-t border-b border-gray-200">
+                {(form.values[name] as string[]).map((insertedValue, idx) => (
+                  <div
+                    className="relative flex items-center py-2"
+                    key={insertedValue}
+                  >
+                    <div className="min-w-0 flex-1 text-sm">
+                      <p className="select-none font-medium text-gray-700">
+                        {insertedValue}
+                      </p>
+                    </div>
 
-                  <IconButton
-                    icon={TrashIcon}
-                    variant="link-error"
-                    onClick={() => remove(idx)}
-                  />
-                </div>
-              ))}
-            </div>
-          )}
+                    <IconButton
+                      icon={TrashIcon}
+                      variant="link-error"
+                      onClick={() => remove(idx)}
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>{' '}
         </>
       )}
     </FieldArray>
