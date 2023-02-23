@@ -49,6 +49,19 @@ export const patientRouter = router({
       })
     )
     .mutation(async ({ input }) => {
+      const [searchedPatient, errorSearching] = await tryCatch(
+        prisma.patient.findUnique({
+          where: {
+            cpf: input.cpf,
+          },
+        })
+      );
+
+      if (errorSearching)
+        throw new TRPCError({ code: 'BAD_REQUEST', message: errorSearching });
+
+      if (searchedPatient) return searchedPatient;
+
       const [patient, error] = await tryCatch(
         prisma.patient.create({
           data: input,
