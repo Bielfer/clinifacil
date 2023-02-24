@@ -4,6 +4,7 @@ export const printableTypes = {
   doctorNote: 'DOCTOR_NOTE',
   exams: 'EXAMS',
   prescription: 'PRESCRIPTION',
+  glassesPrescription: 'GLASSES_PRESCRIPTION',
 } as const;
 
 export const printableTypesValues = Object.values(
