@@ -48,7 +48,7 @@ const HandbookFields: FC<Props> = ({ handbooks }) => {
     <div className="grid gap-y-3">
       {values.handbook?.fields.map((field, idx) =>
         toRenderField({
-          key: field.label,
+          key: `${field.label} ${idx}`,
           field: field.type,
           label: field.label,
           name: `handbook.fields.${idx}.value`,
