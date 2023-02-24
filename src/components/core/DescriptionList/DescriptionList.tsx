@@ -5,7 +5,7 @@ import { FC, Fragment } from 'react';
 type Props = {
   items: {
     label?: string | null;
-    value?: string | number | null;
+    value?: string | number | null | JSX.Element | boolean;
     buttonsOrLinks?: (JSX.Element | undefined | boolean)[];
   }[];
   title?: string;
