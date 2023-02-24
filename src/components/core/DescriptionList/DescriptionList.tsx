@@ -4,7 +4,7 @@ import { FC, Fragment } from 'react';
 
 type Props = {
   items: {
-    label: string;
+    label?: string | null;
     value?: string | number | null;
     buttonsOrLinks?: JSX.Element[];
   }[];
