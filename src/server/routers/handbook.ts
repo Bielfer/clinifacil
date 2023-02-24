@@ -27,6 +27,7 @@ export const handbookFieldSchema = z.object({
   required: z.boolean().optional(),
   options: handbookFieldOptionSchema.array().optional(),
   displayOrder: z.number().optional(),
+  print: z.boolean().optional(),
 });
 
 const handbookSchema = z.object({
