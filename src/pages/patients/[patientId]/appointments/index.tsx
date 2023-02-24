@@ -24,7 +24,6 @@ const PatientAppointments: Page = () => {
       },
       { enabled: !!doctor && !!patientId }
     );
-  const booleanToText = (bool: boolean) => (bool ? 'Sim' : 'Não');
 
   return (
     <>
@@ -37,9 +36,9 @@ const PatientAppointments: Page = () => {
         </Text>
         <TabsNavigation tabs={patientDetailsPaths({ patientId })} />
         <LoadingWrapper loading={isLoading}>
-          <div className="divide-y divide-gray-300 py-4">
+          <div className="gap-y-5 divide-y divide-gray-300">
             {appointments?.map((appointment) => (
-              <div key={appointment.id}>
+              <div key={appointment.id} className="mt-6 pt-6 first:mt-0">
                 <Text h4 className="my-4">
                   Dia {format(appointment.createdAt, 'dd/MM/yyyy')}
                 </Text>
@@ -49,15 +48,15 @@ const PatientAppointments: Page = () => {
                       <DescriptionList
                         key={handbook.id}
                         title={handbook.title}
-                        items={handbook.fields.map(
-                          ({ label, value, type }) => ({
-                            label,
-                            value:
-                              typeof value === 'boolean'
-                                ? booleanToText(value)
-                                : toPrintField({ field: type, value }),
-                          })
-                        )}
+                        items={handbook.fields
+                          .map(
+                            ({ label, value, type }) =>
+                              !!value && {
+                                label,
+                                value: toPrintField({ field: type, value }),
+                              }
+                          )
+                          .filter((item) => !!item)}
                       />
                     ))}
                     {appointment.prescriptions &&
