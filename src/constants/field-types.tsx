@@ -1,5 +1,4 @@
 /* eslint react/no-array-index-key:off */
-import Table from '@/components/core/Table';
 import Text from '@/components/core/Text';
 import FormikAutocomplete from '@/components/forms/FormikAutocomplete';
 import FormikInput from '@/components/forms/FormikInput';
@@ -7,7 +6,9 @@ import FormikSwitch from '@/components/forms/FormikSwitch';
 import FormikTable from '@/components/forms/FormikTable';
 import FormikTextarea from '@/components/forms/FormikTextarea';
 import type { HandbookFieldType } from '@prisma/client';
+import clsx from 'clsx';
 import type { Key } from 'react';
+import { gridColsArray } from './styles';
 
 export const fieldTypes = {
   text: 'TEXT',
@@ -66,11 +67,14 @@ export const toPrintField = ({
   label?: string | undefined | null;
   value?: any;
 }) => {
+  const firstColumnEmpty =
+    Array.isArray(value) && value.every((row) => row?.[0] === '');
+
   const fieldMatcher: Record<HandbookFieldType, JSX.Element | null | boolean> =
     {
       TEXT: (
         <>
-          <Text label className="mb-1">
+          <Text h4 className="mb-1">
             {label}
           </Text>
           <Text p>{value ?? ' - '}</Text>
@@ -78,7 +82,7 @@ export const toPrintField = ({
       ),
       TEXTAREA: (
         <>
-          <Text label className="mb-1">
+          <Text h4 className="mb-1">
             {label}
           </Text>
           <Text p>{value ?? ' - '}</Text>
@@ -86,7 +90,7 @@ export const toPrintField = ({
       ),
       CHECK: (
         <>
-          <Text label className="mb-1">
+          <Text h4 className="mb-1">
             {label}
           </Text>
           <Text p>{value ?? ' - '}</Text>
@@ -94,7 +98,7 @@ export const toPrintField = ({
       ),
       AUTOCOMPLETE: (
         <>
-          <Text label className="mb-1">
+          <Text h4 className="mb-1">
             {label}
           </Text>
           <Text p>{value ?? ' - '}</Text>
@@ -102,44 +106,65 @@ export const toPrintField = ({
       ),
       DATE: (
         <>
-          <Text label className="mb-1">
+          <Text h4 className="mb-1">
             {label}
           </Text>
           <Text p>{value}</Text>
         </>
       ),
       TABLE: Array.isArray(value) && (
-        <>
-          <Text h3 className="mb-2 justify-center">
-            {label}
-          </Text>
-          <Table className="w-full px-2 text-center">
-            <Table.Head>
-              {value?.[0].map((header: string) => (
-                <Table.Header
-                  key={header}
-                  className="border-l border-gray-300 text-center first:border-l-0"
-                >
-                  {header}
-                </Table.Header>
-              ))}
-            </Table.Head>
-            <Table.Body>
-              {value?.slice(1).map((row: string[], idxRow: number) => (
-                <Table.Row key={idxRow}>
-                  {row.map((data, idxCol) => (
-                    <Table.Data
-                      key={idxCol}
-                      className="border-l border-gray-300 first:border-l-0 first:font-semibold"
-                    >
-                      {data}
-                    </Table.Data>
-                  ))}
-                </Table.Row>
-              ))}
-            </Table.Body>
-          </Table>
-        </>
+        <div className="px-2 text-center">
+          <div
+            className={clsx(
+              'grid',
+              clsx(
+                'grid',
+                firstColumnEmpty
+                  ? gridColsArray[(value?.[0] as string[]).length - 1]
+                  : gridColsArray[value?.[0].length]
+              )
+            )}
+          >
+            {value?.[0].map((header: string, idx: number) => (
+              <div
+                key={header}
+                className={clsx(
+                  'border-l border-gray-300 py-3 text-center font-semibold first:border-l-0',
+                  firstColumnEmpty && idx === 0 && 'hidden',
+                  firstColumnEmpty && idx === 1 && 'border-l-0'
+                )}
+              >
+                {header}
+              </div>
+            ))}
+          </div>
+          <div>
+            {value?.slice(1).map((row: string[], idxRow: number) => (
+              <div
+                key={idxRow}
+                className={clsx(
+                  'grid border-t border-gray-300',
+                  firstColumnEmpty
+                    ? gridColsArray[row.length - 1]
+                    : gridColsArray[row.length]
+                )}
+              >
+                {row.map((data, idxCol) => (
+                  <div
+                    key={idxCol}
+                    className={clsx(
+                      'border-l border-gray-300 py-3 first:border-l-0 first:font-semibold',
+                      firstColumnEmpty && idxCol === 0 && 'hidden',
+                      firstColumnEmpty && idxCol === 1 && 'border-l-0'
+                    )}
+                  >
+                    {data}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
       ),
     };
 
