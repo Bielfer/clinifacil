@@ -57,7 +57,7 @@ const FormikTable: FC<Props> = ({ name, label, hint, className }) => {
                     <Field
                       name={`${name}[${idxRow + 1}][${idxCol}]`}
                       className="h-full w-full text-center outline-none"
-                      autocomplete="off"
+                      autoComplete="off"
                     />
                   )}
                 </Table.Data>
