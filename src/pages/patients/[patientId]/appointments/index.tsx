@@ -3,6 +3,7 @@ import LoadingWrapper from '@/components/core/LoadingWrapper';
 import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
 import Text from '@/components/core/Text';
+import { toPrintField } from '@/constants/field-types';
 import { patientDetailsPaths, sidebarPaths } from '@/constants/paths';
 import { useActiveDoctor } from '@/hooks';
 import { trpc } from '@/services/trpc';
@@ -48,13 +49,15 @@ const PatientAppointments: Page = () => {
                       <DescriptionList
                         key={handbook.id}
                         title={handbook.title}
-                        items={handbook.fields.map(({ label, value }) => ({
-                          label,
-                          value:
-                            typeof value === 'boolean'
-                              ? booleanToText(value)
-                              : (value as string),
-                        }))}
+                        items={handbook.fields.map(
+                          ({ label, value, type }) => ({
+                            label,
+                            value:
+                              typeof value === 'boolean'
+                                ? booleanToText(value)
+                                : toPrintField({ field: type, value }),
+                          })
+                        )}
                       />
                     ))}
                     {appointment.prescriptions &&
