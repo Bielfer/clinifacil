@@ -1,4 +1,5 @@
-import GridTable from '@/components/core/GridTable';
+/* eslint react/no-array-index-key:off */
+import MySwitch from '@/components/core/MySwitch';
 import Text from '@/components/core/Text';
 import FormikAutocomplete from '@/components/forms/FormikAutocomplete';
 import FormikInput from '@/components/forms/FormikInput';
@@ -6,7 +7,9 @@ import FormikSwitch from '@/components/forms/FormikSwitch';
 import FormikTable from '@/components/forms/FormikTable';
 import FormikTextarea from '@/components/forms/FormikTextarea';
 import type { HandbookFieldType } from '@prisma/client';
+import clsx from 'clsx';
 import type { Key } from 'react';
+import { gridColsArray } from './styles';
 
 export const fieldTypes = {
   text: 'TEXT',
@@ -65,49 +68,115 @@ export const toPrintField = ({
   label?: string | undefined | null;
   value?: any;
 }) => {
+  const firstColumnEmpty =
+    Array.isArray(value) && value.every((row) => row?.[0] === '');
+
   const fieldMatcher: Record<HandbookFieldType, JSX.Element | null | boolean> =
     {
       TEXT: (
         <>
-          <Text h4 className="mb-1">
-            {label}
-          </Text>
+          {!!label && (
+            <Text h4 className="mb-1">
+              {label}
+            </Text>
+          )}
           <Text p>{value ?? ' - '}</Text>
         </>
       ),
       TEXTAREA: (
         <>
-          <Text h4 className="mb-1">
-            {label}
-          </Text>
+          {!!label && (
+            <Text h4 className="mb-1">
+              {label}
+            </Text>
+          )}
           <Text p>{value ?? ' - '}</Text>
         </>
       ),
       CHECK: (
         <>
-          <Text h4 className="mb-1">
-            {label}
-          </Text>
-          <Text p>{value ?? ' - '}</Text>
+          {!!label && (
+            <Text h4 className="mb-1">
+              {label}
+            </Text>
+          )}
+          <MySwitch checked={value} onChange={() => {}} />
         </>
       ),
       AUTOCOMPLETE: (
         <>
-          <Text h4 className="mb-1">
-            {label}
-          </Text>
+          {!!label && (
+            <Text h4 className="mb-1">
+              {label}
+            </Text>
+          )}
           <Text p>{value ?? ' - '}</Text>
         </>
       ),
       DATE: (
         <>
-          <Text h4 className="mb-1">
-            {label}
-          </Text>
+          {!!label && (
+            <Text h4 className="mb-1">
+              {label}
+            </Text>
+          )}
           <Text p>{value}</Text>
         </>
       ),
-      TABLE: Array.isArray(value) && <GridTable data={value} />,
+      TABLE: Array.isArray(value) && (
+        <div className="px-2 text-center">
+          <div
+            className={clsx(
+              'grid',
+              clsx(
+                'grid',
+                firstColumnEmpty
+                  ? gridColsArray[(value?.[0] as string[]).length - 1]
+                  : gridColsArray[value?.[0].length]
+              )
+            )}
+          >
+            {value?.[0].map((header: string, idx: number) => (
+              <div
+                key={header}
+                className={clsx(
+                  'border-l border-gray-300 py-3 text-center font-semibold first:border-l-0',
+                  firstColumnEmpty && idx === 0 && 'hidden',
+                  firstColumnEmpty && idx === 1 && 'border-l-0'
+                )}
+              >
+                {header}
+              </div>
+            ))}
+          </div>
+          <div>
+            {value?.slice(1).map((row: string[], idxRow: number) => (
+              <div
+                key={idxRow}
+                className={clsx(
+                  'grid border-t border-gray-300',
+                  firstColumnEmpty
+                    ? gridColsArray[row.length - 1]
+                    : gridColsArray[row.length]
+                )}
+              >
+                {row.map((data, idxCol) => (
+                  <div
+                    key={idxCol}
+                    className={clsx(
+                      'border-l border-gray-300 py-3 first:border-l-0 first:font-semibold',
+                      firstColumnEmpty && idxCol === 0 && 'hidden',
+                      firstColumnEmpty && idxCol === 1 && 'border-l-0'
+                    )}
+                  >
+                    {data}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      ),
     };
 
   return fieldMatcher[field];
