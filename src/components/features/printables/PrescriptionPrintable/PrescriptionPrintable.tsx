@@ -38,10 +38,7 @@ const PrescriptionPrintable = forwardRef<HTMLDivElement, Props>(
     return (
       <div
         className={clsx(
-          'h-screen px-12 py-16',
-          doctorPrescriptionBackground
-            ? 'bg-cover bg-center bg-no-repeat bg-origin-border'
-            : 'flex flex-col items-center justify-between'
+          'absolute top-0 left-0 flex h-full w-full items-center justify-center overflow-hidden bg-no-repeat'
         )}
         style={{ backgroundImage: `url(${doctorPrescriptionBackground})` }}
         ref={ref}
@@ -57,16 +54,15 @@ const PrescriptionPrintable = forwardRef<HTMLDivElement, Props>(
             patient={patient}
           />
         ) : (
-          <>
+          <div className="flex h-full flex-col items-center justify-between py-40">
             <Text b className="mb-6 justify-center">
               Receita
             </Text>
             <div>
-              <Text>Para:</Text>
-              <Text>{patient?.name}</Text>
               <PrescriptionList
                 className="mt-4"
                 prescriptions={prescriptions}
+                patient={patient}
               />
             </div>
             <div>
@@ -81,7 +77,7 @@ const PrescriptionPrintable = forwardRef<HTMLDivElement, Props>(
                 </div>
               )}
             </div>
-          </>
+          </div>
         )}
       </div>
     );

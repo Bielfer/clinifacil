@@ -30,10 +30,10 @@ const HandbookPrintable = forwardRef<HTMLDivElement, Props>(
     return (
       <div
         ref={ref}
-        className="h-screen justify-between bg-cover bg-center bg-no-repeat bg-origin-border py-40"
+        className="absolute top-0 left-0 flex h-full w-full items-center justify-center overflow-hidden bg-no-repeat"
         style={{ backgroundImage: `url(${background})` }}
       >
-        <div className="mx-auto w-1/2">
+        <div className="flex w-1/2 flex-col justify-between">
           {printable && (
             <Text h3 className="justify-center">
               {printable.name}
@@ -41,7 +41,7 @@ const HandbookPrintable = forwardRef<HTMLDivElement, Props>(
           )}
           <div>
             <Text>Para:</Text>
-            <Text>{patient?.name}</Text>
+            <Text className="font-semibold">{patient?.name}</Text>
           </div>
           {toBePrintedFields.map((field) => (
             <div key={field.id}>
@@ -53,7 +53,7 @@ const HandbookPrintable = forwardRef<HTMLDivElement, Props>(
             </div>
           ))}
           <div>
-            <Text className="justify-center">
+            <Text className="mt-5 justify-center">
               {doctor?.city}, {getDate(today)} de {monthNames[getMonth(today)]}{' '}
               de {getYear(today)}
             </Text>
