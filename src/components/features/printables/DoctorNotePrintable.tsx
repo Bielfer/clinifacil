@@ -2,7 +2,6 @@
 import Text from '@/components/core/Text';
 import { monthNames } from '@/constants/dates';
 import type { Doctor, DoctorNote, Printable } from '@prisma/client';
-import clsx from 'clsx';
 import { getDate, getMonth, getYear } from 'date-fns';
 import { forwardRef } from 'react';
 
@@ -20,12 +19,7 @@ const DoctorNotePrintable = forwardRef<HTMLDivElement, Props>(
 
     return (
       <div
-        className={clsx(
-          'flex h-screen flex-col items-center px-20 py-32',
-          background
-            ? 'justify-center bg-cover bg-center bg-no-repeat bg-origin-border'
-            : 'justify-between'
-        )}
+        className="absolute top-0 left-0 flex h-full w-full items-center justify-center overflow-hidden bg-no-repeat"
         style={{ backgroundImage: `url(${background})` }}
         ref={ref}
       >
@@ -37,7 +31,7 @@ const DoctorNotePrintable = forwardRef<HTMLDivElement, Props>(
             )}
           </div>
         ) : (
-          <>
+          <div className="flex h-full flex-col items-center justify-between py-40">
             <Text b className="mb-6 justify-center">
               Atestado Médico
             </Text>
@@ -60,7 +54,7 @@ const DoctorNotePrintable = forwardRef<HTMLDivElement, Props>(
                 </div>
               )}
             </div>
-          </>
+          </div>
         )}
       </div>
     );

@@ -3,6 +3,7 @@ import LoadingWrapper from '@/components/core/LoadingWrapper';
 import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
 import Text from '@/components/core/Text';
+import { showHandbookField } from '@/constants/field-types';
 import { patientDetailsPaths, sidebarPaths } from '@/constants/paths';
 import { useActiveDoctor } from '@/hooks';
 import { trpc } from '@/services/trpc';
@@ -23,7 +24,6 @@ const PatientAppointments: Page = () => {
       },
       { enabled: !!doctor && !!patientId }
     );
-  const booleanToText = (bool: boolean) => (bool ? 'Sim' : 'Não');
 
   return (
     <>
@@ -36,9 +36,9 @@ const PatientAppointments: Page = () => {
         </Text>
         <TabsNavigation tabs={patientDetailsPaths({ patientId })} />
         <LoadingWrapper loading={isLoading}>
-          <div className="divide-y divide-gray-300 py-4">
+          <div className="gap-y-5 divide-y divide-gray-300">
             {appointments?.map((appointment) => (
-              <div key={appointment.id}>
+              <div key={appointment.id} className="mt-6 pt-6 first:mt-0">
                 <Text h4 className="my-4">
                   Dia {format(appointment.createdAt, 'dd/MM/yyyy')}
                 </Text>
@@ -48,13 +48,18 @@ const PatientAppointments: Page = () => {
                       <DescriptionList
                         key={handbook.id}
                         title={handbook.title}
-                        items={handbook.fields.map(({ label, value }) => ({
-                          label,
-                          value:
-                            typeof value === 'boolean'
-                              ? booleanToText(value)
-                              : (value as string),
-                        }))}
+                        items={handbook.fields
+                          .map(
+                            ({ label, value, type }) =>
+                              !!value && {
+                                label,
+                                value: showHandbookField({
+                                  field: type,
+                                  value,
+                                }),
+                              }
+                          )
+                          .filter((item) => !!item)}
                       />
                     ))}
                     {appointment.prescriptions &&

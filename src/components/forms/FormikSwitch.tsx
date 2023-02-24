@@ -3,7 +3,7 @@ import MySwitch from '../core/MySwitch';
 
 interface Props {
   name: string;
-  label?: string;
+  label?: string | null;
   className?: string;
 }
 

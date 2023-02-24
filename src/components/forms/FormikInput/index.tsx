@@ -3,7 +3,7 @@ import { useField } from 'formik';
 import Input from '@/components/core/Input';
 
 interface Props {
-  label?: string;
+  label?: string | null;
   name: string;
   password?: boolean;
   formatter?: string;

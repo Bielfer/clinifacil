@@ -36,12 +36,7 @@ const ExamPrintable = forwardRef<HTMLDivElement, Props>(
 
     return (
       <div
-        className={clsx(
-          'h-screen px-12 py-16',
-          background
-            ? 'bg-cover bg-center bg-no-repeat bg-origin-border'
-            : 'flex flex-col items-center justify-between'
-        )}
+        className="absolute top-0 left-0 flex h-full w-full items-center justify-center overflow-hidden bg-no-repeat"
         style={{ backgroundImage: `url(${background})` }}
         ref={ref}
       >
@@ -63,18 +58,20 @@ const ExamPrintable = forwardRef<HTMLDivElement, Props>(
             </ul>
           </div>
         ) : (
-          <>
+          <div className="flex h-full flex-col justify-between py-40">
             <Text b className="mb-6 justify-center">
               Solicitação de Exames
             </Text>
             <div>
               <Text>Para:</Text>
-              <Text>{patient?.name}</Text>
-              <div>
+              <Text b className="mb-6">
+                {patient?.name}
+              </Text>
+              <ul className="flex list-inside list-disc flex-col gap-y-3">
                 {exams.map((exam) => (
-                  <Text key={exam.id}>{exam.name}</Text>
+                  <li key={exam.id}>{exam.name}</li>
                 ))}
-              </div>
+              </ul>
             </div>
             <div>
               <Text>
@@ -88,7 +85,7 @@ const ExamPrintable = forwardRef<HTMLDivElement, Props>(
                 </div>
               )}
             </div>
-          </>
+          </div>
         )}
       </div>
     );

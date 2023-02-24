@@ -16,16 +16,18 @@ const handbookFieldOptionSchema = z.object({
 const handbookFieldTypeSchema = z.enum(fieldTypesArray);
 
 export const fieldValue = z
-  .union([z.string(), z.boolean(), z.number()])
+  .union([z.string(), z.boolean(), z.number(), z.string().array().array()])
   .optional();
 
 export const handbookFieldSchema = z.object({
   id: z.number().optional(),
-  label: z.string(),
+  label: z.string().nullish(),
   type: handbookFieldTypeSchema,
   value: fieldValue,
   required: z.boolean().optional(),
   options: handbookFieldOptionSchema.array().optional(),
+  displayOrder: z.number().optional(),
+  print: z.boolean().optional(),
 });
 
 const handbookSchema = z.object({

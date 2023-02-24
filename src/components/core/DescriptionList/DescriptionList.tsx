@@ -3,11 +3,15 @@ import clsx from 'clsx';
 import { FC, Fragment } from 'react';
 
 type Props = {
-  items: {
-    label: string;
-    value?: string | number | null;
-    buttonsOrLinks?: JSX.Element[];
-  }[];
+  items: (
+    | {
+        label?: string | null;
+        value?: string | number | null | JSX.Element | boolean;
+        buttonsOrLinks?: (JSX.Element | undefined | boolean)[];
+      }
+    | false
+    | undefined
+  )[];
   title?: string;
   subtitle?: string;
   loading?: boolean;
@@ -38,47 +42,53 @@ const DescriptionList: FC<Props> = ({
       {linkOrButton}
     </div>
     <dl className="divide-y divide-gray-200">
-      {items.map((item, idx) => (
-        <div
-          className="flex items-center py-4 sm:gap-4 sm:py-5"
-          key={`${item.value} ${item.label} ${idx}`}
-        >
-          <div className="grid flex-grow items-center sm:grid-cols-5">
-            <dt className="flex items-center text-sm font-medium text-gray-500 sm:col-span-2">
-              {item.label}
-            </dt>
-            <dd
-              className={clsx(
-                'flex items-center text-sm text-gray-900 sm:mt-0',
-                !item.buttonsOrLinks && 'col-span-3'
-              )}
+      {items.map(
+        (item, idx) =>
+          !!item && (
+            <div
+              className="flex items-center py-4 sm:gap-4 sm:py-5"
+              key={`${item.value} ${item.label} ${idx}`}
             >
-              {loading ? (
-                <span className="h-2 w-2/3 animate-pulse rounded-full bg-slate-200">
-                  {' '}
-                </span>
-              ) : (
-                <span className="flex-grow">{item.value}</span>
+              <div className="grid flex-grow items-center sm:grid-cols-5">
+                <dt className="flex items-center text-sm font-medium text-gray-500 sm:col-span-2">
+                  {item.label}
+                </dt>
+                <dd
+                  className={clsx(
+                    'flex items-center text-sm text-gray-900 sm:mt-0',
+                    !item.buttonsOrLinks && 'col-span-3'
+                  )}
+                >
+                  {loading ? (
+                    <span className="h-2 w-2/3 animate-pulse rounded-full bg-slate-200">
+                      {' '}
+                    </span>
+                  ) : (
+                    <span className="flex-grow">{item.value}</span>
+                  )}
+                </dd>
+              </div>
+              {!!item.buttonsOrLinks && (
+                <div className="flex flex-shrink-0 items-center gap-x-2">
+                  {item.buttonsOrLinks.map(
+                    (buttonOrLink, buttonIdx) =>
+                      buttonOrLink && (
+                        <Fragment key={buttonIdx}>
+                          <span
+                            className="text-gray-300 first:hidden"
+                            aria-hidden="true"
+                          >
+                            |
+                          </span>
+                          {buttonOrLink}
+                        </Fragment>
+                      )
+                  )}
+                </div>
               )}
-            </dd>
-          </div>
-          {!!item.buttonsOrLinks && (
-            <div className="flex flex-shrink-0 items-center gap-x-2">
-              {item.buttonsOrLinks.map((buttonOrLink, buttonIdx) => (
-                <Fragment key={buttonIdx}>
-                  <span
-                    className="text-gray-300 first:hidden"
-                    aria-hidden="true"
-                  >
-                    |
-                  </span>
-                  {buttonOrLink}
-                </Fragment>
-              ))}
             </div>
-          )}
-        </div>
-      ))}
+          )
+      )}
     </dl>
   </div>
 );

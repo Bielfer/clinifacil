@@ -3,7 +3,7 @@ import { ChangeEvent, FC } from 'react';
 import InputLayout from '../InputLayout';
 
 interface Props {
-  label?: string;
+  label?: string | null;
   password?: boolean;
   error?: string;
   hint?: string;

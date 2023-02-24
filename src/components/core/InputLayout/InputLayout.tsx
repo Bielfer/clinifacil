@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import { ReactNode } from 'react';
 
 interface Props {
-  label?: string;
+  label?: string | null;
   error?: string;
   hint?: string;
   className?: string;

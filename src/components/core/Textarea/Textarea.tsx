@@ -5,7 +5,7 @@ import InputLayout from '../InputLayout';
 interface Props {
   name: string;
   hint?: string;
-  label?: string;
+  label?: string | null;
   className?: string;
   placeholder?: string;
   error?: string;

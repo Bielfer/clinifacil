@@ -125,12 +125,13 @@ model Handbook {
 
 model HandbookField {
   id           Int                   @id @default(autoincrement())
-  label        String
+  label        String?
   type         HandbookFieldType
   handbook     Handbook?             @relation(fields: [handbookId], references: [id])
   handbookId   Int?
   required     Boolean               @default(false)
   displayOrder Int                   @default(0)
+  print        Boolean               @default(false)
   options      HandbookFieldOption[]
   value        Json?
 
@@ -264,6 +265,7 @@ enum HandbookFieldType {
   CHECK
   TEXTAREA
   DATE
+  TABLE
 }
 
 enum AppointmentStatus {
@@ -276,4 +278,5 @@ enum PrintableType {
   DOCTOR_NOTE
   PRESCRIPTION
   EXAMS
+  GLASSES_PRESCRIPTION
 }

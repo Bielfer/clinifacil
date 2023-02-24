@@ -1,0 +1,1 @@
+curl -X POST -H 'Content-Type: application/json' -H 'ARCHIVE_APPOINTMENTS_KEY: Xs8eVHjfPVtxuqVMUnQd' http://localhost:3000/api/archive-appointments
