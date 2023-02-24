@@ -58,7 +58,7 @@ export const toRenderField = ({
   return fieldMatcher[field];
 };
 
-export const toPrintField = ({
+export const showHandbookField = ({
   field,
   label,
   value,

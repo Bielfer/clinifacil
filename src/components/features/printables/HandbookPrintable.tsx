@@ -1,5 +1,5 @@
 /* eslint react/display-name:off */
-import { toPrintField } from '@/constants/field-types';
+import { showHandbookField } from '@/constants/field-types';
 import type {
   Doctor,
   Handbook,
@@ -45,7 +45,7 @@ const HandbookPrintable = forwardRef<HTMLDivElement, Props>(
           </div>
           {toBePrintedFields.map((field) => (
             <div key={field.id}>
-              {toPrintField({
+              {showHandbookField({
                 field: field.type,
                 label: field.label,
                 value: field.value,

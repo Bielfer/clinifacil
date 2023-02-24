@@ -3,7 +3,7 @@ import LoadingWrapper from '@/components/core/LoadingWrapper';
 import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
 import Text from '@/components/core/Text';
-import { toPrintField } from '@/constants/field-types';
+import { showHandbookField } from '@/constants/field-types';
 import { patientDetailsPaths, sidebarPaths } from '@/constants/paths';
 import { useActiveDoctor } from '@/hooks';
 import { trpc } from '@/services/trpc';
@@ -53,7 +53,10 @@ const PatientAppointments: Page = () => {
                             ({ label, value, type }) =>
                               !!value && {
                                 label,
-                                value: toPrintField({ field: type, value }),
+                                value: showHandbookField({
+                                  field: type,
+                                  value,
+                                }),
                               }
                           )
                           .filter((item) => !!item)}
