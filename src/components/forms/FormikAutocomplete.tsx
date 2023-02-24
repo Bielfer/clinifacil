@@ -5,7 +5,7 @@ import Autocomplete from '../core/Autocomplete';
 interface Props {
   name: string;
   options: { text: string; value: string }[];
-  label?: string;
+  label?: string | null;
   hint?: string;
   disabled?: boolean;
 }

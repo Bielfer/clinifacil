@@ -29,7 +29,7 @@ export const toRenderField = ({
   key?: Key | null;
   field: HandbookFieldType;
   name: string;
-  label: string;
+  label?: string | undefined | null;
   options?: { text: string; value: string }[];
 }) => {
   const fieldMatcher: Record<HandbookFieldType, JSX.Element> = {

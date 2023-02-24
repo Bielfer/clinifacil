@@ -11,7 +11,7 @@ interface Props {
   options: { text: string; value: string }[];
   className?: string;
   placeholder?: string;
-  label?: string;
+  label?: string | null;
   name?: string;
   error?: string;
   hint?: string;

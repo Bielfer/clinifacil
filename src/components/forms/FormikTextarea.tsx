@@ -4,7 +4,7 @@ import Textarea from '../core/Textarea';
 interface Props {
   name: string;
   hint?: string;
-  label?: string;
+  label?: string | null;
   className?: string;
   placeholder?: string;
   disabled?: boolean;

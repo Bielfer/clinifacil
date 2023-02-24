@@ -21,7 +21,7 @@ export const fieldValue = z
 
 export const handbookFieldSchema = z.object({
   id: z.number().optional(),
-  label: z.string(),
+  label: z.string().nullish(),
   type: handbookFieldTypeSchema,
   value: fieldValue,
   required: z.boolean().optional(),
