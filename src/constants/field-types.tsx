@@ -1,6 +1,7 @@
 import FormikAutocomplete from '@/components/forms/FormikAutocomplete';
 import FormikInput from '@/components/forms/FormikInput';
 import FormikSwitch from '@/components/forms/FormikSwitch';
+import FormikTable from '@/components/forms/FormikTable';
 import FormikTextarea from '@/components/forms/FormikTextarea';
 import type { HandbookFieldType } from '@prisma/client';
 import type { Key } from 'react';
@@ -11,6 +12,7 @@ export const fieldTypes = {
   check: 'CHECK',
   textarea: 'TEXTAREA',
   date: 'DATE',
+  table: 'TABLE',
 } as const;
 
 export const fieldTypesArray = Object.values(
@@ -45,6 +47,7 @@ export const toRenderField = ({
     DATE: (
       <FormikInput name={name} label={label} key={key} formatter="__/__/____" />
     ),
+    TABLE: <FormikTable name={name} label={label} key={key} />,
   };
 
   return fieldMatcher[field];
