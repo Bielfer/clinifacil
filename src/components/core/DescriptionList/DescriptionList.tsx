@@ -6,7 +6,7 @@ type Props = {
   items: {
     label?: string | null;
     value?: string | number | null;
-    buttonsOrLinks?: JSX.Element[];
+    buttonsOrLinks?: (JSX.Element | undefined | boolean)[];
   }[];
   title?: string;
   subtitle?: string;
@@ -64,17 +64,20 @@ const DescriptionList: FC<Props> = ({
           </div>
           {!!item.buttonsOrLinks && (
             <div className="flex flex-shrink-0 items-center gap-x-2">
-              {item.buttonsOrLinks.map((buttonOrLink, buttonIdx) => (
-                <Fragment key={buttonIdx}>
-                  <span
-                    className="text-gray-300 first:hidden"
-                    aria-hidden="true"
-                  >
-                    |
-                  </span>
-                  {buttonOrLink}
-                </Fragment>
-              ))}
+              {item.buttonsOrLinks.map(
+                (buttonOrLink, buttonIdx) =>
+                  buttonOrLink && (
+                    <Fragment key={buttonIdx}>
+                      <span
+                        className="text-gray-300 first:hidden"
+                        aria-hidden="true"
+                      >
+                        |
+                      </span>
+                      {buttonOrLink}
+                    </Fragment>
+                  )
+              )}
             </div>
           )}
         </div>
