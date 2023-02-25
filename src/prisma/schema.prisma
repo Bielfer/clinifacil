@@ -240,6 +240,7 @@ model Exam {
   doctorId      Int?
   appointment   Appointment? @relation(fields: [appointmentId], references: [id])
   appointmentId Int?
+  favorite      Boolean      @default(false)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt()
 
