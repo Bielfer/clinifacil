@@ -11,6 +11,7 @@ import { Form, Formik } from 'formik';
 import { useRouter } from 'next/router';
 import type { FC } from 'react';
 import { z } from 'zod';
+import LoadingWrapper from '../core/LoadingWrapper';
 import FormikAdd from './FormikAdd';
 
 const FormExam: FC = () => {
@@ -18,7 +19,7 @@ const FormExam: FC = () => {
   const patientId = router.query.patientId as string;
   const { addToast } = useToast();
   const { data: doctor } = useActiveDoctor();
-  const { data: exams } = trpc.exam.getMany.useQuery(
+  const { data: exams, isLoading } = trpc.exam.getMany.useQuery(
     { doctorId: doctor?.id ?? 0 },
     { enabled: !!doctor }
   );
@@ -27,7 +28,8 @@ const FormExam: FC = () => {
     useActiveAppointment({ patientId: parseInt(patientId, 10) });
 
   const initialValues = {
-    exams: [],
+    exams:
+      exams?.filter((exam) => exam.favorite).map((exam) => exam.name) ?? [],
   };
 
   const validate = z.object({
@@ -66,34 +68,36 @@ const FormExam: FC = () => {
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validate={zodValidator(validate)}
-      onSubmit={handleSubmit}
-    >
-      {({ isSubmitting }) => (
-        <Form className="flex flex-col gap-y-6">
-          <FormikAdd
-            label="Nome do Exame"
-            hint={hints.required}
-            name="exams"
-            component="autocomplete"
-            options={
-              exams?.map(({ name }) => ({
-                text: name,
-                value: name,
-              })) ?? []
-            }
-          />
+    <LoadingWrapper loading={isLoading}>
+      <Formik
+        initialValues={initialValues}
+        validate={zodValidator(validate)}
+        onSubmit={handleSubmit}
+      >
+        {({ isSubmitting }) => (
+          <Form className="flex flex-col gap-y-6">
+            <FormikAdd
+              label="Nome do Exame"
+              hint={hints.required}
+              name="exams"
+              component="autocomplete"
+              options={
+                exams?.map(({ name }) => ({
+                  text: name,
+                  value: name,
+                })) ?? []
+              }
+            />
 
-          <div className="flex justify-end">
-            <Button type="submit" variant="primary" loading={isSubmitting}>
-              Salvar
-            </Button>
-          </div>
-        </Form>
-      )}
-    </Formik>
+            <div className="flex justify-end">
+              <Button type="submit" variant="primary" loading={isSubmitting}>
+                Salvar
+              </Button>
+            </div>
+          </Form>
+        )}
+      </Formik>
+    </LoadingWrapper>
   );
 };
 
