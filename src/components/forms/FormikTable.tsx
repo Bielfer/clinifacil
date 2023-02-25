@@ -17,6 +17,8 @@ const FormikTable: FC<Props> = ({ name, label, hint, className }) => {
   const [{ value }, { touched, error }] = useField<string[][]>(name);
 
   const [headers, ...body] = value;
+  const firstColumnEmpty =
+    Array.isArray(value) && value.every((row) => row?.[0] === '');
 
   return (
     <InputLayout
@@ -26,7 +28,7 @@ const FormikTable: FC<Props> = ({ name, label, hint, className }) => {
       hint={hint}
     >
       {label && (
-        <Text label className="pb-3 text-xl">
+        <Text label className="pb-3">
           {label}
         </Text>
       )}
@@ -35,7 +37,11 @@ const FormikTable: FC<Props> = ({ name, label, hint, className }) => {
           {headers.map((header, idx) => (
             <Table.Header
               key={header}
-              className={clsx(idx !== 0 && 'border-l border-gray-300')}
+              className={clsx(
+                idx !== 0 && 'border-l border-gray-300',
+                firstColumnEmpty && idx === 0 && 'hidden',
+                firstColumnEmpty && idx === 1 && 'border-l-0'
+              )}
             >
               {header}
             </Table.Header>
@@ -48,7 +54,9 @@ const FormikTable: FC<Props> = ({ name, label, hint, className }) => {
                 <Table.Data
                   key={idxCol}
                   className={clsx(
-                    idxCol === 0 ? 'font-semibold' : 'border-l border-gray-300'
+                    idxCol === 0 ? 'font-semibold' : 'border-l border-gray-300',
+                    firstColumnEmpty && idxCol === 0 && 'hidden',
+                    firstColumnEmpty && idxCol === 1 && 'border-l-0'
                   )}
                 >
                   {idxCol === 0 ? (
@@ -56,7 +64,7 @@ const FormikTable: FC<Props> = ({ name, label, hint, className }) => {
                   ) : (
                     <Field
                       name={`${name}[${idxRow + 1}][${idxCol}]`}
-                      className="h-full w-full text-center outline-none"
+                      className="h-full w-full text-center leading-10 outline-none"
                       autoComplete="off"
                     />
                   )}
