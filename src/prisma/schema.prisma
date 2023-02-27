@@ -267,6 +267,7 @@ enum HandbookFieldType {
   TEXTAREA
   DATE
   TABLE
+  ADD
 }
 
 enum AppointmentStatus {
