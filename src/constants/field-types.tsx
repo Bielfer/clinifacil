@@ -1,6 +1,7 @@
 /* eslint react/no-array-index-key:off */
 import MySwitch from '@/components/core/MySwitch';
 import Text from '@/components/core/Text';
+import FormikAdd from '@/components/forms/FormikAdd';
 import FormikAutocomplete from '@/components/forms/FormikAutocomplete';
 import FormikInput from '@/components/forms/FormikInput';
 import FormikSwitch from '@/components/forms/FormikSwitch';
@@ -18,6 +19,7 @@ export const fieldTypes = {
   textarea: 'TEXTAREA',
   date: 'DATE',
   table: 'TABLE',
+  add: 'ADD',
 } as const;
 
 export const fieldTypesArray = Object.values(
@@ -53,6 +55,7 @@ export const toRenderField = ({
       <FormikInput name={name} label={label} key={key} formatter="__/__/____" />
     ),
     TABLE: <FormikTable name={name} label={label} key={key} />,
+    ADD: <FormikAdd label={label} name={name} options={options} key={key} />,
   };
 
   return fieldMatcher[field];
@@ -176,6 +179,13 @@ export const showHandbookField = ({
             ))}
           </div>
         </div>
+      ),
+      ADD: Array.isArray(value) && (
+        <ul>
+          {value.map((data, idx) => (
+            <li key={`${data} ${idx}`}>{data}</li>
+          ))}
+        </ul>
       ),
     };
 
