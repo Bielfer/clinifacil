@@ -16,7 +16,13 @@ const handbookFieldOptionSchema = z.object({
 const handbookFieldTypeSchema = z.enum(fieldTypesArray);
 
 export const fieldValue = z
-  .union([z.string(), z.boolean(), z.number(), z.string().array().array()])
+  .union([
+    z.string(),
+    z.boolean(),
+    z.number(),
+    z.string().array(),
+    z.string().array().array(),
+  ])
   .optional();
 
 export const handbookFieldSchema = z.object({
