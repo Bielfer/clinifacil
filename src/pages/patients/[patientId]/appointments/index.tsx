@@ -1,19 +1,23 @@
 import DescriptionList from '@/components/core/DescriptionList';
 import LoadingWrapper from '@/components/core/LoadingWrapper';
+import MyLink from '@/components/core/MyLink';
 import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
 import Text from '@/components/core/Text';
 import { showHandbookField } from '@/constants/field-types';
-import { patientDetailsPaths, sidebarPaths } from '@/constants/paths';
-import { useActiveDoctor } from '@/hooks';
+import paths, { patientDetailsPaths, sidebarPaths } from '@/constants/paths';
+import { useActiveAppointment, useActiveDoctor, useRoles } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
+import { ArrowRightCircleIcon, PlusIcon } from '@heroicons/react/20/solid';
 import { format } from 'date-fns';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { Url } from 'url';
 
 const PatientAppointments: Page = () => {
   const patientId = useRouter().query.patientId as string;
+  const { isDoctor } = useRoles();
   const { data: doctor } = useActiveDoctor();
   const { data: appointments, isLoading } =
     trpc.detailedAppointment.getMany.useQuery(
@@ -24,6 +28,23 @@ const PatientAppointments: Page = () => {
       },
       { enabled: !!doctor && !!patientId }
     );
+  const { data: activeAppointment, isLoading: isLoadingAppointment } =
+    useActiveAppointment({ patientId: parseInt(patientId, 10) });
+
+  const activeAppointmentHandbooks =
+    activeAppointment && activeAppointment.handbooks;
+  const appointmentHasHandbook =
+    activeAppointmentHandbooks && activeAppointmentHandbooks.length > 0;
+
+  let href: string | Partial<Url>;
+
+  if (!activeAppointment)
+    href = {
+      pathname: paths.newPatientAppointment(patientId),
+      query: { onSubmitRedirectUrl: paths.patientHandbooks(patientId) },
+    };
+  else if (appointmentHasHandbook) href = paths.patientHandbooks(patientId);
+  else href = paths.newPatientHandbook(patientId);
 
   return (
     <>
@@ -31,17 +52,33 @@ const PatientAppointments: Page = () => {
         <title>CliniFácil | Suas Consultas com o Paciente</title>
       </Head>
       <Sidebar items={sidebarPaths}>
-        <Text h2 className="pb-2">
-          Suas Consultas com o Paciente
-        </Text>
+        <div className="flex items-center justify-between pb-2">
+          <Text h2>Suas Consultas com o Paciente</Text>
+          {isDoctor && (
+            <MyLink
+              href={href}
+              variant="button-primary"
+              iconLeft={
+                appointmentHasHandbook ? ArrowRightCircleIcon : PlusIcon
+              }
+              isLoading={isLoadingAppointment}
+            >
+              {appointmentHasHandbook
+                ? 'Continuar Atendimento'
+                : 'Nova Consulta'}
+            </MyLink>
+          )}
+        </div>
         <TabsNavigation tabs={patientDetailsPaths({ patientId })} />
         <LoadingWrapper loading={isLoading}>
           <div className="gap-y-5 divide-y divide-gray-300">
             {appointments?.map((appointment) => (
               <div key={appointment.id} className="mt-6 pt-6 first:mt-0">
-                <Text h4 className="my-4">
-                  Dia {format(appointment.createdAt, 'dd/MM/yyyy')}
-                </Text>
+                <div className="my-4 flex items-center justify-between">
+                  <Text h4>
+                    Dia {format(appointment.createdAt, 'dd/MM/yyyy')}
+                  </Text>
+                </div>
                 <div className="flex flex-col gap-y-8">
                   <div className="px-2 sm:px-4">
                     {appointment.handbooks.map((handbook) => (
@@ -51,7 +88,13 @@ const PatientAppointments: Page = () => {
                         items={handbook.fields
                           .map(
                             ({ label, value, type }) =>
-                              !!value && {
+                              (Array.isArray(value)
+                                ? value.every((row) =>
+                                    (row as string[]).every(
+                                      (item) => item !== ''
+                                    )
+                                  )
+                                : !!value) && {
                                 label,
                                 value: showHandbookField({
                                   field: type,
