@@ -4,6 +4,7 @@ import useTimeout from './useTimeout';
 import useRoles from './useRoles';
 import useActiveDoctor from './useActiveDoctor';
 import useActiveAppointment from './useActiveAppointment';
+import useTableArrowNavigation from './useTableArrowNavigation';
 
 export {
   useCopyToClipboard,
@@ -12,4 +13,5 @@ export {
   useRoles,
   useActiveDoctor,
   useActiveAppointment,
+  useTableArrowNavigation,
 };
