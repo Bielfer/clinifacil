@@ -1,5 +1,8 @@
+import { isHigherOrEqualInRoleHierarchy } from '@/helpers/roles';
 import { IconType } from '@/types/core';
+import { Role } from '@/types/role';
 import clsx from 'clsx';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { FC } from 'react';
 import MyLink from './MyLink';
@@ -8,6 +11,7 @@ interface Tab {
   text: string;
   href: string;
   icon?: IconType;
+  role?: Role;
 }
 
 interface Props {
@@ -17,6 +21,7 @@ interface Props {
 
 const TabsNavigation: FC<Props> = ({ tabs, className }) => {
   const router = useRouter();
+  const { data: session } = useSession();
 
   return (
     <nav
@@ -28,6 +33,12 @@ const TabsNavigation: FC<Props> = ({ tabs, className }) => {
     >
       {tabs.map((tab) => {
         const isCurrentTab = router.asPath === tab.href;
+
+        if (
+          tab.role &&
+          !isHigherOrEqualInRoleHierarchy(session?.user.role, tab.role)
+        )
+          return null;
 
         return (
           <MyLink
