@@ -5,9 +5,9 @@ import clsx from 'clsx';
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
 import InputLayout from './InputLayout';
 
-interface Props {
-  selected: string;
-  setSelected: (value: string) => void;
+type Props = {
+  selected: string | string[];
+  setSelected: (value: string | string[]) => void;
   options: { text: string; value: string }[];
   className?: string;
   placeholder?: string;
@@ -16,7 +16,8 @@ interface Props {
   error?: string;
   hint?: string;
   disabled?: boolean;
-}
+  multiple?: boolean;
+};
 
 const Autocomplete: FC<Props> = ({
   selected,
@@ -29,6 +30,7 @@ const Autocomplete: FC<Props> = ({
   className,
   placeholder,
   label,
+  multiple = false,
 }) => {
   const [input, setInput] = useState(
     options.find((option) => option.value === selected)?.text ?? ''
@@ -50,7 +52,7 @@ const Autocomplete: FC<Props> = ({
       label={label}
       shadow
     >
-      <Combobox value={selected} onChange={setSelected}>
+      <Combobox value={selected} onChange={setSelected} multiple={multiple}>
         <Combobox.Input
           onChange={(event) => {
             setInput(event.target.value);
