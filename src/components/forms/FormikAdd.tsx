@@ -6,10 +6,10 @@ import IconButton from '../core/IconButton';
 
 type Props = {
   name: string;
-  label?: string;
+  label?: string | null;
   hint?: string;
   disabled?: boolean;
-  options: { text: string; value: string }[];
+  options: { text: string; value: string }[] | undefined;
 };
 
 const FormikAdd: FC<Props> = ({ name, options, label, hint, disabled }) => {
