@@ -3,6 +3,7 @@ import {
   TicketIcon,
   UsersIcon,
 } from '@heroicons/react/24/outline';
+import { roles } from './roles';
 
 const paths = {
   home: '/',
@@ -67,16 +68,19 @@ export const patientAppointmentPaths = ({
   { text: 'Atestados', href: paths.patientDoctorNotes(patientId) },
   { text: 'Exames', href: paths.patientExams(patientId) },
 ];
+
 export const patientDetailsPaths = ({ patientId }: { patientId: string }) => [
   { text: 'Informações', href: paths.patientsById(patientId) },
   {
     text: 'Minhas Consultas',
     href: paths.specificPatientAppointments(patientId),
+    role: roles.doctor,
   },
-  {
-    text: 'Todas as Consultas',
-    href: paths.allPatientAppointments(patientId),
-  },
+  // {
+  //   text: 'Todas as Consultas',
+  //   href: paths.allPatientAppointments(patientId),
+  //   role: roles.doctor,
+  // },
 ];
 
 export default paths;
