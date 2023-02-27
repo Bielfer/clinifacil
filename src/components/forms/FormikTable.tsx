@@ -1,7 +1,8 @@
 /* eslint react/no-array-index-key:off */
+import { useTableArrowNavigation } from '@/hooks';
 import clsx from 'clsx';
 import { Field, useField } from 'formik';
-import type { FC } from 'react';
+import { FC } from 'react';
 import InputLayout from '../core/InputLayout';
 import Table from '../core/Table';
 import Text from '../core/Text';
@@ -15,6 +16,7 @@ type Props = {
 
 const FormikTable: FC<Props> = ({ name, label, hint, className }) => {
   const [{ value }, { touched, error }] = useField<string[][]>(name);
+  const { tableRef } = useTableArrowNavigation();
 
   const [headers, ...body] = value;
   const firstColumnEmpty =
@@ -32,7 +34,7 @@ const FormikTable: FC<Props> = ({ name, label, hint, className }) => {
           {label}
         </Text>
       )}
-      <Table className="w-full px-2">
+      <Table className="w-full px-2" ref={tableRef}>
         <Table.Head>
           {headers.map((header, idx) => (
             <Table.Header
