@@ -1,4 +1,5 @@
 /* eslint react/no-array-index-key:off */
+import { tableFormatters } from '@/helpers/formatters';
 import { useTableArrowNavigation } from '@/hooks';
 import clsx from 'clsx';
 import { Field, useField } from 'formik';
@@ -12,10 +13,18 @@ type Props = {
   label?: string | null;
   hint?: string;
   className?: string;
+  formatters?: string[][];
 };
 
-const FormikTable: FC<Props> = ({ name, label, hint, className }) => {
-  const [{ value }, { touched, error }] = useField<string[][]>(name);
+const FormikTable: FC<Props> = ({
+  name,
+  label,
+  hint,
+  className,
+  formatters,
+}) => {
+  const [{ value }, { touched, error }, { setValue }] =
+    useField<string[][]>(name);
   const { tableRef } = useTableArrowNavigation();
 
   const [headers, ...body] = value;
@@ -68,6 +77,20 @@ const FormikTable: FC<Props> = ({ name, label, hint, className }) => {
                       name={`${name}[${idxRow + 1}][${idxCol}]`}
                       className="h-full w-full text-center leading-10 outline-none"
                       autoComplete="off"
+                      onBlur={() => {
+                        const formatter =
+                          formatters &&
+                          tableFormatters[formatters[idxRow + 1][idxCol]];
+
+                        if (!formatter) return;
+
+                        const valueCopy = [...value];
+                        valueCopy[idxRow + 1][idxCol] = formatter(
+                          value[idxRow + 1][idxCol]
+                        );
+
+                        setValue(valueCopy);
+                      }}
                     />
                   )}
                 </Table.Data>
