@@ -15,6 +15,8 @@ const useTableArrowNavigation = () => {
       const tbodyRef = tableRef.current?.children[1];
       const toMoveFocus = arrowKeyCommands[event.code] ?? 0;
       const trCollection = tbodyRef?.children;
+      const inputValueLength = (event?.target as any).value.length;
+      const cursorPosition = (event?.target as any).selectionStart;
       let movedCursor = false;
 
       Object.values(trCollection ?? {}).forEach((row, idxRow) => {
@@ -33,7 +35,9 @@ const useTableArrowNavigation = () => {
             newCoordinates[0] < 0 ||
             newCoordinates[0] >= (trCollection?.length ?? 0) ||
             newCoordinates[1] < 1 ||
-            newCoordinates[1] >= rowChildren.length
+            newCoordinates[1] >= rowChildren.length ||
+            (event.code === 'ArrowLeft' && cursorPosition !== 0) ||
+            (event.code === 'ArrowRight' && cursorPosition !== inputValueLength)
           )
             return;
 
