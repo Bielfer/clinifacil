@@ -1,7 +1,9 @@
 /* eslint react/no-array-index-key:off */
+import { tableFormatters } from '@/helpers/formatters';
+import { useTableArrowNavigation } from '@/hooks';
 import clsx from 'clsx';
 import { Field, useField } from 'formik';
-import type { FC } from 'react';
+import { FC } from 'react';
 import InputLayout from '../core/InputLayout';
 import Table from '../core/Table';
 import Text from '../core/Text';
@@ -11,10 +13,19 @@ type Props = {
   label?: string | null;
   hint?: string;
   className?: string;
+  formatters?: string[][];
 };
 
-const FormikTable: FC<Props> = ({ name, label, hint, className }) => {
-  const [{ value }, { touched, error }] = useField<string[][]>(name);
+const FormikTable: FC<Props> = ({
+  name,
+  label,
+  hint,
+  className,
+  formatters,
+}) => {
+  const [{ value }, { touched, error }, { setValue }] =
+    useField<string[][]>(name);
+  const { tableRef } = useTableArrowNavigation();
 
   const [headers, ...body] = value;
   const firstColumnEmpty =
@@ -32,7 +43,7 @@ const FormikTable: FC<Props> = ({ name, label, hint, className }) => {
           {label}
         </Text>
       )}
-      <Table className="w-full px-2">
+      <Table className="w-full px-2" ref={tableRef}>
         <Table.Head>
           {headers.map((header, idx) => (
             <Table.Header
@@ -66,6 +77,20 @@ const FormikTable: FC<Props> = ({ name, label, hint, className }) => {
                       name={`${name}[${idxRow + 1}][${idxCol}]`}
                       className="h-full w-full text-center leading-10 outline-none"
                       autoComplete="off"
+                      onBlur={() => {
+                        const formatter =
+                          formatters &&
+                          tableFormatters[formatters[idxRow + 1][idxCol]];
+
+                        if (!formatter) return;
+
+                        const valueCopy = [...value];
+                        valueCopy[idxRow + 1][idxCol] = formatter(
+                          value[idxRow + 1][idxCol]
+                        );
+
+                        setValue(valueCopy);
+                      }}
                     />
                   )}
                 </Table.Data>

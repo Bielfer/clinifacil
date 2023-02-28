@@ -1,5 +1,5 @@
 /* eslint react/display-name:off */
-import { showHandbookField } from '@/constants/field-types';
+import { showHandbookField } from '@/constants/handbook-fields';
 import type {
   Doctor,
   Handbook,
@@ -11,6 +11,7 @@ import { forwardRef } from 'react';
 import Text from '@/components/core/Text';
 import { monthNames } from '@/constants/dates';
 import { getDate, getMonth, getYear } from 'date-fns';
+import type { FieldValue } from '@/types/handbook';
 
 type Props = {
   handbook: Handbook & {
@@ -48,7 +49,7 @@ const HandbookPrintable = forwardRef<HTMLDivElement, Props>(
               {showHandbookField({
                 field: field.type,
                 label: field.label,
-                value: field.value,
+                value: field.value as FieldValue,
               })}
             </div>
           ))}

@@ -30,6 +30,7 @@
         "unnamedComponents": "arrow-function"
       }
     ],
-    "no-underscore-dangle": "off"
+    "no-underscore-dangle": "off",
+    "react/display-name": "off"
   }
 }

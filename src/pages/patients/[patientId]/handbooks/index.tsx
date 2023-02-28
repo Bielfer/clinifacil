@@ -1,6 +1,8 @@
 import Button from '@/components/core/Button';
 import DescriptionList from '@/components/core/DescriptionList';
 import EmptyState from '@/components/core/EmptyState';
+import IconButton from '@/components/core/IconButton';
+import IconLink from '@/components/core/IconLink';
 import LoadingWrapper from '@/components/core/LoadingWrapper';
 import MyLink from '@/components/core/MyLink';
 import Sidebar from '@/components/core/Sidebar';
@@ -81,12 +83,19 @@ const PatientHandbook: Page = () => {
                         shouldPrint && (
                           <>
                             <Button
+                              className="hidden sm:inline-flex"
                               variant="link-primary"
                               iconLeft={PrinterIcon}
                               onClick={handlePrint}
                             >
                               Imprimir
                             </Button>
+                            <IconButton
+                              className="inline-flex sm:hidden"
+                              variant="link-primary"
+                              icon={PrinterIcon}
+                              onClick={handlePrint}
+                            />
                             <div className="hidden">
                               <HandbookPrintable
                                 handbook={handbook}
@@ -98,17 +107,29 @@ const PatientHandbook: Page = () => {
                             </div>
                           </>
                         ),
-                        <MyLink
-                          key={handbook.id}
-                          variant="primary"
-                          iconLeft={PencilIcon}
-                          href={paths.patientHandbookById({
-                            patientId,
-                            handbookId: handbook.id,
-                          })}
-                        >
-                          Alterar
-                        </MyLink>,
+                        <>
+                          <MyLink
+                            className="hidden sm:inline-flex"
+                            key={handbook.id}
+                            variant="primary"
+                            iconLeft={PencilIcon}
+                            href={paths.patientHandbookById({
+                              patientId,
+                              handbookId: handbook.id,
+                            })}
+                          >
+                            Alterar
+                          </MyLink>
+                          <IconLink
+                            href={paths.patientHandbookById({
+                              patientId,
+                              handbookId: handbook.id,
+                            })}
+                            className="inline-flex sm:hidden"
+                            icon={PencilIcon}
+                            variant="primary"
+                          />
+                        </>,
                       ],
                     };
                   }) ?? []

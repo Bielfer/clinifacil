@@ -1,4 +1,4 @@
-import { toRenderField } from '@/constants/field-types';
+import { toRenderField } from '@/constants/handbook-fields';
 import type {
   Handbook,
   HandbookField,
@@ -53,6 +53,7 @@ const HandbookFields: FC<Props> = ({ handbooks }) => {
           label: field.label,
           name: `handbook.fields.${idx}.value`,
           options: field.options,
+          formatters: field.formatters as string[][],
         })
       )}
     </div>

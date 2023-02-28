@@ -80,7 +80,6 @@ const FormExam: FC = () => {
               label="Nome do Exame"
               hint={hints.required}
               name="exams"
-              component="autocomplete"
               options={
                 exams?.map(({ name }) => ({
                   text: name,

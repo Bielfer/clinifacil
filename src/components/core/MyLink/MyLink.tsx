@@ -8,7 +8,7 @@ import Spinner from '../Spinner';
 
 export type MyLinkProps = {
   className?: string;
-  variant?: keyof typeof variants;
+  variant?: keyof typeof variantStyles;
   size?: keyof typeof buttonSizes;
   iconLeft?: IconType;
   iconRight?: IconType;
@@ -19,7 +19,7 @@ export type MyLinkProps = {
   disabled?: boolean;
 };
 
-const variants = {
+export const variantStyles = {
   white: '',
   primary:
     'rounded-lg text-primary-700 hover:bg-primary-100 hover:text-primary-900',
@@ -55,7 +55,7 @@ const MyLink: FC<MyLinkProps> = ({
       className={clsx(
         'inline-flex items-center whitespace-nowrap font-medium transition duration-200',
         linkStyles,
-        variants[variant],
+        variantStyles[variant],
         buttonSizes[size],
         disabled && 'pointer-events-none',
         className
