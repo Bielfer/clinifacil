@@ -134,6 +134,7 @@ model HandbookField {
   print        Boolean               @default(false)
   options      HandbookFieldOption[]
   value        Json?
+  formatters   Json?
 
   @@index([handbookId])
 }
@@ -268,7 +269,6 @@ enum HandbookFieldType {
   DATE
   TABLE
   ADD
-  OPHTHALMOLOGIST_TABLE
 }
 
 enum AppointmentStatus {
