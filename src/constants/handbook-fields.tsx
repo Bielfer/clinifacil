@@ -20,7 +20,6 @@ export const fieldTypes = {
   date: 'DATE',
   table: 'TABLE',
   add: 'ADD',
-  ophthalmologistTable: 'OPHTHALMOLOGIST_TABLE',
 } as const;
 
 export const fieldTypesArray = Object.values(
@@ -57,9 +56,7 @@ export const toRenderField = ({
     DATE: (
       <FormikInput name={name} label={label} key={key} formatter="__/__/____" />
     ),
-    TABLE: <FormikTable name={name} label={label} key={key} />,
-    ADD: <FormikAdd label={label} name={name} options={options} key={key} />,
-    OPHTHALMOLOGIST_TABLE: (
+    TABLE: (
       <FormikTable
         name={name}
         label={label}
@@ -67,6 +64,7 @@ export const toRenderField = ({
         formatters={formatters}
       />
     ),
+    ADD: <FormikAdd label={label} name={name} options={options} key={key} />,
   };
 
   return fieldMatcher[field];
@@ -154,7 +152,6 @@ export const showHandbookField = ({
           ))}
         </ul>
       ),
-      OPHTHALMOLOGIST_TABLE: <TableGrid data={value as string[][]} />,
     };
 
   return fieldMatcher[field];
