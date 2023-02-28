@@ -15,10 +15,14 @@ const useTableArrowNavigation = () => {
       const tbodyRef = tableRef.current?.children[1];
       const toMoveFocus = arrowKeyCommands[event.code] ?? 0;
       const trCollection = tbodyRef?.children;
+      let movedCursor = false;
+
       Object.values(trCollection ?? {}).forEach((row, idxRow) => {
         const rowChildren = row.children;
         Object.values(rowChildren).forEach((td, idxCol) => {
-          if (document.activeElement !== td.firstChild) return;
+          if (document.activeElement !== td.firstChild || movedCursor) return;
+
+          movedCursor = true;
 
           const newCoordinates: [number, number] = [
             idxRow + toMoveFocus[0],
