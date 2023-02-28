@@ -268,6 +268,7 @@ enum HandbookFieldType {
   DATE
   TABLE
   ADD
+  OPHTHALMOLOGIST_TABLE
 }
 
 enum AppointmentStatus {
