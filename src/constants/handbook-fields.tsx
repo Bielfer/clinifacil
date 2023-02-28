@@ -1,5 +1,6 @@
 /* eslint react/no-array-index-key:off */
 import MySwitch from '@/components/core/MySwitch';
+import TableGrid from '@/components/core/TableGrid';
 import Text from '@/components/core/Text';
 import FormikAdd from '@/components/forms/FormikAdd';
 import FormikAutocomplete from '@/components/forms/FormikAutocomplete';
@@ -8,9 +9,8 @@ import FormikSwitch from '@/components/forms/FormikSwitch';
 import FormikTable from '@/components/forms/FormikTable';
 import FormikTextarea from '@/components/forms/FormikTextarea';
 import type { HandbookFieldType } from '@prisma/client';
-import clsx from 'clsx';
 import type { Key } from 'react';
-import { gridColsArray } from './styles';
+import type { FieldValue } from '@/types/handbook';
 
 export const fieldTypes = {
   text: 'TEXT',
@@ -20,6 +20,7 @@ export const fieldTypes = {
   date: 'DATE',
   table: 'TABLE',
   add: 'ADD',
+  ophthalmologistTable: 'OPHTHALMOLOGIST_TABLE',
 } as const;
 
 export const fieldTypesArray = Object.values(
@@ -32,12 +33,14 @@ export const toRenderField = ({
   label,
   key,
   options,
+  formatters,
 }: {
   key?: Key | null;
   field: HandbookFieldType;
   name: string;
   label?: string | undefined | null;
   options?: { text: string; value: string }[];
+  formatters?: string[][];
 }) => {
   const fieldMatcher: Record<HandbookFieldType, JSX.Element> = {
     TEXT: <FormikInput name={name} label={label} key={key} />,
@@ -56,6 +59,14 @@ export const toRenderField = ({
     ),
     TABLE: <FormikTable name={name} label={label} key={key} />,
     ADD: <FormikAdd label={label} name={name} options={options} key={key} />,
+    OPHTHALMOLOGIST_TABLE: (
+      <FormikTable
+        name={name}
+        label={label}
+        key={key}
+        formatters={formatters}
+      />
+    ),
   };
 
   return fieldMatcher[field];
@@ -69,10 +80,19 @@ export const showHandbookField = ({
   key?: Key | null;
   field: HandbookFieldType;
   label?: string | undefined | null;
-  value?: any;
+  value?: FieldValue;
 }) => {
-  const firstColumnEmpty =
-    Array.isArray(value) && value.every((row) => row?.[0] === '');
+  if (!value) return null;
+
+  const body = (Array.isArray(value) && value.slice(1)) || [];
+  const tableValues = body.map((row) => row.slice(1));
+  const isEmpty =
+    tableValues.length > 0 &&
+    tableValues.every(
+      (row) => Array.isArray(row) && row.every((item) => item === '')
+    );
+
+  if (isEmpty) return null;
 
   const fieldMatcher: Record<HandbookFieldType, JSX.Element | null | boolean> =
     {
@@ -103,7 +123,7 @@ export const showHandbookField = ({
               {label}
             </Text>
           )}
-          <MySwitch checked={value} onChange={() => {}} />
+          <MySwitch checked={value as boolean} onChange={() => {}} />
         </>
       ),
       AUTOCOMPLETE: (
@@ -126,67 +146,15 @@ export const showHandbookField = ({
           <Text p>{value}</Text>
         </>
       ),
-      TABLE: Array.isArray(value) && (
-        <div className="px-2 text-center">
-          <div
-            className={clsx(
-              'grid',
-              clsx(
-                'grid',
-                firstColumnEmpty
-                  ? gridColsArray[(value?.[0] as string[]).length - 1]
-                  : gridColsArray[value?.[0].length]
-              )
-            )}
-          >
-            {value?.[0].map((header: string, idx: number) => (
-              <div
-                key={header}
-                className={clsx(
-                  'border-l border-gray-300 py-3 text-center font-semibold first:border-l-0',
-                  firstColumnEmpty && idx === 0 && 'hidden',
-                  firstColumnEmpty && idx === 1 && 'border-l-0'
-                )}
-              >
-                {header}
-              </div>
-            ))}
-          </div>
-          <div>
-            {value?.slice(1).map((row: string[], idxRow: number) => (
-              <div
-                key={idxRow}
-                className={clsx(
-                  'grid border-t border-gray-300',
-                  firstColumnEmpty
-                    ? gridColsArray[row.length - 1]
-                    : gridColsArray[row.length]
-                )}
-              >
-                {row.map((data, idxCol) => (
-                  <div
-                    key={idxCol}
-                    className={clsx(
-                      'border-l border-gray-300 py-3 first:border-l-0 first:font-semibold',
-                      firstColumnEmpty && idxCol === 0 && 'hidden',
-                      firstColumnEmpty && idxCol === 1 && 'border-l-0'
-                    )}
-                  >
-                    {data}
-                  </div>
-                ))}
-              </div>
-            ))}
-          </div>
-        </div>
-      ),
-      ADD: Array.isArray(value) && (
-        <ul>
+      TABLE: <TableGrid data={value as string[][]} />,
+      ADD: Array.isArray(value) && value.some((item) => item !== '') && (
+        <ul className="list-disc">
           {value.map((data, idx) => (
             <li key={`${data} ${idx}`}>{data}</li>
           ))}
         </ul>
       ),
+      OPHTHALMOLOGIST_TABLE: <TableGrid data={value as string[][]} />,
     };
 
   return fieldMatcher[field];
