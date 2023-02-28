@@ -9,6 +9,7 @@ import paths, { patientDetailsPaths, sidebarPaths } from '@/constants/paths';
 import { useActiveAppointment, useActiveDoctor, useRoles } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
+import type { FieldValue } from '@/types/handbook';
 import { ArrowRightCircleIcon, PlusIcon } from '@heroicons/react/20/solid';
 import { format } from 'date-fns';
 import Head from 'next/head';
@@ -86,23 +87,14 @@ const PatientAppointments: Page = () => {
                         key={handbook.id}
                         title={handbook.title}
                         items={handbook.fields
-                          .map(
-                            ({ label, value, type }) =>
-                              (Array.isArray(value)
-                                ? value.every((row) =>
-                                    (row as string[]).every(
-                                      (item) => item !== ''
-                                    )
-                                  )
-                                : !!value) && {
-                                label,
-                                value: showHandbookField({
-                                  field: type,
-                                  value,
-                                }),
-                              }
-                          )
-                          .filter((item) => !!item)}
+                          .map(({ label, value, type }) => ({
+                            label,
+                            value: showHandbookField({
+                              field: type,
+                              value: value as FieldValue,
+                            }),
+                          }))
+                          .filter((item) => !!item.value)}
                       />
                     ))}
                     {appointment.prescriptions &&
