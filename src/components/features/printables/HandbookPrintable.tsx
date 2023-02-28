@@ -1,5 +1,5 @@
 /* eslint react/display-name:off */
-import { showHandbookField } from '@/constants/field-types';
+import { showHandbookField } from '@/constants/handbook-fields';
 import type {
   Doctor,
   Handbook,

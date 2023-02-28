@@ -1,4 +1,4 @@
-import { toRenderField } from '@/constants/field-types';
+import { toRenderField } from '@/constants/handbook-fields';
 import type {
   Handbook,
   HandbookField,

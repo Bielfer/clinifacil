@@ -4,7 +4,7 @@ import MyLink from '@/components/core/MyLink';
 import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
 import Text from '@/components/core/Text';
-import { showHandbookField } from '@/constants/field-types';
+import { showHandbookField } from '@/constants/handbook-fields';
 import paths, { patientDetailsPaths, sidebarPaths } from '@/constants/paths';
 import { useActiveAppointment, useActiveDoctor, useRoles } from '@/hooks';
 import { trpc } from '@/services/trpc';
