@@ -15,22 +15,7 @@ import { z } from 'zod';
 import { authorizeHigherOrEqualRole } from '../middlewares';
 
 const appointmentReturnFormat = {
-  doctor: {
-    select: {
-      name: true,
-      id: true,
-    },
-  },
   patient: true,
-  handbooks: {
-    include: {
-      fields: {
-        include: {
-          options: true,
-        },
-      },
-    },
-  },
   type: true,
 };
 
@@ -54,7 +39,18 @@ const getActiveAppointment = async ({
         createdAt: 'desc',
       },
       take: 1,
-      include: appointmentReturnFormat,
+      include: {
+        patient: true,
+        handbooks: {
+          include: {
+            fields: {
+              include: {
+                options: true,
+              },
+            },
+          },
+        },
+      },
     })
   );
 
