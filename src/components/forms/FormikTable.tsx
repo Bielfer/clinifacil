@@ -43,15 +43,14 @@ const FormikTable: FC<Props> = ({
           {label}
         </Text>
       )}
-      <Table className="w-full px-2" ref={tableRef}>
+      <Table className="w-full" ref={tableRef}>
         <Table.Head>
           {headers.map((header, idx) => (
             <Table.Header
               key={header}
               className={clsx(
-                idx !== 0 && 'border-l border-gray-300',
-                firstColumnEmpty && idx === 0 && 'hidden',
-                firstColumnEmpty && idx === 1 && 'border-l-0'
+                'text-center',
+                firstColumnEmpty && idx === 0 && 'hidden'
               )}
             >
               {header}
@@ -65,9 +64,8 @@ const FormikTable: FC<Props> = ({
                 <Table.Data
                   key={idxCol}
                   className={clsx(
-                    idxCol === 0 ? 'font-semibold' : 'border-l border-gray-300',
-                    firstColumnEmpty && idxCol === 0 && 'hidden',
-                    firstColumnEmpty && idxCol === 1 && 'border-l-0'
+                    'font-semibold',
+                    firstColumnEmpty && idxCol === 0 && 'hidden'
                   )}
                 >
                   {idxCol === 0 ? (
@@ -75,7 +73,7 @@ const FormikTable: FC<Props> = ({
                   ) : (
                     <Field
                       name={`${name}[${idxRow + 1}][${idxCol}]`}
-                      className="h-full w-full text-center leading-10 outline-none"
+                      className="h-full w-full rounded-lg bg-gray-50 text-center leading-10 outline-none"
                       autoComplete="off"
                       onBlur={() => {
                         const formatter =
