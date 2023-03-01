@@ -59,7 +59,7 @@ const PrimaryFeatures = () => {
             id="features-title"
             className="font-display text-3xl tracking-tight text-white sm:text-4xl md:text-5xl"
           >
-            Tudo que você precisa para gerir a sua clínica
+            Tudo que você precisa para gerenciar a sua clínica
           </h2>
         </div>
         <Tab.Group
