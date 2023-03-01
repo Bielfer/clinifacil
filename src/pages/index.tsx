@@ -4,6 +4,7 @@ import Header from '@/components/core/Header';
 import Hero from '@/components/core/Hero';
 import Head from 'next/head';
 import paths from '@/constants/paths';
+import PrimaryFeatures from '@/components/landing/PrimaryFeatures';
 
 const Home: NextPage = () => (
   <>
@@ -22,6 +23,7 @@ const Home: NextPage = () => (
     <Header />
     <main>
       <Hero />
+      <PrimaryFeatures />
     </main>
   </>
 );
