@@ -64,7 +64,7 @@ const FormikTable: FC<Props> = ({
                 <Table.Data
                   key={idxCol}
                   className={clsx(
-                    'font-semibold',
+                    idxCol === 0 && 'font-semibold',
                     firstColumnEmpty && idxCol === 0 && 'hidden'
                   )}
                 >
