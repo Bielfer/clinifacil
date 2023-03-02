@@ -46,6 +46,7 @@ const paths = {
     `/patients/${patientId}/exams/new`,
   appointmentTypesByName: (typeName: string | number) =>
     `/appointments/types/${typeName}`,
+  contact: '/contact',
 } as const;
 
 export const sidebarPaths = [

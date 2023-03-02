@@ -1,3 +1,4 @@
+import paths from '@/constants/paths';
 import { FC } from 'react';
 import MyLink from '../core/MyLink';
 
@@ -12,10 +13,10 @@ const CallToAction: FC = () => (
           Caso você não fique satisfeito reembolsamos seu dinheiro na hora
         </p>
         <div className="mt-10 flex items-center justify-center gap-x-6">
-          <MyLink href="#" variant="button-primary">
+          <MyLink href={paths.contact} variant="button-primary">
             Começar Teste
           </MyLink>
-          <MyLink href="#" variant="primary">
+          <MyLink href={paths.contact} variant="primary">
             <span>Saber Mais</span> <span aria-hidden="true"> →</span>
           </MyLink>
         </div>

@@ -1,5 +1,6 @@
-import Link from 'next/link';
+import paths from '@/constants/paths';
 import Logo from '../core/Logo';
+import MyLink from '../core/MyLink';
 
 const Footer = () => (
   <footer className="bg-slate-50">
@@ -9,20 +10,14 @@ const Footer = () => (
         <nav className="mt-10 text-sm" aria-label="quick links">
           <ul className="-my-1 flex justify-center space-x-6">
             <li>
-              <Link
-                href="#features"
-                className="rounded-lg px-2 py-1 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-              >
+              <MyLink href={paths.features} variant="secondary">
                 Como Funciona?
-              </Link>
+              </MyLink>
             </li>
             <li>
-              <Link
-                href="#pricing"
-                className="rounded-lg px-2 py-1 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-              >
+              <MyLink href={paths.pricing} variant="secondary">
                 Preços
-              </Link>
+              </MyLink>
             </li>
           </ul>
         </nav>

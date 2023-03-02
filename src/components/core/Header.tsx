@@ -9,11 +9,11 @@ import paths from '@/constants/paths';
 const links = [
   {
     text: 'Como Funciona?',
-    route: '#features',
+    route: '/#features',
   },
   {
     text: 'Preços',
-    route: '#pricing',
+    route: '/#pricing',
   },
 ];
 

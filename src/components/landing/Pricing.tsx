@@ -1,3 +1,4 @@
+import paths from '@/constants/paths';
 import { RadioGroup } from '@headlessui/react';
 import { CheckIcon } from '@heroicons/react/20/solid';
 import clsx from 'clsx';
@@ -89,7 +90,7 @@ const Pricing: FC = () => {
                   </span>
                 </p>
                 <MyLink
-                  href="#"
+                  href={paths.contact}
                   variant="button-primary"
                   className="mt-4 w-full justify-center"
                 >

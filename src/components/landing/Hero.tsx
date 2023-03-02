@@ -23,7 +23,7 @@ const Hero = () => (
       de usar. Nossa missão é acabar com essa dificuldade.
     </p>
     <div className="mt-10 flex justify-center space-x-6">
-      <MyLink href={paths.login} variant="button-primary">
+      <MyLink href={paths.contact} variant="button-primary">
         Cadastre-se Agora
       </MyLink>
     </div>
