@@ -111,7 +111,7 @@ const Queue: Page = () => {
                 {appointments?.map((appointment) => (
                   <Table.Row key={appointment.id}>
                     <Table.Data>
-                      {format(appointment.createdAt, 'k:mm')}
+                      {format(appointment.createdAt, 'H:mm')}
                     </Table.Data>
                     <Table.Data>{appointment.patient.name}</Table.Data>
                     <Table.Data>
