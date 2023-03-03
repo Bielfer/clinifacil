@@ -150,20 +150,22 @@ model HandbookFieldOption {
 }
 
 model Appointment {
-  id            Int               @id @default(autoincrement())
-  status        AppointmentStatus @default(OPEN)
-  patient       Patient           @relation(fields: [patientId], references: [id])
-  patientId     Int
-  doctor        Doctor            @relation(fields: [doctorId], references: [id])
-  doctorId      Int
-  type          AppointmentType   @relation(fields: [typeId], references: [id])
-  typeId        Int               @unique
-  handbooks     Handbook[]
-  doctorNotes   DoctorNote[]
-  prescriptions Prescription[]
-  exams         Exam[]
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt()
+  id              Int               @id @default(autoincrement())
+  status          AppointmentStatus @default(OPEN)
+  patient         Patient           @relation(fields: [patientId], references: [id])
+  patientId       Int
+  doctor          Doctor            @relation(fields: [doctorId], references: [id])
+  doctorId        Int
+  type            AppointmentType   @relation(fields: [typeId], references: [id])
+  typeId          Int               @unique
+  displayOrder    Int               @default(0)
+  handbooks       Handbook[]
+  doctorNotes     DoctorNote[]
+  prescriptions   Prescription[]
+  exams           Exam[]
+  realizationDate DateTime          @default(now())
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt()
 
   @@index([patientId])
   @@index([doctorId])
