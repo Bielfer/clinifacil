@@ -28,9 +28,8 @@ const TableGrid: FC<Props> = ({ data }) => {
           <div
             key={header}
             className={clsx(
-              'border-l border-gray-300 py-3 text-center font-semibold first:border-l-0',
-              firstColumnEmpty && idx === 0 && 'hidden',
-              firstColumnEmpty && idx === 1 && 'border-l-0'
+              'py-3 text-center font-semibold',
+              firstColumnEmpty && idx === 0 && 'hidden'
             )}
           >
             {header}
@@ -52,9 +51,8 @@ const TableGrid: FC<Props> = ({ data }) => {
               <div
                 key={idxCol}
                 className={clsx(
-                  'border-l border-gray-300 py-3 first:border-l-0 first:font-semibold',
-                  firstColumnEmpty && idxCol === 0 && 'hidden',
-                  firstColumnEmpty && idxCol === 1 && 'border-l-0'
+                  'py-3 first:font-semibold',
+                  firstColumnEmpty && idxCol === 0 && 'hidden'
                 )}
               >
                 {value}
