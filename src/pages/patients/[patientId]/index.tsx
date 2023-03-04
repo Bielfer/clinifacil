@@ -4,6 +4,7 @@ import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
 import Text from '@/components/core/Text';
 import paths, { patientDetailsPaths, sidebarPaths } from '@/constants/paths';
+import { formatCPF, formatPhone } from '@/helpers/formatters';
 import { useActiveAppointment, useRoles } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
@@ -79,6 +80,7 @@ const PatientsById: Page = () => {
             </MyLink>
           }
           items={[
+            !!patient?.cpf && { label: 'CPF', value: formatCPF(patient.cpf) },
             { label: 'Nome', value: patient?.name },
             { label: 'Sexo', value: patient?.sex as string },
             {
@@ -91,6 +93,11 @@ const PatientsById: Page = () => {
               value:
                 patient?.birthDate &&
                 differenceInYears(new Date(), patient.birthDate),
+            },
+            !!patient?.email && { label: 'Email', value: patient.email },
+            !!patient?.cellphone && {
+              label: 'Celular',
+              value: formatPhone(patient.cellphone),
             },
           ]}
         />
