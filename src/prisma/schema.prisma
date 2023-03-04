@@ -228,6 +228,8 @@ model Printable {
   name          String
   type          PrintableType
   backgroundUrl String
+  footer        Boolean       @default(false)
+  displayName   Boolean       @default(false)
   translateX    Int           @default(0)
   translateY    Int           @default(0)
   doctor        Doctor        @relation(fields: [doctorId], references: [id])
@@ -283,5 +285,5 @@ enum PrintableType {
   DOCTOR_NOTE
   PRESCRIPTION
   EXAMS
-  GLASSES_PRESCRIPTION
+  HANDBOOK
 }
