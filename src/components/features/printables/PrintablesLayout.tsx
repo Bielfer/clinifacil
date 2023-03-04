@@ -1,3 +1,4 @@
+import ConditionalWrapper from '@/components/core/ConditionalWrapper';
 import {
   translateXArray,
   translateXArrayNegative,
@@ -31,20 +32,28 @@ const PrintablesLayout = forwardRef<HTMLDivElement, Props>(
       <>
         <div
           className={clsx(
-            'absolute top-0 left-0 h-full w-full overflow-hidden bg-cover bg-center bg-no-repeat'
+            'absolute top-0 left-0 h-full w-full overflow-hidden bg-cover bg-center bg-no-repeat',
+            !backgroundUrl && 'flex items-center justify-center'
           )}
           style={{ backgroundImage: `url(${backgroundUrl})` }}
           ref={ref}
         >
-          <div
-            className={clsx(
-              'absolute top-1/2 left-1/2 h-full w-full',
-              translateXStyle,
-              translateYStyle
+          <ConditionalWrapper
+            condition={!!backgroundUrl}
+            renderWrapper={(toRender) => (
+              <div
+                className={clsx(
+                  'absolute top-1/2 left-1/2 h-full w-full',
+                  translateXStyle,
+                  translateYStyle
+                )}
+              >
+                {toRender}
+              </div>
             )}
           >
             {children}
-          </div>
+          </ConditionalWrapper>
         </div>
         <style type="text/css" media="print">
           {
