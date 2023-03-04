@@ -103,7 +103,7 @@ const FormPatient = ({ className, patient }: Props) => {
             formatter="___.___.___-__"
             disabled={!!patient}
           />
-          <SearchPatientByCpf />
+          {!patient && <SearchPatientByCpf />}
           <FormikInput
             label="Nome"
             name="name"
