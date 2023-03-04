@@ -10,7 +10,7 @@ type Props = {
 };
 
 const PrescriptionList: FC<Props> = ({ className, prescriptions, patient }) => (
-  <div className={clsx('px-6', className)}>
+  <div className={clsx('w-full max-w-md px-3', className)}>
     <Text>Para:</Text>
     <Text b>{patient?.name}</Text>
     {prescriptions.map((prescription, idx) => (

@@ -22,12 +22,12 @@ const PrescriptionPrintable = forwardRef<HTMLDivElement, Props>(
       <PrintablesLayout ref={ref} printable={printable}>
         <div className="flex flex-col items-center">
           {printable?.displayName && (
-            <Text b className="mb-6 justify-center">
+            <Text b className="justify-center">
               {printable.name}
             </Text>
           )}
           <PrescriptionList
-            className="mt-4"
+            className="my-16"
             prescriptions={prescriptions}
             patient={patient}
           />
