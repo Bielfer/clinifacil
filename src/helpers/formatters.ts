@@ -43,3 +43,12 @@ export const tableFormatters: Record<string, (value: string) => string> = {
     return `- ${formattedString}`;
   },
 };
+
+export const formatPhone = (phone: string) => {
+  if (phone.length < 10) return phone;
+
+  if (phone.length === 10)
+    return phone.replace(/(\d{2})(\d{4})(\d{4})/, '($1) $2 - $3');
+
+  return phone.replace(/(\d{2})(\d{5})(\d{4})/, '($1) $2 - $3');
+};
