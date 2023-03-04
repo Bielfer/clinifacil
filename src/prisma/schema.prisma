@@ -227,7 +227,7 @@ model Printable {
   id            Int           @id @default(autoincrement())
   name          String
   type          PrintableType
-  backgroundUrl String
+  backgroundUrl String?
   footer        Boolean       @default(false)
   displayName   Boolean       @default(false)
   translateX    Int           @default(0)
