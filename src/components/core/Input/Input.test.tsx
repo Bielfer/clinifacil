@@ -4,13 +4,13 @@ import Input from '.';
 
 describe('Input', () => {
   it('matches snapshot', () => {
-    const { asFragment } = render(<Input />);
+    const { asFragment } = render(<Input value="" onChange={() => {}} />);
 
     expect(asFragment()).toMatchSnapshot();
   });
 
   it('should be able to type', async () => {
-    render(<Input />);
+    render(<Input value="" onChange={() => {}} />);
 
     const RenderedInput = screen.getByRole('textbox');
 
@@ -20,7 +20,7 @@ describe('Input', () => {
   });
 
   it('should have a default type of text', () => {
-    render(<Input />);
+    render(<Input value="" onChange={() => {}} />);
 
     const RenderedInput = screen.getByRole('textbox');
 

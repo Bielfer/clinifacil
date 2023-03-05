@@ -5,7 +5,7 @@ import Text from '@/components/core/Text';
 import Table from '@/components/core/Table';
 import { trpc } from '@/services/trpc';
 import { appointmentStatus } from '@/constants/appointment-status';
-import { differenceInYears } from 'date-fns';
+import { differenceInYears, format } from 'date-fns';
 import MyLink from '@/components/core/MyLink';
 import paths, { sidebarPaths } from '@/constants/paths';
 import {
@@ -28,12 +28,14 @@ const Queue: Page = () => {
   const [tabsStatus, setTabsStatus] = useState<AppointmentStatus>(
     appointmentStatus.open
   );
+  const isOpenStatus = tabsStatus === appointmentStatus.open;
   const { isReceptionist, isAdminOrHigher } = useRoles();
   const { data: doctor } = useActiveDoctor();
   const { data: appointments, isLoading } = trpc.appointment.getMany.useQuery(
     {
       doctorId: doctor?.id,
       status: tabsStatus,
+      orderBy: isOpenStatus ? { displayOrder: 'asc' } : { createdAt: 'asc' },
     },
     { enabled: !!doctor }
   );
@@ -41,8 +43,6 @@ const Queue: Page = () => {
   const selectedDoctorId = useReceptionistStore(
     (state) => state.selectedDoctorId
   );
-
-  const isOpenStatus = tabsStatus === appointmentStatus.open;
 
   return (
     <>
@@ -102,6 +102,7 @@ const Queue: Page = () => {
           <If.Case condition={!!appointments && appointments.length > 0}>
             <Table>
               <Table.Head>
+                <Table.Header>Chegada</Table.Header>
                 <Table.Header>Nome</Table.Header>
                 <Table.Header>Idade</Table.Header>
                 <Table.Header> </Table.Header>
@@ -109,6 +110,9 @@ const Queue: Page = () => {
               <Table.Body>
                 {appointments?.map((appointment) => (
                   <Table.Row key={appointment.id}>
+                    <Table.Data>
+                      {format(appointment.createdAt, 'H:mm')}
+                    </Table.Data>
                     <Table.Data>{appointment.patient.name}</Table.Data>
                     <Table.Data>
                       {appointment.patient.birthDate

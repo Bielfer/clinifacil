@@ -98,6 +98,7 @@ const AppointmentsSummary: Page = () => {
                   <Table.Data>
                     {formatCurrency(summary?.total ?? 0, { keepZero: false })}
                   </Table.Data>
+                  <Table.Data className="font-bold"> </Table.Data>
                 </Table.Row>
               </Table.Body>
             </Table>

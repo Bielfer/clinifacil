@@ -15,8 +15,8 @@ const useTableArrowNavigation = () => {
       const tbodyRef = tableRef.current?.children[1];
       const toMoveFocus = arrowKeyCommands[event.code] ?? 0;
       const trCollection = tbodyRef?.children;
-      const inputValueLength = (event?.target as any).value.length;
-      const cursorPosition = (event?.target as any).selectionStart;
+      const inputValueLength = (event?.target as any)?.value?.length;
+      const cursorPosition = (event?.target as any)?.selectionStart;
       let movedCursor = false;
 
       Object.values(trCollection ?? {}).forEach((row, idxRow) => {

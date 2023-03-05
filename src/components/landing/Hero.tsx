@@ -3,7 +3,7 @@ import Container from '@/components/core/Container';
 import paths from '@/constants/paths';
 
 const Hero = () => (
-  <Container className="pt-20 pb-16 text-center lg:pt-32">
+  <Container className="h-screen pt-20 text-center lg:pt-32">
     <h1 className="font-display mx-auto max-w-4xl text-5xl font-medium tracking-tight text-slate-900 sm:text-7xl">
       Gerir a sua clínica nunca foi{' '}
       <span className="relative whitespace-nowrap text-primary-600">
@@ -23,7 +23,7 @@ const Hero = () => (
       de usar. Nossa missão é acabar com essa dificuldade.
     </p>
     <div className="mt-10 flex justify-center space-x-6">
-      <MyLink href={paths.login} variant="button-primary">
+      <MyLink href={paths.contact} variant="button-primary">
         Cadastre-se Agora
       </MyLink>
     </div>

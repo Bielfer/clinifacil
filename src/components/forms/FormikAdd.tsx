@@ -17,7 +17,7 @@ const FormikAdd: FC<Props> = ({ name, options, label, hint, disabled }) => {
     useField<string[]>(name);
   const [inputValue, setInputValue] = useState<string[]>(initialValue ?? []);
 
-  const errorMessage = (touched && error ? error : '') as string;
+  const errorMessage = touched && error ? error : undefined;
 
   const handleChange = (e: string[]) => {
     setInputValue(e);
@@ -28,7 +28,6 @@ const FormikAdd: FC<Props> = ({ name, options, label, hint, disabled }) => {
     <>
       <div className="flex items-end gap-x-3">
         <Autocomplete
-          key={2}
           className="flex-grow"
           label={label}
           selected={inputValue}

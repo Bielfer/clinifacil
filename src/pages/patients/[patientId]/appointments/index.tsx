@@ -72,65 +72,72 @@ const PatientAppointments: Page = () => {
         </div>
         <TabsNavigation tabs={patientDetailsPaths({ patientId })} />
         <LoadingWrapper loading={isLoading}>
-          <div className="gap-y-5 divide-y divide-gray-300">
-            {appointments?.map((appointment) => (
-              <div key={appointment.id} className="mt-6 pt-6 first:mt-0">
-                <div className="my-4 flex items-center justify-between">
-                  <Text h4>
-                    Dia {format(appointment.createdAt, 'dd/MM/yyyy')}
-                  </Text>
-                </div>
-                <div className="flex flex-col gap-y-8">
-                  <div className="px-2 sm:px-4">
-                    {appointment.handbooks.map((handbook) => (
-                      <DescriptionList
-                        key={handbook.id}
-                        title={handbook.title}
-                        items={handbook.fields
-                          .map(({ label, value, type }) => ({
-                            label,
-                            value: showHandbookField({
-                              field: type,
-                              value: value as FieldValue,
-                            }),
-                          }))
-                          .filter((item) => !!item.value)}
-                      />
-                    ))}
-                    {appointment.prescriptions &&
-                      appointment.prescriptions.length > 0 && (
+          <>
+            <Text h3 className="my-4">
+              {activeAppointment?.patient.name}
+            </Text>
+            <div className="gap-y-5 divide-y divide-gray-300">
+              {appointments?.map((appointment) => (
+                <div key={appointment.id} className="mt-6 first:mt-0">
+                  <div className="my-4 flex items-center justify-between">
+                    <Text h4>
+                      Dia {format(appointment.createdAt, 'dd/MM/yyyy')}
+                    </Text>
+                  </div>
+                  <div className="flex flex-col gap-y-8">
+                    <div className="px-2 sm:px-4">
+                      {appointment.handbooks.map((handbook) => (
                         <DescriptionList
-                          title="Remédios"
-                          items={appointment.prescriptions.map(
-                            (doctorNote) => ({
-                              label: doctorNote.medicationName,
-                              value: doctorNote.instructions,
-                            })
-                          )}
+                          key={handbook.id}
+                          title={handbook.title}
+                          items={handbook.fields
+                            .map(({ label, value, type }) => ({
+                              label,
+                              value: showHandbookField({
+                                field: type,
+                                value: value as FieldValue,
+                              }),
+                            }))
+                            .filter((item) => !!item.value)}
                         />
-                      )}
-                    {appointment.exams && appointment.exams.length > 0 && (
-                      <DescriptionList
-                        title="Exames"
-                        items={appointment.exams.map((doctorNote) => ({
-                          label: doctorNote.name,
-                        }))}
-                      />
-                    )}
-                    {appointment.doctorNotes &&
-                      appointment.doctorNotes.length > 0 && (
+                      ))}
+                      {appointment.prescriptions &&
+                        appointment.prescriptions.length > 0 && (
+                          <DescriptionList
+                            title="Remédios"
+                            items={appointment.prescriptions.map(
+                              (doctorNote) => ({
+                                label: doctorNote.medicationName,
+                                value: doctorNote.instructions,
+                              })
+                            )}
+                          />
+                        )}
+                      {appointment.exams && appointment.exams.length > 0 && (
                         <DescriptionList
-                          title="Atestados"
-                          items={appointment.doctorNotes.map((doctorNote) => ({
-                            label: `Atestado de ${doctorNote.duration} dias`,
+                          title="Exames"
+                          items={appointment.exams.map((doctorNote) => ({
+                            label: doctorNote.name,
                           }))}
                         />
                       )}
+                      {appointment.doctorNotes &&
+                        appointment.doctorNotes.length > 0 && (
+                          <DescriptionList
+                            title="Atestados"
+                            items={appointment.doctorNotes.map(
+                              (doctorNote) => ({
+                                label: `Atestado de ${doctorNote.duration} dias`,
+                              })
+                            )}
+                          />
+                        )}
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          </>
         </LoadingWrapper>
       </Sidebar>
     </>

@@ -53,24 +53,41 @@ const Autocomplete: FC<Props> = ({
       shadow
     >
       <Combobox value={selected} onChange={setSelected} multiple={multiple}>
-        <Combobox.Input
-          onChange={(event) => {
-            setInput(event.target.value);
-            setSelected(event.target.value);
-          }}
-          displayValue={(value: string) =>
-            options.find((option) => option.value === value)?.text ?? value
-          }
-          placeholder={placeholder}
-          className={clsx(
-            'relative w-full cursor-text rounded-lg border py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-primary-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm',
-            disabled && 'bg-gray-200',
-            !error
-              ? 'border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500'
-              : 'border-red-300 pr-10 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500'
-          )}
-          autoComplete="off"
-        />
+        {multiple ? (
+          <Combobox.Input
+            onChange={(event) => {
+              setInput(event.target.value);
+            }}
+            placeholder={placeholder}
+            className={clsx(
+              'relative w-full cursor-text rounded-lg border py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-primary-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm',
+              disabled && 'bg-gray-200',
+              !error
+                ? 'border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500'
+                : 'border-red-300 pr-10 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500'
+            )}
+            autoComplete="off"
+          />
+        ) : (
+          <Combobox.Input
+            onChange={(event) => {
+              setInput(event.target.value);
+              setSelected(event.target.value);
+            }}
+            displayValue={(value: string) =>
+              options.find((option) => option.value === value)?.text ?? value
+            }
+            placeholder={placeholder}
+            className={clsx(
+              'relative w-full cursor-text rounded-lg border py-2 pl-3 pr-10 text-left focus:outline-none focus-visible:border-primary-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm',
+              disabled && 'bg-gray-200',
+              !error
+                ? 'border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500'
+                : 'border-red-300 pr-10 text-red-900 placeholder-red-300 focus:border-red-500 focus:ring-red-500'
+            )}
+            autoComplete="off"
+          />
+        )}
         <Combobox.Button className="absolute inset-y-0 right-0 flex items-center rounded-r-md px-2 focus:outline-none">
           <ChevronUpDownIcon
             className="h-5 w-5 text-gray-400"

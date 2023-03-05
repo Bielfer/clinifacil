@@ -15,22 +15,7 @@ import { z } from 'zod';
 import { authorizeHigherOrEqualRole } from '../middlewares';
 
 const appointmentReturnFormat = {
-  doctor: {
-    select: {
-      name: true,
-      id: true,
-    },
-  },
   patient: true,
-  handbooks: {
-    include: {
-      fields: {
-        include: {
-          options: true,
-        },
-      },
-    },
-  },
   type: true,
 };
 
@@ -54,7 +39,18 @@ const getActiveAppointment = async ({
         createdAt: 'desc',
       },
       take: 1,
-      include: appointmentReturnFormat,
+      include: {
+        patient: true,
+        handbooks: {
+          include: {
+            fields: {
+              include: {
+                options: true,
+              },
+            },
+          },
+        },
+      },
     })
   );
 
@@ -88,7 +84,10 @@ export const appointmentRouter = router({
         interval: z.enum(timeIntervalValues).optional(),
         typeName: z.string().optional(),
         orderBy: z
-          .record(z.enum(['createdAt']), z.enum(['asc', 'desc']))
+          .record(
+            z.enum(['createdAt', 'displayOrder']),
+            z.enum(['asc', 'desc'])
+          )
           .optional(),
       })
     )
@@ -144,11 +143,35 @@ export const appointmentRouter = router({
         patientId,
       });
 
+      const [lastAppointmentInQueue, errorLastAppointmentInQueue] =
+        await tryCatch(
+          prisma.appointment.findMany({
+            where: {
+              status: appointmentStatus.open,
+              doctorId,
+            },
+            orderBy: {
+              displayOrder: 'desc',
+            },
+            take: 1,
+          })
+        );
+
+      if (errorLastAppointmentInQueue)
+        throw new TRPCError({
+          code: 'BAD_REQUEST',
+          message: errorLastAppointmentInQueue,
+        });
+
       if (activeAppointment) {
         const [updatedAppointment, error] = await tryCatch(
           prisma.appointment.update({
             where: { id: activeAppointment.id },
-            data: { status: appointmentStatus.open },
+            data: {
+              status: appointmentStatus.open,
+              displayOrder:
+                (lastAppointmentInQueue?.[0]?.displayOrder ?? 0) + 1,
+            },
           })
         );
 
@@ -174,6 +197,7 @@ export const appointmentRouter = router({
         prisma.appointment.create({
           data: {
             status: status ?? appointmentStatus.open,
+            displayOrder: (lastAppointmentInQueue?.[0]?.displayOrder ?? 0) + 1,
             doctor: {
               connect: {
                 id: doctorId,
