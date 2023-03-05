@@ -59,7 +59,7 @@ const PrintablesLayout = forwardRef<HTMLDivElement, Props>(
               </div>
             )}
           >
-            <div className="flex flex-col items-center">
+            <div className="flex w-full flex-col items-center">
               {printable?.displayName && (
                 <Text b className="justify-center">
                   {printable.name}
