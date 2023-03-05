@@ -13,6 +13,7 @@ import paths, {
   patientAppointmentPaths,
   sidebarPaths,
 } from '@/constants/paths';
+import { printableTypes } from '@/constants/printables';
 import { useActiveAppointment, useActiveDoctor } from '@/hooks';
 import { trpc } from '@/services/trpc';
 import { Page } from '@/types/auth';
@@ -40,7 +41,7 @@ const PatientHandbook: Page = () => {
   const { data: printables } = trpc.doctor.printables.useQuery(
     {
       doctorId: doctor?.id ?? 0,
-      type: 'GLASSES_PRESCRIPTION',
+      type: printableTypes.handbook,
     },
     { enabled: !!doctor }
   );
