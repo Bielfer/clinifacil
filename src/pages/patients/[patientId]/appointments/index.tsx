@@ -25,7 +25,7 @@ const PatientAppointments: Page = () => {
       {
         doctorId: doctor?.id,
         patientId: parseInt(patientId, 10),
-        orderBy: { createdAt: 'desc' },
+        orderBy: { realizationDate: 'desc' },
       },
       { enabled: !!doctor && !!patientId }
     );
@@ -81,7 +81,7 @@ const PatientAppointments: Page = () => {
                 <div key={appointment.id} className="mt-6 first:mt-0">
                   <div className="my-4 flex items-center justify-between">
                     <Text h4>
-                      Dia {format(appointment.createdAt, 'dd/MM/yyyy')}
+                      Dia {format(appointment.realizationDate, 'dd/MM/yyyy')}
                     </Text>
                   </div>
                   <div className="flex flex-col gap-y-8">
