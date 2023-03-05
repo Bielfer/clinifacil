@@ -8,7 +8,6 @@ import {
   startOfWeek,
   startOfYesterday,
 } from 'date-fns';
-import { zonedTimeToUtc } from 'date-fns-tz';
 
 export const timeIntervals = {
   today: 'TODAY',
@@ -25,20 +24,20 @@ export const timeIntervalValues = Object.values(
 
 export const timeIntervalDates = {
   TODAY: {
-    gte: zonedTimeToUtc(startOfToday(), 'Etc/UTC'),
-    lte: zonedTimeToUtc(endOfToday(), 'Etc/UTC'),
+    gte: startOfToday(),
+    lte: endOfToday(),
   },
   YESTERDAY: {
-    gte: zonedTimeToUtc(startOfYesterday(), 'Etc/UTC'),
-    lte: zonedTimeToUtc(endOfYesterday(), 'Etc/UTC'),
+    gte: startOfYesterday(),
+    lte: endOfYesterday(),
   },
   THIS_WEEK: {
-    gte: zonedTimeToUtc(startOfWeek(new Date()), 'Etc/UTC'),
-    lte: zonedTimeToUtc(endOfWeek(new Date()), 'Etc/UTC'),
+    gte: startOfWeek(new Date()),
+    lte: endOfWeek(new Date()),
   },
   THIS_MONTH: {
-    gte: zonedTimeToUtc(startOfMonth(new Date()), 'Etc/UTC'),
-    lte: zonedTimeToUtc(endOfMonth(new Date()), 'Etc/UTC'),
+    gte: startOfMonth(new Date()),
+    lte: endOfMonth(new Date()),
   },
 } as const;
 
