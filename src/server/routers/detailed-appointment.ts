@@ -48,14 +48,17 @@ export const detailedAppointmentRouter = router({
         interval: z.enum(timeIntervalValues).optional(),
         typeName: z.string().optional(),
         orderBy: z
-          .record(z.enum(['createdAt']), z.enum(['asc', 'desc']))
+          .record(
+            z.enum(['createdAt', 'realizationDate']),
+            z.enum(['asc', 'desc'])
+          )
           .optional(),
       })
     )
     .query(async ({ input }) => {
       const {
         status: inputStatus,
-        orderBy = { createdAt: 'asc' },
+        orderBy = { createdAt: 'desc' },
         interval,
         typeName,
         ...inputWithoutStatus

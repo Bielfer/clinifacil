@@ -133,10 +133,17 @@ export const appointmentRouter = router({
         patientId: z.number(),
         appointmentTypeId: z.number(),
         status: z.enum(appointmentStatusValues).optional(),
+        realizationDate: z.date().optional(),
       })
     )
     .mutation(async ({ input }) => {
-      const { doctorId, patientId, appointmentTypeId, status } = input;
+      const {
+        doctorId,
+        patientId,
+        realizationDate,
+        appointmentTypeId,
+        status,
+      } = input;
 
       const activeAppointment = await getActiveAppointment({
         doctorId,
@@ -198,6 +205,7 @@ export const appointmentRouter = router({
           data: {
             status: status ?? appointmentStatus.open,
             displayOrder: (lastAppointmentInQueue?.[0]?.displayOrder ?? 0) + 1,
+            ...(realizationDate && { realizationDate }),
             doctor: {
               connect: {
                 id: doctorId,
