@@ -14,6 +14,7 @@ import type { FC } from 'react';
 import { z } from 'zod';
 import Button from '../core/Button';
 import { useToast } from '../core/Toast';
+import FormikDate from './FormikDate';
 import FormikSelect from './FormikSelect';
 
 interface Props {
@@ -37,10 +38,12 @@ const FormAppointment: FC<Props> = ({ className, onSubmitRedirectUrl }) => {
 
   const initialValues = {
     typeId: 0,
+    realizationDate: new Date(),
   };
 
   const validationSchema = z.object({
     typeId: z.number().min(1, validations.required),
+    realizationDate: z.date().optional(),
   });
 
   const handleSubmit = async (values: typeof initialValues) => {
@@ -57,6 +60,7 @@ const FormAppointment: FC<Props> = ({ className, onSubmitRedirectUrl }) => {
         appointmentTypeId: values.typeId,
         doctorId: doctor.id,
         patientId: parseInt(patientId, 10),
+        realizationDate: values.realizationDate,
         ...(onSubmitRedirectUrl && { status: appointmentStatus.finished }),
       })
     );
@@ -89,6 +93,7 @@ const FormAppointment: FC<Props> = ({ className, onSubmitRedirectUrl }) => {
               })) ?? []
             }
           />
+          <FormikDate name="realizationDate" label="Data da Consulta" />
 
           <div className="flex justify-end">
             <Button variant="primary" loading={isSubmitting} type="submit">
