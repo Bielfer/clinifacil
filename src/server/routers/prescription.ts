@@ -1,11 +1,14 @@
+import { roles } from '@/constants/roles';
 import tryCatch from '@/helpers/tryCatch';
 import { router, privateProcedure } from '@/server/trpc';
 import { prisma } from '@/services/prisma';
 import { TRPCError } from '@trpc/server';
 import { z } from 'zod';
+import { authorizeHigherOrEqualRole } from '../middlewares';
 
 export const prescriptionRouter = router({
   getMany: privateProcedure
+    .use(authorizeHigherOrEqualRole(roles.doctor))
     .input(
       z.object({
         appointmentId: z.number(),
@@ -29,6 +32,7 @@ export const prescriptionRouter = router({
       return prescriptions;
     }),
   create: privateProcedure
+    .use(authorizeHigherOrEqualRole(roles.doctor))
     .input(
       z.object({
         medicationName: z.string(),
@@ -58,6 +62,7 @@ export const prescriptionRouter = router({
       return prescription;
     }),
   delete: privateProcedure
+    .use(authorizeHigherOrEqualRole(roles.doctor))
     .input(
       z.object({
         id: z.number(),
