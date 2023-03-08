@@ -17,13 +17,13 @@ const FormikFile = ({
   hint,
   ...props
 }: Props) => {
-  const [, { error }, { setValue }] = useField(name);
+  const [, { error, touched }, { setValue }] = useField(name);
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
     <InputLayout
       className={className}
-      error={error}
+      error={touched && error ? error : ''}
       hint={hint}
       label={label}
       name={name}
