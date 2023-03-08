@@ -47,6 +47,10 @@ const paths = {
   appointmentTypesByName: (typeName: string | number) =>
     `/appointments/types/${typeName}`,
   contact: '/contact',
+  patientImageExams: (patientId: string | number) =>
+    `/patients/${patientId}/image-exams`,
+  newPatientImageExam: (patientId: string | number) =>
+    `/patients/${patientId}/image-exams/new`,
 } as const;
 
 export const sidebarPaths = [
@@ -68,6 +72,7 @@ export const patientAppointmentPaths = ({
   { text: 'Receituário', href: paths.patientPrescriptions(patientId) },
   { text: 'Atestados', href: paths.patientDoctorNotes(patientId) },
   { text: 'Exames', href: paths.patientExams(patientId) },
+  { text: 'Exames de Imagem', href: paths.patientImageExams(patientId) },
 ];
 
 export const patientDetailsPaths = ({ patientId }: { patientId: string }) => [
