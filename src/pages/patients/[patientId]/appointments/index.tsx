@@ -4,6 +4,7 @@ import MyLink from '@/components/core/MyLink';
 import Sidebar from '@/components/core/Sidebar';
 import TabsNavigation from '@/components/core/TabsNavigation';
 import Text from '@/components/core/Text';
+import ImageExamModal from '@/components/features/exams/ImageExamModal';
 import { showHandbookField } from '@/constants/handbook-fields';
 import paths, { patientDetailsPaths, sidebarPaths } from '@/constants/paths';
 import { useActiveAppointment, useActiveDoctor, useRoles } from '@/hooks';
@@ -116,8 +117,16 @@ const PatientAppointments: Page = () => {
                       {appointment.exams && appointment.exams.length > 0 && (
                         <DescriptionList
                           title="Exames"
-                          items={appointment.exams.map((doctorNote) => ({
-                            label: doctorNote.name,
+                          items={appointment.exams.map((exam) => ({
+                            label: exam.name,
+                            buttonsOrLinks: exam.imageUrl
+                              ? [
+                                  <ImageExamModal
+                                    imageUrl={exam.imageUrl}
+                                    key={1}
+                                  />,
+                                ]
+                              : undefined,
                           }))}
                         />
                       )}
