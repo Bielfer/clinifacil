@@ -1,4 +1,4 @@
-import { Fragment, ReactNode } from 'react';
+import { FC, Fragment, ReactNode } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import clsx from 'clsx';
 
@@ -9,7 +9,7 @@ interface Props {
   children: ReactNode;
 }
 
-const Modal = ({ isOpen, onClose, className, children }: Props) => (
+const Modal: FC<Props> = ({ isOpen, onClose, className, children }) => (
   <Transition appear show={isOpen} as={Fragment}>
     <Dialog as="div" className="relative z-50" onClose={onClose}>
       <Transition.Child
