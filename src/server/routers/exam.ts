@@ -3,7 +3,10 @@ import { examTypeValues } from '@/constants/exams';
 import { roles } from '@/constants/roles';
 import tryCatch from '@/helpers/tryCatch';
 import { router, privateProcedure } from '@/server/trpc';
-import { createPresignedUrlWithClient } from '@/services/aws';
+import {
+  createPresignedUrlWithClient,
+  getPresignedUrlWithClient,
+} from '@/services/aws';
 import { prisma } from '@/services/prisma';
 import type { Exam, ExamType, Prisma } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
@@ -133,7 +136,19 @@ export const examRouter = router({
     }),
   getPresignedUrl: privateProcedure
     .use(authorizeHigherOrEqualRole(roles.doctor))
-    .query(async () => {
+    .input(z.object({ imageUrl: z.string() }))
+    .query(async ({ input }) => {
+      const { imageUrl } = input;
+
+      const [, key] = imageUrl.split('amazonaws.com/');
+
+      const imageData = await getPresignedUrlWithClient(key);
+
+      return imageData;
+    }),
+  createPresignedUrl: privateProcedure
+    .use(authorizeHigherOrEqualRole(roles.doctor))
+    .mutation(async () => {
       const presignedUrl = await createPresignedUrlWithClient(
         bucketFolders.imageExams
       );
