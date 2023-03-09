@@ -15,6 +15,7 @@ const validations = {
   cpf: 'Cpf inválido, verifique se todos os números estão corretos',
   minOptions: (num: number) =>
     `Escolha ao menos ${num} ${num === 1 ? 'Opção' : 'Opções'}`,
+  image: 'Apenas imagens são permitidas!',
 } as const;
 
 export default validations;
