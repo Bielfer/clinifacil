@@ -40,7 +40,11 @@ const FormImageExam: FC = () => {
 
   const validate = z.object({
     name: z.string({ required_error: validations.required }),
-    image: z.instanceof(File, { message: validations.required }),
+    image: z
+      .instanceof(File, { message: validations.required })
+      .refine((val) => val.type.includes('image'), {
+        message: validations.image,
+      }),
   });
 
   const handleSubmit = async (values: typeof initialValues) => {
@@ -117,7 +121,12 @@ const FormImageExam: FC = () => {
                 })) ?? []
               }
             />
-            <FormikFile name="image" label="Arquivo" variant="secondary">
+            <FormikFile
+              name="image"
+              label="Arquivo"
+              variant="secondary"
+              preview
+            >
               Escolha uma imagem
             </FormikFile>
 
