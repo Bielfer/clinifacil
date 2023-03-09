@@ -120,6 +120,7 @@ export const handbookRouter = router({
       return handbook;
     }),
   update: privateProcedure
+    .use(authorizeHigherOrEqualRole(roles.doctor))
     .input(
       handbookSchema.omit({
         doctorId: true,

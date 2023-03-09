@@ -24,6 +24,7 @@ import EmptyState from '@/components/core/EmptyState';
 import { BeakerIcon } from '@heroicons/react/24/outline';
 import tryCatch from '@/helpers/tryCatch';
 import { useToast } from '@/components/core/Toast';
+import { examTypes } from '@/constants/exams';
 
 const PatientExams: Page = () => {
   const patientId = useRouter().query.patientId as string;
@@ -39,6 +40,7 @@ const PatientExams: Page = () => {
   } = trpc.exam.getMany.useQuery(
     {
       appointmentId: activeAppointment?.id,
+      type: examTypes.regular,
     },
     { enabled: !!activeAppointment }
   );
@@ -121,7 +123,7 @@ const PatientExams: Page = () => {
         <LoadingWrapper loading={isLoadingExams}>
           {!!exams && exams.length > 0 ? (
             <DescriptionList
-              title="Remédios"
+              title="Exames"
               className="mx-auto max-w-2xl pt-5"
               items={
                 exams?.map((exam) => ({

@@ -17,6 +17,7 @@ export type AllowedCreationRoles =
 
 export const roleRouter = router({
   edit: privateProcedure
+    .use(authorizeHigherOrEqualRole(roles.admin))
     .input(
       z.object({
         id: z.string(),
